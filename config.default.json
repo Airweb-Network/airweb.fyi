@@ -1,0 +1,34 @@
+{
+  "ssh": {
+    "host": "0.0.0.0",
+    "port": 2222,
+    "hostKeyPath": "./keys/host_rsa"
+  },
+  "http": {
+    "host": "0.0.0.0",
+    "port": 8080,
+    "publicDomain": "airweb.fyi",
+    "publicScheme": "https"
+  },
+  "limits": {
+    "reservedPorts": [22, 2222, 8080],
+    "tcpPortRange": [10000, 20000],
+    "reservedSubdomains": ["www", "api", "admin", "dashboard", "app", "docs", "blog", "status", "mail", "smtp", "imap", "pop", "ftp", "ssh"]
+  },
+  "credits": {
+    "signupBonus": 100,
+    "uptimePerMinute": 1,
+    "defaultLeasePricePerMinute": 2,
+    "handleBaseCost": 50,
+    "handleMinLength": 3,
+    "handleMaxLength": 32
+  },
+  "sessions": {
+    "cookieName": "airweb_sid",
+    "ttlDays": 30
+  },
+  "data": {
+    "dir": "./data",
+    "dbFile": "airweb.sqlite"
+  }
+}

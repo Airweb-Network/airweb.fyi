@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>AirWeb · Dashboard</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="robots" content="noindex" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%233a6ed1'/%3E%3Ctext x='50%25' y='58%25' font-family='system-ui' font-size='38' text-anchor='middle' fill='white' font-weight='700'%3EA%3C/text%3E%3C/svg%3E" />
+<style>
+  :root { color-scheme: dark; --bg:#0f1115; --panel:#161a25; --line:#232734; --fg:#e7eaf0; --mute:#8a93a6; --accent:#9fcaff; --accent2:#3a6ed1; --good:#3acf6d; --warn:#e6b15a; --bad:#e36b6b; --code:#0b0d12; }
+  * { box-sizing:border-box; }
+  html,body { margin:0; padding:0; background:var(--bg); color:var(--fg); font:14px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  a { color:var(--accent); text-decoration:none; }
+  a:hover { text-decoration:underline; }
+  header.bar { display:flex; align-items:center; gap:1rem; padding:.9rem 1.4rem; border-bottom:1px solid var(--line); }
+  header.bar .logo { width:28px; height:28px; border-radius:7px; background:var(--accent2); display:grid; place-items:center; font-weight:800; color:white; }
+  header.bar nav { margin-left:auto; display:flex; gap:1rem; font-size:.85rem; color:var(--mute); }
+  header.bar nav a { color:var(--mute); }
+  main { max-width: 1100px; margin: 0 auto; padding: 1.6rem 1.4rem 4rem; }
+  h1 { font-size:1.4rem; margin: .2rem 0 1.2rem; }
+  h2 { font-size:1rem; margin: 0 0 .8rem; color:var(--fg); letter-spacing:.02em; text-transform:uppercase; font-weight:700; color:var(--mute); }
+  .grid { display:grid; gap:1rem; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); margin-bottom:1.4rem; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:1.2rem 1.3rem; }
+  .stat { display:flex; flex-direction:column; gap:.2rem; }
+  .stat .v { font-size:1.8rem; font-weight:700; line-height:1; }
+  .stat .l { color:var(--mute); font-size:.8rem; text-transform:uppercase; letter-spacing:.04em; }
+  .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size:.85rem; word-break: break-all; }
+  .pill { display:inline-block; padding:2px 8px; border-radius:999px; font-size:.7rem; border:1px solid var(--line); color:var(--mute); background:rgba(255,255,255,.03); }
+  .pill.good { color:var(--good); border-color:#1f4d2f; background:#0f1f17; }
+  .pill.warn { color:var(--warn); border-color:#5a4528; background:#211a10; }
+  .pill.bad  { color:var(--bad);  border-color:#5a2828; background:#211010; }
+  button, .btn { background:var(--accent2); color:white; border:none; padding:.55rem 1rem; border-radius:7px; font-size:.85rem; cursor:pointer; font-weight:600; }
+  button:hover { filter:brightness(1.1); }
+  button.ghost { background:transparent; border:1px solid var(--line); color:var(--fg); }
+  button.danger { background:#3a1717; color:#ffb3b3; border:1px solid #5a2828; }
+  input, textarea { background:var(--code); border:1px solid var(--line); color:var(--fg); border-radius:7px; padding:.5rem .7rem; font: inherit; width:100%; }
+  textarea { font-family: ui-monospace, Menlo, monospace; font-size:.8rem; min-height:100px; }
+  label { display:block; font-size:.8rem; color:var(--mute); margin-bottom:.25rem; }
+  table { width:100%; border-collapse:collapse; font-size:.85rem; }
+  th, td { text-align:left; padding:.55rem .6rem; border-bottom:1px solid var(--line); }
+  th { color:var(--mute); font-weight:600; font-size:.75rem; text-transform:uppercase; letter-spacing:.04em; }
+  td.mono { word-break:break-all; }
+  .row { display:flex; gap:.6rem; align-items:center; }
+  .row > * { flex:1; }
+  .right { text-align:right; }
+  pre { background:var(--code); border:1px solid var(--line); border-radius:7px; padding:.7rem .9rem; overflow:auto; font-family: ui-monospace, Menlo, monospace; font-size:.8rem; color:#d8e0ee; }
+  .modal-bg { position:fixed; inset:0; background:rgba(0,0,0,.7); display:none; align-items:center; justify-content:center; padding:1rem; z-index:50; }
+  .modal-bg.open { display:flex; }
+  .modal { background:var(--panel); border:1px solid var(--line); border-radius:14px; max-width:640px; width:100%; padding:1.6rem 1.8rem; max-height: 90vh; overflow:auto; }
+  .modal h2 { color:var(--fg); font-size:1.15rem; text-transform:none; letter-spacing:0; }
+  .empty { color:var(--mute); padding:1rem 0; font-size:.85rem; }
+  .hide { display:none !important; }
+  .reason { color:var(--mute); }
+  .delta-pos { color:var(--good); }
+  .delta-neg { color:var(--bad); }
+
+  /* Tabs */
+  .tabs { display:flex; gap:.3rem; border-bottom:1px solid var(--line); margin:0 0 1.4rem; }
+  .tabs button { background:transparent; color:var(--mute); border:none; border-bottom:2px solid transparent; border-radius:0; padding:.7rem 1.1rem; font-weight:600; font-size:.9rem; cursor:pointer; }
+  .tabs button:hover { color:var(--fg); }
+  .tabs button.active { color:var(--fg); border-bottom-color:var(--accent2); }
+  .tabs button.admin-only { color:var(--accent); }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <span class="logo">A</span>
+  <strong>AirWeb</strong>
+  <nav>
+    <a href="/">Home</a>
+    <a href="#marketplace">Marketplace</a>
+    <a href="#handles">Handles</a>
+    <a href="#" id="logoutBtn">Sign out</a>
+  </nav>
+</header>
+
+<main>
+
+<!-- ============================================================ -->
+<!-- Unauthenticated state                                         -->
+<!-- ============================================================ -->
+<section id="guestState" class="hide">
+  <div class="card" style="text-align:center; padding:2.4rem">
+    <h1 style="font-size:1.7rem; margin-bottom:.6rem">Get started in 10 seconds</h1>
+    <p style="color:var(--mute); max-width:520px; margin:0 auto 1.6rem">
+      We'll generate an Ed25519 SSH key in your browser, hand you the private key file once, and derive your wallet-style address from it. You'll receive a <strong id="bonusVal">100</strong> credit signup bonus.
+    </p>
+    <button id="registerBtn" style="font-size:1rem; padding:.8rem 1.6rem">Generate key &amp; sign up →</button>
+    <p style="margin-top:1.2rem; color:var(--mute); font-size:.85rem">
+      Already have a key file? <a href="/login">Restore session</a>.
+    </p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- Authenticated state                                           -->
+<!-- ============================================================ -->
+<section id="authState" class="hide">
+
+  <h1>Dashboard</h1>
+
+  <div class="tabs" id="tabBar">
+    <button data-tab="user" class="active">My account</button>
+    <button data-tab="admin" id="adminTabBtn" class="admin-only hide">Admin</button>
+  </div>
+
+  <!-- ============ User tab ============ -->
+  <div id="tabUser">
+
+  <div class="grid">
+    <div class="card stat"><span class="l">Balance</span><span class="v"><span id="creditsVal">…</span> <small style="font-size:.65em;color:var(--mute);font-weight:500">credits</small></span><span class="reason" style="font-size:.8rem;margin-top:.2rem" id="creditsUsd">…</span></div>
+    <div class="card stat"><span class="l">Address</span><span class="mono" id="addrVal" style="font-size:.9rem; margin-top:.4rem">…</span></div>
+    <div class="card stat"><span class="l">Online tunnels</span><span class="v" id="tunnelsCount">0</span></div>
+    <div class="card stat"><span class="l">Active leases</span><span class="v" id="leasesCount">0</span></div>
+  </div>
+
+  <div class="card" style="margin-bottom:1.4rem">
+    <h2>Online tunnels (earning <span id="uptimeRate">1.00</span> cr/min each — <span id="uptimeUsd">$0.01</span>/min)</h2>
+    <div id="tunnelsList"></div>
+    <details style="margin-top:1rem">
+      <summary style="cursor:pointer; color:var(--mute); font-size:.85rem">How do I bring a tunnel online?</summary>
+      <pre id="sshExample">ssh -i ./airweb_key -p 2222 -R 80:localhost:3000 mysub@airweb.fyi</pre>
+    </details>
+  </div>
+
+  <div class="grid">
+    <!-- Marketplace -->
+    <div class="card" id="marketplace">
+      <h2>Marketplace · lease a tunnel</h2>
+      <div id="marketList"></div>
+    </div>
+
+    <!-- My listings -->
+    <div class="card">
+      <h2>My listings · earn from your tunnels</h2>
+      <div class="row" style="margin-bottom:.6rem">
+        <input id="listingTitle" placeholder="Title (e.g. 'Beefy home server')" />
+      </div>
+      <div class="row" style="margin-bottom:.6rem">
+        <input id="listingDesc" placeholder="Description (optional)" />
+        <input id="listingPrice" type="number" min="1" placeholder="credits / min" style="max-width:130px" />
+      </div>
+      <button id="createListingBtn">List for lease</button>
+      <div id="myListings" style="margin-top:1rem"></div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <!-- Handles -->
+    <div class="card" id="handles">
+      <h2>Handles · reserve a permanent subdomain</h2>
+      <p style="color:var(--mute); font-size:.85rem">
+        A handle like <code class="mono">myname.<span id="handleDomain">airweb.fyi</span></code> only you can publish under. Perfect for remote-accessing your home machine. Cost: <strong id="handleCostVal">50.00</strong> credits (<span id="handleCostUsd">$0.50</span>).
+      </p>
+      <div class="row" style="margin-bottom:.6rem">
+        <input id="handleInput" placeholder="myname" maxlength="32" />
+        <button id="buyHandleBtn" style="max-width:140px">Claim handle</button>
+      </div>
+      <div id="myHandles"></div>
+    </div>
+
+    <!-- Recent activity -->
+    <div class="card">
+      <h2>Recent credit activity</h2>
+      <table id="ledgerTable"><tbody></tbody></table>
+    </div>
+  </div>
+
+  </div><!-- /#tabUser -->
+
+  <!-- ============ Admin tab ============ -->
+  <div id="tabAdmin" class="hide">
+    <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.8rem">
+      <h2 style="margin:0">Admin <span class="pill good">role</span></h2>
+      <button class="ghost" id="adminRefreshBtn" style="margin-left:auto;max-width:120px">Refresh</button>
+    </div>
+
+    <div class="card" style="margin-bottom:1.4rem">
+      <h2>All live tunnels</h2>
+      <div id="adminTunnels"></div>
+    </div>
+
+    <div class="card">
+      <h2>All accounts</h2>
+      <div id="adminAccounts"></div>
+    </div>
+  </div><!-- /#tabAdmin -->
+
+</section>
+
+</main>
+
+<!-- ============================================================ -->
+<!-- Registration result modal — shown once after /api/register    -->
+<!-- ============================================================ -->
+<div class="modal-bg" id="keyModal">
+  <div class="modal">
+    <h2>⚠ Save your private key — you'll only see it once</h2>
+    <p style="color:var(--mute)">This key is your account. If you lose it, you lose access. We don't store it server-side.</p>
+    <p><strong>Address:</strong> <span class="mono" id="newAddr"></span></p>
+    <p><strong>Save the file:</strong></p>
+    <textarea id="privKeyText" readonly></textarea>
+    <div class="row" style="margin-top:.8rem">
+      <button id="downloadKeyBtn">Download airweb_key</button>
+      <button class="ghost" id="copyKeyBtn">Copy</button>
+    </div>
+    <p style="margin-top:1rem; color:var(--mute); font-size:.85rem">
+      <strong>Linux/macOS:</strong> after downloading, run <code class="mono">chmod 600 ./airweb_key</code>.
+    </p>
+    <p><strong>Then connect:</strong></p>
+    <pre id="firstSshCmd"></pre>
+    <div style="text-align:right; margin-top:1rem">
+      <button id="dismissModalBtn">I've saved it — continue</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+let CONFIG = null;
+let ME = null;
+
+// Placeholder peg — each credit is worth $0.01 USD.
+const USD_PER_CREDIT_DEFAULT = 0.01;
+function usdRate() { return (CONFIG && typeof CONFIG.usdPerCredit === 'number') ? CONFIG.usdPerCredit : USD_PER_CREDIT_DEFAULT; }
+function fmtCredits(n) { return (Number(n) || 0).toFixed(2); }
+function fmtUsd(n)     { return '$' + ((Number(n) || 0) * usdRate()).toFixed(2); }
+function fmtBoth(n)    { return `${fmtCredits(n)} cr (${fmtUsd(n)})`; }
+
+async function api(path, opts = {}) {
+  const r = await fetch(path, { credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, ...opts });
+  if (!r.ok) {
+    const body = await r.json().catch(() => ({}));
+    const e = new Error(body.error || ('HTTP ' + r.status));
+    e.status = r.status; e.body = body;
+    throw e;
+  }
+  return r.json();
+}
+
+async function loadConfig() {
+  CONFIG = await api('/api/config');
+  $('bonusVal').textContent = CONFIG.signupBonus;
+  $('uptimeRate').textContent = fmtCredits(CONFIG.uptimePerMinute);
+  $('uptimeUsd').textContent = fmtUsd(CONFIG.uptimePerMinute);
+  $('handleCostVal').textContent = fmtCredits(CONFIG.handleBaseCost);
+  $('handleCostUsd').textContent = fmtUsd(CONFIG.handleBaseCost);
+  $('handleDomain').textContent = CONFIG.publicDomain;
+  $('listingPrice').placeholder = `${fmtCredits(CONFIG.defaultLeasePricePerMinute)} cr/min`;
+}
+
+async function tryLoadMe() {
+  try {
+    ME = await api('/api/me');
+    renderAuthed();
+  } catch (e) {
+    if (e.status === 401) renderGuest();
+    else console.error(e);
+  }
+}
+
+function renderGuest() {
+  $('guestState').classList.remove('hide');
+  $('authState').classList.add('hide');
+}
+
+function renderAuthed() {
+  $('guestState').classList.add('hide');
+  $('authState').classList.remove('hide');
+  $('addrVal').textContent = ME.address;
+  $('creditsVal').textContent = fmtCredits(ME.credits);
+  $('creditsUsd').textContent = fmtUsd(ME.credits);
+  $('tunnelsCount').textContent = ME.onlineTunnels.length;
+  $('leasesCount').textContent = ME.activeLeases.length;
+  $('sshExample').textContent = `ssh -i ./airweb_key -p ${CONFIG.sshPort} -R 80:localhost:3000 mysub@${CONFIG.publicDomain}`;
+  renderTunnels();
+  renderMyListings();
+  renderMyHandles();
+  renderLedger();
+  refreshMarketplace();
+  renderAdmin();
+}
+
+function renderAdmin() {
+  const tabBtn = $('adminTabBtn');
+  if (!ME.isAdmin) {
+    tabBtn.classList.add('hide');
+    // If we were on the admin tab and lost the role, fall back.
+    if (document.querySelector('#tabBar button.active')?.dataset.tab === 'admin') switchTab('user');
+    return;
+  }
+  tabBtn.classList.remove('hide');
+  refreshAdmin().catch(e => console.error('admin refresh:', e));
+}
+
+function switchTab(name) {
+  document.querySelectorAll('#tabBar button').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+  $('tabUser').classList.toggle('hide', name !== 'user');
+  $('tabAdmin').classList.toggle('hide', name !== 'admin');
+}
+document.querySelectorAll('#tabBar button').forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
+
+async function refreshAdmin() {
+  const data = await api('/api/admin/overview');
+  // Tunnels
+  const tEl = $('adminTunnels');
+  if (!data.tunnels.length) {
+    tEl.innerHTML = '<div class="empty">No live tunnels.</div>';
+  } else {
+    tEl.innerHTML = '<table><thead><tr><th>ID</th><th>Type</th><th>Public URL</th><th>Owner</th><th class="right">Started</th><th></th></tr></thead><tbody>' +
+      data.tunnels.map(t => `<tr>
+        <td class="mono">${t.id}</td>
+        <td><span class="pill good">${esc(t.type)}</span></td>
+        <td class="mono">${esc(t.publicUrl || '')}</td>
+        <td class="mono reason" style="font-size:.75rem">${esc(t.ownerAddress || '—')}</td>
+        <td class="right reason">${timeAgo(t.createdAt)}</td>
+        <td class="right"><button class="ghost" data-disc="${t.id}">Disconnect</button></td>
+      </tr>`).join('') + '</tbody></table>';
+    tEl.querySelectorAll('[data-disc]').forEach(b => b.onclick = async () => {
+      if (!confirm('Disconnect tunnel ' + b.dataset.disc + '?')) return;
+      await api('/api/admin/tunnels/' + b.dataset.disc + '/disconnect', { method: 'POST' });
+      await refreshAdmin();
+    });
+  }
+  // Accounts
+  const aEl = $('adminAccounts');
+  if (!data.accounts.length) {
+    aEl.innerHTML = '<div class="empty">No accounts.</div>';
+  } else {
+    aEl.innerHTML = '<table><thead><tr><th>Address</th><th class="right">Credits</th><th>Role</th><th class="right">Created</th><th></th></tr></thead><tbody>' +
+      data.accounts.map(a => `<tr>
+        <td class="mono" style="font-size:.75rem">${esc(a.address)}</td>
+        <td class="right mono">${fmtCredits(a.credits)}<br><span class="reason" style="font-size:.7rem">${fmtUsd(a.credits)}</span></td>
+        <td>${a.is_admin ? '<span class="pill good">admin</span>' : '<span class="reason">user</span>'}</td>
+        <td class="right reason">${timeAgo(a.created_at)}</td>
+        <td class="right">
+          ${a.address === ME.address
+            ? '<span class="reason">you</span>'
+            : `<button class="ghost" data-role="${a.address}" data-make="${a.is_admin ? '0' : '1'}">${a.is_admin ? 'Demote' : 'Promote'}</button>`}
+        </td>
+      </tr>`).join('') + '</tbody></table>';
+    aEl.querySelectorAll('[data-role]').forEach(b => b.onclick = async () => {
+      const isAdmin = b.dataset.make === '1';
+      try {
+        await api('/api/admin/accounts/' + b.dataset.role + '/role', { method: 'POST', body: JSON.stringify({ isAdmin }) });
+        await refreshAdmin();
+      } catch (e) { alert('Could not update role: ' + (e.body && e.body.error || e.message)); }
+    });
+  }
+}
+
+function renderTunnels() {
+  const el = $('tunnelsList');
+  if (!ME.onlineTunnels.length) {
+    el.innerHTML = '<div class="empty">No active tunnels right now. Run the SSH command below to bring one online.</div>';
+    return;
+  }
+  el.innerHTML = '<table><thead><tr><th>Public URL</th><th>Type</th><th>Bytes</th><th class="right">Started</th></tr></thead><tbody>' +
+    ME.onlineTunnels.map(t => `<tr>
+      <td class="mono"><a href="${esc(t.publicUrl)}" target="_blank" rel="noopener">${esc(t.publicUrl)}</a></td>
+      <td><span class="pill good">${esc(t.type)}</span></td>
+      <td class="mono">${humanBytes((t.metrics && t.metrics.bytesIn || 0) + (t.metrics && t.metrics.bytesOut || 0))}</td>
+      <td class="right reason">${timeAgo(t.createdAt)}</td>
+    </tr>`).join('') + '</tbody></table>';
+}
+
+function renderMyListings() {
+  const el = $('myListings');
+  if (!ME.listings.length) { el.innerHTML = '<div class="empty">You haven\u2019t listed anything yet.</div>'; return; }
+  el.innerHTML = '<table><tbody>' + ME.listings.map(l => `<tr>
+    <td><strong>${esc(l.title)}</strong><br><span class="reason">${esc(l.description || '')}</span></td>
+    <td class="right">${fmtCredits(l.price_per_minute)} cr/min<br><span class="reason" style="font-size:.75rem">${fmtUsd(l.price_per_minute)}/min</span></td>
+    <td class="right"><button class="ghost" data-rm-listing="${l.id}">Remove</button></td>
+  </tr>`).join('') + '</tbody></table>';
+  el.querySelectorAll('[data-rm-listing]').forEach(b => b.onclick = async () => {
+    await api('/api/listings/' + b.dataset.rmListing, { method: 'DELETE' });
+    await refresh();
+  });
+}
+
+function renderMyHandles() {
+  const el = $('myHandles');
+  if (!ME.handles.length) { el.innerHTML = '<div class="empty">No handles claimed yet.</div>'; return; }
+  el.innerHTML = '<table><tbody>' + ME.handles.map(h => `<tr>
+    <td class="mono"><strong>${esc(h.handle)}.${esc(CONFIG.publicDomain)}</strong></td>
+    <td class="right reason">claimed ${timeAgo(h.acquired_at)}</td>
+  </tr>`).join('') + '</tbody></table>';
+}
+
+function renderLedger() {
+  const tb = $('ledgerTable').querySelector('tbody');
+  if (!ME.recentLedger.length) { tb.innerHTML = '<tr><td class="empty" colspan="3">No activity yet.</td></tr>'; return; }
+  tb.innerHTML = ME.recentLedger.map(l => `<tr>
+    <td class="reason">${esc(l.reason.replace(/_/g, ' '))}</td>
+    <td class="mono reason">${l.ref ? esc(l.ref) : ''}</td>
+    <td class="right ${l.delta >= 0 ? 'delta-pos' : 'delta-neg'}">${l.delta >= 0 ? '+' : '−'}${fmtCredits(Math.abs(l.delta))}<br><span class="reason" style="font-size:.7rem">${fmtUsd(Math.abs(l.delta))}</span></td>
+  </tr>`).join('');
+}
+
+async function refreshMarketplace() {
+  const { items } = await api('/api/listings');
+  const el = $('marketList');
+  if (!items.length) { el.innerHTML = '<div class="empty">No active listings.</div>'; return; }
+  el.innerHTML = '<table><tbody>' + items.map(it => `<tr>
+    <td>
+      <strong>${esc(it.title)}</strong>
+      ${it.ownerOnline ? '<span class="pill good">online</span>' : '<span class="pill warn">offline</span>'}
+      <br><span class="reason">${esc(it.description || '')}</span>
+      <br><span class="mono reason" style="font-size:.7rem">by ${esc(it.owner)}</span>
+    </td>
+    <td class="right">${fmtCredits(it.pricePerMinute)} cr/min<br><span class="reason" style="font-size:.75rem">${fmtUsd(it.pricePerMinute)}/min</span></td>
+    <td class="right">
+      ${it.owner === ME.address
+        ? '<span class="reason">your listing</span>'
+        : `<button data-lease="${it.id}">Lease</button>`}
+    </td>
+  </tr>`).join('') + '</tbody></table>';
+  el.querySelectorAll('[data-lease]').forEach(b => b.onclick = async () => {
+    try {
+      await api('/api/listings/' + b.dataset.lease + '/lease', { method: 'POST' });
+      await refresh();
+    } catch (e) { alert('Could not lease: ' + (e.body && e.body.error || e.message)); }
+  });
+}
+
+async function refresh() {
+  ME = await api('/api/me');
+  renderAuthed();
+}
+
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
+function humanBytes(n) { if (n < 1024) return n + ' B'; if (n < 1048576) return (n/1024).toFixed(1)+' KB'; if (n < 1073741824) return (n/1048576).toFixed(1)+' MB'; return (n/1073741824).toFixed(2)+' GB'; }
+function timeAgo(ts) { const s = Math.floor((Date.now() - ts)/1000); if (s < 60) return s+'s ago'; if (s<3600) return Math.floor(s/60)+'m ago'; if (s<86400) return Math.floor(s/3600)+'h ago'; return Math.floor(s/86400)+'d ago'; }
+
+// ---- event handlers ----
+$('registerBtn').onclick = async () => {
+  $('registerBtn').disabled = true;
+  $('registerBtn').textContent = 'Generating…';
+  try {
+    const r = await api('/api/register', { method: 'POST' });
+    showKeyModal(r);
+    await tryLoadMe();
+  } catch (e) {
+    alert('Registration failed: ' + e.message);
+    $('registerBtn').disabled = false;
+    $('registerBtn').textContent = 'Generate key & sign up →';
+  }
+};
+
+function showKeyModal(r) {
+  $('newAddr').textContent = r.address;
+  $('privKeyText').value = r.privateKey;
+  $('firstSshCmd').textContent = `ssh -i ./airweb_key -p ${r.sshPort} -R 80:localhost:3000 mysub@${r.sshHost}`;
+  $('keyModal').classList.add('open');
+  $('downloadKeyBtn').onclick = () => {
+    const blob = new Blob([r.privateKey], { type: 'text/plain' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = r.saveAs || 'airweb_key';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  };
+  $('copyKeyBtn').onclick = async () => {
+    await navigator.clipboard.writeText(r.privateKey);
+    $('copyKeyBtn').textContent = 'copied!';
+    setTimeout(() => $('copyKeyBtn').textContent = 'Copy', 1500);
+  };
+}
+$('dismissModalBtn').onclick = () => $('keyModal').classList.remove('open');
+
+$('createListingBtn').onclick = async () => {
+  const title = $('listingTitle').value.trim();
+  const description = $('listingDesc').value.trim();
+  const pricePerMinute = parseInt($('listingPrice').value, 10) || CONFIG.defaultLeasePricePerMinute;
+  if (!title) return alert('Please enter a title.');
+  try {
+    await api('/api/listings', { method: 'POST', body: JSON.stringify({ title, description, pricePerMinute }) });
+    $('listingTitle').value = ''; $('listingDesc').value = ''; $('listingPrice').value = '';
+    await refresh();
+  } catch (e) { alert('Could not create listing: ' + (e.body && e.body.error || e.message)); }
+};
+
+$('buyHandleBtn').onclick = async () => {
+  const handle = $('handleInput').value.trim().toLowerCase();
+  if (!handle) return alert('Pick a handle name.');
+  try {
+    await api('/api/handles', { method: 'POST', body: JSON.stringify({ handle }) });
+    $('handleInput').value = '';
+    await refresh();
+  } catch (e) { alert('Could not claim handle: ' + (e.body && e.body.error || e.message)); }
+};
+
+$('logoutBtn').onclick = async (e) => {
+  e.preventDefault();
+  await api('/api/logout', { method: 'POST' });
+  location.reload();
+};
+
+$('adminRefreshBtn').onclick = () => refreshAdmin().catch(e => alert('Refresh failed: ' + e.message));
+
+// Auto-refresh every 15s when authed
+setInterval(() => { if (ME) refresh().catch(() => {}); }, 15000);
+
+(async () => { await loadConfig(); await tryLoadMe(); })();
+</script>
+</body></html>

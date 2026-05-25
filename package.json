@@ -1,0 +1,21 @@
+{
+  "name": "airweb",
+  "version": "0.1.0",
+  "description": "Self-hosted reverse SSH tunneling service. Expose a local server to the public via a remote VPS — no router/NAT configuration required.",
+  "private": true,
+  "type": "commonjs",
+  "bin": {
+    "airweb": "./client/airweb.js"
+  },
+  "scripts": {
+    "start": "node server/index.js",
+    "client": "node client/airweb.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.10.0",
+    "ssh2": "^1.15.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

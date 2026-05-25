@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>AirWeb · Sign in</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="robots" content="noindex" />
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing:border-box; }
+  body { margin:0; min-height:100vh; display:grid; place-items:center; padding:1.4rem;
+         background: radial-gradient(1000px 500px at 50% -10%, #1a2240 0%, #0f1115 60%) fixed;
+         color:#e7eaf0; font: 14px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  a { color:#9fcaff; }
+  .card { background:#161a25; border:1px solid #232734; border-radius:14px; padding:2rem 2.2rem; max-width:560px; width:100%; box-shadow: 0 10px 40px rgba(0,0,0,.3); }
+  h1 { margin:0 0 .4rem; font-size:1.3rem; }
+  p.lead { color:#8a93a6; margin:0 0 1.4rem; }
+  label { display:block; font-size:.8rem; color:#8a93a6; margin: 1rem 0 .3rem; }
+  textarea, input { background:#0b0d12; border:1px solid #232734; color:#e7eaf0; border-radius:7px; padding:.6rem .8rem; font: inherit; width:100%; }
+  textarea { font-family: ui-monospace, Menlo, monospace; font-size:.78rem; min-height:200px; resize:vertical; }
+  button { background:#3a6ed1; color:white; border:none; padding:.7rem 1.2rem; border-radius:7px; font-weight:600; cursor:pointer; font-size:.95rem; }
+  .row { display:flex; gap:.6rem; align-items:center; margin-top:1rem; }
+  .right { margin-left:auto; }
+  .err { color:#e36b6b; margin-top:.8rem; font-size:.85rem; }
+  .reason { color:#8a93a6; font-size:.85rem; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>Sign in with your AirWeb key</h1>
+  <p class="lead">Paste your <code>airweb_key</code> file (the OpenSSH private key you downloaded at registration). We re-derive your address from it locally on the server and start a session — the key is not stored.</p>
+
+  <label for="keyText">Private key (OpenSSH format)</label>
+  <textarea id="keyText" placeholder="-----BEGIN OPENSSH PRIVATE KEY-----&#10;…&#10;-----END OPENSSH PRIVATE KEY-----"></textarea>
+
+  <label for="keyFile" style="margin-top:.6rem">…or upload it</label>
+  <input id="keyFile" type="file" accept=".key,.pem,.txt,.,*" />
+
+  <label for="passphrase">Passphrase (if your key has one)</label>
+  <input id="passphrase" type="password" autocomplete="off" />
+
+  <div class="err" id="err"></div>
+
+  <div class="row">
+    <span class="reason">Don't have a key? <a href="/dashboard">Register here</a>.</span>
+    <button class="right" id="loginBtn">Sign in</button>
+  </div>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+
+$('keyFile').onchange = async () => {
+  const f = $('keyFile').files[0];
+  if (!f) return;
+  $('keyText').value = await f.text();
+};
+
+$('loginBtn').onclick = async () => {
+  $('err').textContent = '';
+  const pk = $('keyText').value.trim();
+  if (!pk) { $('err').textContent = 'Paste or upload your private key.'; return; }
+  $('loginBtn').disabled = true; $('loginBtn').textContent = 'Signing in…';
+  try {
+    const r = await fetch('/api/login', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ privateKey: pk, passphrase: $('passphrase').value })
+    });
+    const body = await r.json().catch(() => ({}));
+    if (!r.ok) { $('err').textContent = errorText(body.error, body); return; }
+    location.href = '/dashboard';
+  } catch (e) {
+    $('err').textContent = 'Sign in failed: ' + e.message;
+  } finally {
+    $('loginBtn').disabled = false; $('loginBtn').textContent = 'Sign in';
+  }
+};
+
+function errorText(code, body) {
+  if (code === 'invalid_private_key') return 'That doesn\u2019t look like a valid OpenSSH private key.';
+  if (code === 'account_not_found') return 'No AirWeb account exists for that key (address ' + (body.address || '?') + '). If this is a new key, register first.';
+  return code || 'Sign in failed.';
+}
+</script>
+</body></html>
