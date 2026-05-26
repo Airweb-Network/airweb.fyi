@@ -6,10 +6,10 @@
   },
   "http": {
     "host": "0.0.0.0",
-    "port": 8080
+    "port": 80
   },
   "limits": {
-    "reservedPorts": [22, 2222, 8080, 8090, 8091],
+    "reservedPorts": [22, 80, 2222, 8080, 8090, 8091],
     "tcpPortRange": [10000, 20000],
     "reservedSubdomains": ["www", "api", "admin", "dashboard", "app", "docs", "doc", "forum", "blog", "status", "mail", "smtp", "imap", "pop", "ftp", "ssh"],
     "allowCustomSubdomains": false

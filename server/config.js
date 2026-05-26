@@ -48,27 +48,51 @@ loadDotEnv(path.join(root, '.env'));
 
 const config = deepMerge(defaults, user);
 
-// --- Environment-driven HTTP domain/scheme ---------------------------------
+// --- Environment-driven HTTP base URL ------------------------------------
 // Precedence (highest first):
-//   1. AIRWEB_PUBLIC_DOMAIN / AIRWEB_PUBLIC_SCHEME (env or .env)
+//   1. AIRWEB_PUBLIC_DOMAIN (env or .env) — a full base URL with scheme,
+//      e.g. "http://lvh.me" (dev) or "https://airweb.fyi" (prod). This is
+//      the canonical base for all generated links (subdomains map to
+//      tunnels at "<scheme>://<sub>.<host>").
 //   2. http.publicDomain / http.publicScheme in config.json
-//   3. Local dev defaults: lvh.me:<port> + http
+//   3. Local dev default: http://lvh.me
 //      (lvh.me resolves *.lvh.me to 127.0.0.1, so subdomain tunnels work
-//      without /etc/hosts edits). For production, set AIRWEB_PUBLIC_DOMAIN
-//      and AIRWEB_PUBLIC_SCHEME in the server's environment.
+//      without /etc/hosts edits).
+//
+// For backwards compatibility, a bare host (no scheme) is still accepted;
+// in that case the scheme is auto-derived (http for local hostnames,
+// https otherwise).
 config.http = config.http || {};
 
-if (process.env.AIRWEB_PUBLIC_DOMAIN) {
-  config.http.publicDomain = process.env.AIRWEB_PUBLIC_DOMAIN;
-} else if (!config.http.publicDomain) {
-  config.http.publicDomain = `lvh.me:${config.http.port || 8080}`;
+function parsePublicBase(raw) {
+  const s = String(raw).trim();
+  const m = s.match(/^(https?):\/\/([^/]+)\/?$/i);
+  if (m) return { scheme: m[1].toLowerCase(), host: m[2] };
+  return { scheme: null, host: s.replace(/\/+$/, '') };
 }
 
-if (process.env.AIRWEB_PUBLIC_SCHEME) {
-  config.http.publicScheme = process.env.AIRWEB_PUBLIC_SCHEME;
-} else if (!config.http.publicScheme) {
-  config.http.publicScheme = 'http';
+function defaultScheme(host) {
+  const h = String(host).split(':')[0].toLowerCase();
+  const isLocal = h === 'lvh.me' || h.endsWith('.lvh.me')
+    || h === 'localhost' || h.endsWith('.localhost')
+    || h === '127.0.0.1' || h === '::1';
+  return isLocal ? 'http' : 'https';
 }
+
+if (process.env.AIRWEB_PUBLIC_DOMAIN) {
+  const { scheme, host } = parsePublicBase(process.env.AIRWEB_PUBLIC_DOMAIN);
+  config.http.publicDomain = host;
+  if (scheme) config.http.publicScheme = scheme;
+} else if (!config.http.publicDomain) {
+  config.http.publicDomain = 'lvh.me';
+}
+
+if (!config.http.publicScheme) {
+  config.http.publicScheme = defaultScheme(config.http.publicDomain);
+}
+
+// Canonical base URL for link generation (e.g. "https://airweb.fyi").
+config.http.publicBaseUrl = `${config.http.publicScheme}://${config.http.publicDomain}`;
 
 // Resolve paths relative to project root
 if (config.ssh && config.ssh.hostKeyPath) {

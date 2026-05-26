@@ -64,23 +64,25 @@ sudo npm --prefix /opt/airweb install
 
 ### 3. Config
 
-The public domain and scheme are read from environment variables (or a `.env`
-file in the project root). Copy `.env.example` to `.env`:
+The public base URL is read from an environment variable (or a `.env` file
+in the project root) and is used as the base for all generated links
+(subdomain tunnels become `<scheme>://<sub>.<host>`). Include the scheme.
+Copy `.env.example` to `.env`:
 
 ```bash
 cp .env.example .env
 ```
 
-Production `.env`:
+Production `.env` (links → `https://airweb.fyi`):
 ```
-AIRWEB_PUBLIC_DOMAIN=airweb.fyi
-AIRWEB_PUBLIC_SCHEME=https
+AIRWEB_PUBLIC_DOMAIN=https://airweb.fyi
 ```
 
-Local development uses `lvh.me` (which resolves `*.lvh.me` to `127.0.0.1`):
+Local development uses `lvh.me` on port 80 — links → `http://lvh.me` (and
+`lvh.me` resolves `*.lvh.me` to `127.0.0.1` so subdomain tunnels work
+without `/etc/hosts` edits):
 ```
-AIRWEB_PUBLIC_DOMAIN=lvh.me:8080
-AIRWEB_PUBLIC_SCHEME=http
+AIRWEB_PUBLIC_DOMAIN=http://lvh.me
 ```
 
 Anything else (ports, credit rates, etc.) can still be overridden by creating

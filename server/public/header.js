@@ -78,6 +78,7 @@
       '<a href="', API_BASE, '/marketplace" id="navMarketplace" class="navlink" style="margin-left:.5rem">Marketplace</a>',
       '<a href="', API_BASE, '/connections" id="navConnections" class="navlink" style="margin-left:.5rem">Connections</a>',
       '<nav>',
+        '<a id="navLogin" class="navlink hide" href="', API_BASE, '/login" style="margin-right:.5rem">Login</a>',
         '<span id="settingsMenu" class="settings-menu" style="margin-right:.5rem">',
           '<button type="button" id="settingsBtn" class="ghost settings-trigger" title="Settings" aria-label="Settings" aria-haspopup="menu" aria-expanded="false">',
             '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',
@@ -326,10 +327,17 @@
     var settings = document.getElementById('settingsMenu');
     var userMenu = document.getElementById('userMenu');
     var navBal   = document.getElementById('navBalance');
+    var navLogin = document.getElementById('navLogin');
     var signedIn = !!(me && me.address);
     if (settings) settings.classList.toggle('hide', signedIn);
     if (userMenu) userMenu.classList.toggle('hide', !signedIn);
     if (navBal)   navBal.classList.toggle('hide', !signedIn);
+    if (navLogin) {
+      // Show "Login" beside the gear for anonymous visitors, but suppress
+      // it on the login page itself to avoid a self-referential link.
+      var onLoginPage = /^\/login\/?$/.test(location.pathname || '');
+      navLogin.classList.toggle('hide', signedIn || onLoginPage);
+    }
     if (!signedIn) return;
     var addr = String(me.address || '');
     var body = addr.indexOf('aw_') === 0 ? addr.slice(3) : addr;

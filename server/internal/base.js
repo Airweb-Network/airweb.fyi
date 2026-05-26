@@ -149,7 +149,7 @@ function withDevPort(url) {
     const u = new URL(url);
     if (u.port) return url;
     // Only append a port in dev mode, which we detect by the public domain
-    // itself carrying an explicit port (e.g. lvh.me:8080). In production the
+    // itself carrying an explicit port (e.g. lvh.me:8080 or :3000). In production the
     // public domain has no port and the reverse proxy / default 80|443 takes
     // over — we must not leak the internal Node port (e.g. 8080) into links.
     const publicDomain = (config.http && config.http.publicDomain) || '';

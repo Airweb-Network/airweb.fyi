@@ -62,7 +62,7 @@ function clearSessionCookie(res) {
 
 // Build the set of origins that are allowed to call the apex API with
 // credentials. Includes every enabled internal server's public URL (e.g.
-// http://doc.lvh.me:8080) so the shared header on those subdomains can fetch
+// http://doc.lvh.me) so the shared header on those subdomains can fetch
 // /api/me, /api/config and /api/logout and stay in sync with the user's
 // session.
 function allowedInternalOrigins() {
