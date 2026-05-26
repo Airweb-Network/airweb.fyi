@@ -64,7 +64,10 @@ function renderLandingHtml() {
   const siteUrl       = `${scheme}://${publicDomain}`;
   const sshPort       = config.ssh.port;
   const keyFile       = `${host.replace(/[^a-z0-9.-]+/gi, '_')}_<your account id>_key.txt`;
-  const tunnels       = registry.list().filter(t => t.type === 'http');
+  // Count every public tunnel — HTTP and raw TCP both — but skip internal
+  // tunnels (docs, forum, etc.) since those are server-owned plumbing, not
+  // user-facing connections people would brag about in the landing badge.
+  const tunnels       = registry.list().filter(t => !t.internal);
   const tunnelCount   = tunnels.length;
   const description   = `AirWeb on ${host}: a people-powered cloud built from spare devices. ` +
     `Demo apps in seconds, reach your home computer from anywhere, lease micro-servers by the minute, ` +
@@ -523,7 +526,7 @@ function renderLandingHtml() {
   </section>
 
   <p class="footnote">
-    <span style="color:var(--good)">●</span> ${tunnelCount} HTTP tunnel${tunnelCount === 1 ? '' : 's'} currently active on this host — running on devices people already owned.
+    <span style="color:var(--good)">●</span> ${tunnelCount} tunnel${tunnelCount === 1 ? '' : 's'} currently active on this host — running on devices people already owned.
   </p>
 </main>
 
