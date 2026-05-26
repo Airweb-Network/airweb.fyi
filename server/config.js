@@ -91,6 +91,20 @@ if (!config.http.publicScheme) {
   config.http.publicScheme = defaultScheme(config.http.publicDomain);
 }
 
+// In dev the Node server listens on a non-default port (e.g. 8080) while the
+// env var stays clean ("http://lvh.me"). Append the port to publicDomain so
+// every generated link — including subdomain tunnels — points at the right
+// place (e.g. http://mysub.lvh.me:8080). In production the public URL hits a
+// reverse proxy on 80/443 and we leave the host bare.
+if (!/:\d+$/.test(config.http.publicDomain)) {
+  const port = Number(config.http.port);
+  const isDefault = (config.http.publicScheme === 'http'  && port === 80) ||
+                    (config.http.publicScheme === 'https' && port === 443);
+  if (port && !isDefault && defaultScheme(config.http.publicDomain) === 'http') {
+    config.http.publicDomain = `${config.http.publicDomain}:${port}`;
+  }
+}
+
 // Canonical base URL for link generation (e.g. "https://airweb.fyi").
 config.http.publicBaseUrl = `${config.http.publicScheme}://${config.http.publicDomain}`;
 
