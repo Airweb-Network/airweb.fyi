@@ -173,13 +173,17 @@ function accountSummary(account) {
   };
 }
 
-// Live earnings stats for the "Uptime earnings" card. We pull straight from
-// the ledger so the number reflects what actually got credited, not just
-// config × tunnel-count.
+// Live earnings stats for the "Reward / min" and "Charge / min" cards. We
+// pull straight from the ledger so the numbers reflect what actually got
+// booked to the account, not just config \u00d7 tunnel-count. Both rates are
+// averages over the past 24h (sum \u00f7 1440 minutes).
+//
+// Reward sources : uptime credits, lease earnings (renting your tunnel).
+// Charge sources : bandwidth debits, lease spends (renting someone else's).
 const stmtEarnings24h = db.prepare(`
   SELECT
-    COALESCE(SUM(CASE WHEN delta > 0 AND reason = 'uptime'    THEN delta      END), 0) AS uptime24h,
-    COALESCE(SUM(CASE WHEN delta < 0 AND reason = 'bandwidth' THEN -delta     END), 0) AS bandwidth24h,
+    COALESCE(SUM(CASE WHEN delta > 0 AND reason IN ('uptime', 'lease_earn')             THEN delta   END), 0) AS uptime24h,
+    COALESCE(SUM(CASE WHEN delta < 0 AND reason IN ('bandwidth', 'lease_spend')         THEN -delta  END), 0) AS bandwidth24h,
     COUNT(CASE WHEN reason = 'uptime' AND delta > 0 THEN 1 END) AS uptimeTicks
   FROM ledger
   WHERE address = ? AND created_at >= ?

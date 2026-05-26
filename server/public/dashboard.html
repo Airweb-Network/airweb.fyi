@@ -92,7 +92,7 @@
           <span class="label">
             <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 13l4-5 3 3 7-9" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
             Reward / min
-            <span class="info" title="Average credits earned per minute from tunnel uptime over the last 24 hours. Falls back to the configured rate × online tunnels when no history exists yet.">i</span>
+            <span class="info" title="Average credits earned per minute over the past 24 hours, computed from your transaction ledger (sum of uptime credits in the last 24h ÷ 1440 minutes). Reads 0 until your first ledger entry is posted.">i</span>
           </span>
           <span class="sub usd-est">est. <span id="earnRateUsd">$0.00</span></span>
           <span class="value" id="earnRateVal">0</span>
@@ -104,7 +104,7 @@
           <span class="label">
             <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M15 4l-5 5-3-3-6 7" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
             Charge / min
-            <span class="info" title="Credits charged per minute for bandwidth your tunnels consume and any active leases you are paying for. Uses the largest of the 24h average, live lease prices, and a live rate sampled between dashboard refreshes.">i</span>
+            <span class="info" title="Average credits charged per minute over the past 24 hours, computed from your transaction ledger (sum of bandwidth + lease debits in the last 24h ÷ 1440 minutes). Reads 0 until your first debit is posted.">i</span>
           </span>
           <span class="sub usd-est">est. <span id="totalChargedUsd">$0.00</span></span>
           <span class="value" id="totalChargedVal">0.0000</span>

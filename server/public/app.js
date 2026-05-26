@@ -221,29 +221,6 @@ function renderGuestConnections() {
   refreshMap().catch(e => console.error('map:', e));
 }
 
-// Track the previous snapshot of cumulative per-tunnel chargedCredits so we
-// can compute a *live* bandwidth charge rate (AWC/minute) between dashboard
-// polls. The server-side `avgChargePerMinute` divides by 1440 minutes, so it
-// barely moves in real time even when bandwidth is actively being charged.
-let _bwSnapshot = null; // { ts: epochMs, total: number }
-function sampleLiveBandwidthRate(onlineTunnels) {
-  const now = Date.now();
-  const total = (onlineTunnels || []).reduce((s, t) => {
-    return s + Number((t && t.metrics && t.metrics.chargedCredits) || 0);
-  }, 0);
-  const prev = _bwSnapshot;
-  _bwSnapshot = { ts: now, total };
-  if (!prev || now <= prev.ts) return 0;
-  // chargedCredits is monotonic per tunnel, but the sum can decrease when a
-  // tunnel disconnects (its metrics drop out of onlineTunnels). Ignore those
-  // negative deltas — they don't represent a real charge rate.
-  const delta = total - prev.total;
-  if (delta <= 0) return 0;
-  const minutes = (now - prev.ts) / 60000;
-  if (minutes <= 0) return 0;
-  return delta / minutes;
-}
-
 function renderAuthed() {
   // Delegate all header rendering (avatar, balance, short address, USD est.)
   // to header.js so every page shows the same chrome.
@@ -269,29 +246,19 @@ function renderAuthed() {
   $('tunnelsCount').textContent = ME.onlineTunnels.length;
   $('leasesCount').textContent = ME.activeLeases.length;
   const e = ME.earnings || {};
-  // Live "earn rate" = average per-minute uptime credits over the last 24h.
-  // Falls back to the configured rate × online tunnel count when no history exists yet.
-  const liveAvg = (e.avgPerMinute && e.avgPerMinute > 0)
-    ? e.avgPerMinute
-    : ME.onlineTunnels.length * (CONFIG.uptimePerMinute || 0);
-  $('earnRateVal').innerHTML = fmtCredits(liveAvg) + '<span class="cr">AWC</span>';
-  $('earnRateUsd').textContent = fmtUsdSmall(liveAvg);
+  // Both "Reward / min" and "Charge / min" are driven directly off the ledger:
+  // sum of credit / debit entries over the past 24h divided by 1440 minutes.
+  // No live fallback \u2014 the numbers reflect what actually got booked to the
+  // account, so a brand-new tunnel reads 0/min until its first ledger tick.
+  const earnRate   = e.avgPerMinute || 0;
+  const chargeRate = e.avgChargePerMinute || 0;
+  $('earnRateVal').innerHTML = fmtCredits(earnRate) + '<span class="cr">AWC</span>';
+  $('earnRateUsd').textContent = fmtUsdSmall(earnRate);
   $('earn24hVal').textContent = `+${fmtCredits(e.uptime24h || 0)} AWC (${fmtUsd(e.uptime24h || 0)}) in 24h`;
-  // Live "charge rate": the server-reported `avgChargePerMinute` is just
-  // bandwidth24h/1440, so it barely budges in real time (a fresh charge of
-  // 0.01 AWC moves it by 0.0000069/min). To make the card actually move,
-  // fall back to whichever is largest of:
-  //   * the 24h average (long-term truth)
-  //   * sum of active-lease per-minute prices (leases we're paying for)
-  //   * a live rate derived from the delta in per-tunnel `chargedCredits`
-  //     between successive dashboard polls (bandwidth charges in flight)
-  const liveLeaseCharge = (ME.activeLeases || []).reduce((s, l) => s + (Number(l.price_per_minute) || 0), 0);
-  const liveBwCharge    = sampleLiveBandwidthRate(ME.onlineTunnels || []);
-  const chargeRate = Math.max(e.avgChargePerMinute || 0, liveLeaseCharge, liveBwCharge);
   $('totalChargedVal').innerHTML = fmtCredits(chargeRate) + '<span class="cr">AWC</span>';
   $('totalChargedUsd').textContent = fmtUsdSmall(chargeRate);
   $('charged24hVal').textContent = `\u2212${fmtCredits(e.bandwidth24h || 0)} AWC (${fmtUsd(e.bandwidth24h || 0)}) in 24h`;
-  const netRate = (typeof e.avgNetPerMinute === 'number') ? e.avgNetPerMinute : (liveAvg - chargeRate);
+  const netRate = (typeof e.avgNetPerMinute === 'number') ? e.avgNetPerMinute : (earnRate - chargeRate);
   const net24h  = (e.uptime24h || 0) - (e.bandwidth24h || 0);
   const netEl   = $('netMetric');
   const netPositive = netRate >= 0;
