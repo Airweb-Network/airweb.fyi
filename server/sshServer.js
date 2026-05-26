@@ -27,6 +27,12 @@ const HTTP_BIND_PORT = 80;
 
 const AUTH_METHODS = ['publickey'];
 
+// Track public TCP ports we've handed out so concurrent allocations don't
+// collide. The OS would catch a duplicate at listen() time, but pre-filtering
+// avoids the EADDRINUSE round-trip and lets us pick from the configured range
+// reliably even under bursts of new tunnels.
+const usedTcpPorts = new Set();
+
 // Per-connection chatter is a real CPU cost at thousands of tunnels; gate it.
 const VERBOSE = process.env.AIRWEB_VERBOSE === '1';
 const vlog = VERBOSE ? console.log : () => {};
@@ -207,18 +213,37 @@ function handleForwardRequest(client, username, ownerAddress, remoteAddr, info, 
     return;
   }
 
-  // Case 2: Raw TCP — allocate or use requested port
+  // Case 2: Raw TCP — allocate or use requested port.
+  //
+  // Raw TCP is routed purely by port (no Host header to demux on), so each
+  // tunnel needs a unique public port. Policy:
+  //   * port 0                            -> allocate from the pool
+  //   * port inside tcpPortRange & free   -> honour it (user wants a stable port)
+  //   * port inside tcpPortRange & taken  -> allocate a fresh one from the pool
+  //   * port outside tcpPortRange         -> ignore the request and allocate
+  //     (so two users running `-R 3389:localhost:3389` for RDP each get their
+  //     own public port like 10527, 10832 instead of fighting over :3389)
+  //   * reserved port                     -> reject
   let port = bindPort;
   const [lo, hi] = config.limits.tcpPortRange;
 
-  if (port === 0) {
-    port = pickRandomPort(lo, hi);
-  } else if (config.limits.reservedPorts.includes(port)) {
+  if (config.limits.reservedPorts.includes(port)) {
     console.warn(`[tunnel] rejecting reserved port ${port} requested by ${remoteAddr}`);
     return reject && reject();
   }
 
+  const inRange = port >= lo && port <= hi;
+  if (port === 0 || !inRange || usedTcpPorts.has(port)) {
+    port = pickRandomPort(lo, hi);
+    if (port === null) {
+      console.warn(`[tunnel] tcp port pool exhausted (${lo}-${hi}); rejecting`);
+      return reject && reject();
+    }
+  }
+  usedTcpPorts.add(port);
+
   let registeredTunnel = null;
+  const releasePort = () => { if (port) usedTcpPorts.delete(port); };
   const listener = net.createServer((socket) => {
     // Owner/admin can pause public access without killing the SSH session.
     if (registeredTunnel && registeredTunnel.disabled) {
@@ -242,8 +267,11 @@ function handleForwardRequest(client, username, ownerAddress, remoteAddr, info, 
 
   listener.on('error', (err) => {
     console.error(`[tunnel] tcp listen :${port} failed:`, err.message);
+    releasePort();
     try { reject && reject(); } catch {}
   });
+
+  listener.on('close', () => { releasePort(); });
 
   listener.listen(port, bindAddr || '0.0.0.0', () => {
     const actualPort = listener.address().port;
@@ -282,8 +310,24 @@ function handleForwardRequest(client, username, ownerAddress, remoteAddr, info, 
   });
 }
 
+// Pick a random free port from [lo, hi] that isn't already handed out.
+// Tries random probes first (cheap when the pool is mostly empty), then falls
+// back to a full linear scan so we don't spin forever as it fills up. Returns
+// null when no port is available.
 function pickRandomPort(lo, hi) {
-  return Math.floor(Math.random() * (hi - lo + 1)) + lo;
+  const span = hi - lo + 1;
+  const probes = Math.min(20, span);
+  for (let i = 0; i < probes; i++) {
+    const p = Math.floor(Math.random() * span) + lo;
+    if (!usedTcpPorts.has(p)) return p;
+  }
+  // Linear scan from a random offset to spread allocations.
+  const start = Math.floor(Math.random() * span);
+  for (let i = 0; i < span; i++) {
+    const p = lo + ((start + i) % span);
+    if (!usedTcpPorts.has(p)) return p;
+  }
+  return null;
 }
 
 module.exports = { start };
