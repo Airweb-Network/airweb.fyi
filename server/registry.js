@@ -1,5 +1,6 @@
 // Central registry of active tunnels + an event bus so the admin UI can stream updates.
 const { EventEmitter } = require('events');
+const config = require('./config');
 
 const tunnels = new Map();           // id -> tunnel
 const bySubdomain = new Map();       // subdomain -> tunnel
@@ -7,6 +8,14 @@ const events = new EventEmitter();
 events.setMaxListeners(0);
 
 let counter = 0;
+
+function isReservedSubdomain(sub) {
+  if (!sub) return false;
+  const list = config.limits && config.limits.reservedSubdomains;
+  if (!Array.isArray(list)) return false;
+  const s = String(sub).toLowerCase();
+  return list.some(r => String(r).toLowerCase() === s);
+}
 
 function rand(len = 6) {
   const chars = 'abcdefghijkmnpqrstuvwxyz23456789';
@@ -26,6 +35,9 @@ function register(tunnel) {
   tunnel.id = ++counter;
   tunnel.createdAt = Date.now();
   tunnel.disabled = !!tunnel.disabled;
+  // Tunnels bound to a reserved subdomain (docs, forum, www, ...) are
+  // considered internal: never pausable, never listable, never charged.
+  tunnel.internal = isReservedSubdomain(tunnel.subdomain);
   tunnel.metrics = tunnel.metrics || {
     connections: 0,
     activeConnections: 0,
@@ -97,6 +109,7 @@ function summarize(t) {
     createdAt: t.createdAt,
     disabled: !!t.disabled,
     disabledReason: t.disabledReason || null,
+    internal: !!t.internal,
     metrics: { ...t.metrics },
   };
 }
@@ -109,6 +122,9 @@ function listSummaries() { return list().map(summarize); }
 function setDisabled(id, disabled) {
   const t = tunnels.get(Number(id));
   if (!t) return null;
+  // Internal tunnels (docs, forum, ...) are managed by the server itself and
+  // must never be paused or auto-paused for any reason.
+  if (t.internal) return t;
   t.disabled = !!disabled;
   if (!t.disabled) t.disabledReason = null;
   events.emit('update', summarize(t));

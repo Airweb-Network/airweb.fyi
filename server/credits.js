@@ -12,12 +12,11 @@ const db = require('./db');
 
 const TICK_MS = 60 * 1000;
 const BYTES_PER_MB = 1024 * 1024;
+// Floor below which we skip writing a bandwidth ledger entry on a tick.
+// Avoids spamming the transaction log with sub-millicredit dust while still
+// letting any non-trivial traffic show up in My Transactions.
+const BANDWIDTH_DEBIT_EPSILON = 1e-4;
 let timer = null;
-
-// Per-owner fractional remainder of bandwidth credits owed. The credits
-// ledger only stores integer amounts, so we accumulate sub-credit charges
-// here and only debit when the carried balance crosses a whole credit.
-const bandwidthRemainder = new Map();
 
 // Pause every active tunnel owned by `address` and tag the reason so the UI
 // can show "out of credits" instead of a generic "paused". The owner can
@@ -26,6 +25,7 @@ const bandwidthRemainder = new Map();
 function pauseOwnerTunnels(address, reason) {
   for (const t of registry.list()) {
     if (t.ownerAddress !== address) continue;
+    if (t.internal) continue;
     if (t.disabled) continue;
     t.disabledReason = reason;
     registry.setDisabled(t.id, true);
@@ -68,6 +68,7 @@ const tickTxn = db.transaction(() => {
   if (perMb > 0) {
     const byOwner = new Map();
     for (const t of registry.list()) {
+      if (t.internal) continue; // internal servers never consume bandwidth charges
       const m = t.metrics; if (!m) continue;
       const total = (m.bytesIn || 0) + (m.bytesOut || 0);
       const prev = m.chargedBytes || 0;
@@ -79,32 +80,26 @@ const tickTxn = db.transaction(() => {
       byOwner.set(t.ownerAddress, (byOwner.get(t.ownerAddress) || 0) + cost);
     }
     for (const [addr, owed] of byOwner) {
-      const carry = (bandwidthRemainder.get(addr) || 0) + owed;
-      const whole = Math.floor(carry);
-      let debited = 0;
-      if (whole > 0) {
-        try {
-          accounts.debit(addr, whole, 'bandwidth', null);
-          debited = whole;
-          touched.add(addr);
-        } catch (e) {
-          if (e.code === 'INSUFFICIENT_CREDITS') {
-            // Drain whatever credits the owner does have, then queue a pause
-            // for after the transaction commits (we don't want to mutate the
-            // in-memory registry inside a DB txn that might still roll back).
-            const have = accounts.getAccount(addr);
-            const avail = Math.max(0, Math.min(whole, (have && have.credits) || 0));
-            if (avail > 0) {
-              try { accounts.debit(addr, avail, 'bandwidth', null); debited = avail; touched.add(addr); }
-              catch { /* race; ignore */ }
-            }
-            insufficient.push(addr);
-          } else {
-            console.error('[credits] bandwidth debit failed:', e.message);
+      if (owed < BANDWIDTH_DEBIT_EPSILON) continue;
+      try {
+        accounts.debit(addr, owed, 'bandwidth', null);
+        touched.add(addr);
+      } catch (e) {
+        if (e.code === 'INSUFFICIENT_CREDITS') {
+          // Drain whatever credits the owner does have, then queue a pause
+          // for after the transaction commits (we don't want to mutate the
+          // in-memory registry inside a DB txn that might still roll back).
+          const have = accounts.getAccount(addr);
+          const avail = Math.max(0, Math.min(owed, (have && have.credits) || 0));
+          if (avail >= BANDWIDTH_DEBIT_EPSILON) {
+            try { accounts.debit(addr, avail, 'bandwidth', null); touched.add(addr); }
+            catch { /* race; ignore */ }
           }
+          insufficient.push(addr);
+        } else {
+          console.error('[credits] bandwidth debit failed:', e.message);
         }
       }
-      bandwidthRemainder.set(addr, carry - debited);
     }
   }
 

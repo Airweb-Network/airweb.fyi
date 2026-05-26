@@ -176,6 +176,9 @@ async function createListing(address, body) {
   if (!tunnel || tunnel.ownerAddress !== address) {
     const e = new Error('tunnel_not_owned'); e.code = 'TUNNEL_NOT_OWNED'; throw e;
   }
+  if (tunnel.internal) {
+    const e = new Error('internal_tunnel'); e.code = 'INTERNAL_TUNNEL'; throw e;
+  }
 
   // Protocol: 'tcp' (legacy SSH-on-TCP listing, requires sudo validation)
   //           'http' / 'https' (passcode-gated web lease)

@@ -10,16 +10,16 @@ No usernames or passwords. Your Ed25519 key (generated and downloaded at sign-up
 
 ## Use it (tunnel owner)
 
-1. Open `https://airweb.fyi/dashboard` → **Create account** → save the downloaded key file (named after the server's domain, e.g. `airweb.fyi_key.txt`).
-2. `chmod 600 ./airweb.fyi_key.txt`
+1. Open `https://airweb.fyi/dashboard` → **Create account** → save the downloaded key file (named after the server's domain and your account id, e.g. `airweb.fyi_<your account id>_key.txt`).
+2. `chmod 600 ./airweb.fyi_<your account id>_key.txt`
 3. Tunnel `localhost:3000` out as `mysub.airweb.fyi`:
    ```sh
-   ssh -i ./airweb.fyi_key.txt -p 2222 -o IdentitiesOnly=yes \
+   ssh -i ./airweb.fyi_<your account id>_key.txt -p 2222 -o IdentitiesOnly=yes \
        -N -R 80:localhost:3000 mysub@airweb.fyi
    ```
 4. Watch credits accrue on the dashboard (1/min per online tunnel by default).
 
-Convenience wrapper: `node client/airweb.js --key ./airweb.fyi_key.txt --sub mysub --local 3000`.
+Convenience wrapper: `node client/airweb.js --key ./airweb.fyi_<your account id>_key.txt --sub mysub --local 3000`.
 
 Lost the key = lost the account. Re-import on another machine at `/login`.
 

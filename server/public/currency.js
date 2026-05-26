@@ -57,7 +57,7 @@
 
   function detectInitial() {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY);
+      const saved = (window.AirWebStore && window.AirWebStore.get(STORAGE_KEY)) || localStorage.getItem(STORAGE_KEY);
       if (saved && RATES[saved]) return saved;
     } catch (e) {}
     try {
@@ -83,7 +83,10 @@
     if (!RATES[code]) code = DEFAULT;
     if (code === current) return;
     current = code;
-    try { localStorage.setItem(STORAGE_KEY, code); } catch (e) {}
+    try {
+      if (window.AirWebStore) window.AirWebStore.set(STORAGE_KEY, code);
+      else localStorage.setItem(STORAGE_KEY, code);
+    } catch (e) {}
     updateAllPickers();
     listeners.forEach(fn => { try { fn(code); } catch (e) {} });
   }

@@ -33,14 +33,15 @@ Usage:
 
 Get your --key file:
   Visit https://airweb.fyi/dashboard, click "Create account", and save the
-  downloaded '<domain>_key.txt' file (e.g. 'airweb.fyi_key.txt'). Then:
-      chmod 600 ./<domain>_key.txt    # macOS / Linux
+  downloaded '<domain>_<your account id>_key.txt' file
+  (e.g. 'airweb.fyi_aw_abc1234567_key.txt'). Then:
+      chmod 600 ./<domain>_<your account id>_key.txt    # macOS / Linux
 
 Examples:
-  airweb http 3000 --sub myapp --server airweb.fyi:2222 --key ./airweb.fyi_key.txt
+  airweb http 3000 --sub myapp --server airweb.fyi:2222 --key ./airweb.fyi_<your account id>_key.txt
       -> exposes https://myapp.airweb.fyi -> http://localhost:3000
 
-  airweb tcp 5432 --server airweb.fyi:2222 --key ./airweb.fyi_key.txt
+  airweb tcp 5432 --server airweb.fyi:2222 --key ./airweb.fyi_<your account id>_key.txt
       -> server picks a random TCP port and forwards it to localhost:5432
 
 Notes:

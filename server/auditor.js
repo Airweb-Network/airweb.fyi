@@ -23,6 +23,12 @@ const stmts = {
   `),
 };
 
+// Tolerance for floating-point drift in the ledger sum. Bandwidth charges
+// are accrued as fractional credits per tick, so SUM(delta) can pick up tiny
+// IEEE-754 rounding error vs. the stored balance. Anything below this is
+// treated as exact equality.
+const FP_EPSILON = 1e-6;
+
 // Audit a single account. Returns:
 //   { address, credits, ledgerSum, delta, ok }
 // where delta = credits - ledgerSum (0 when consistent).
@@ -36,7 +42,7 @@ function auditAccount(address) {
     credits: acc.credits,
     ledgerSum: sum,
     delta,
-    ok: delta === 0,
+    ok: Math.abs(delta) < FP_EPSILON,
   };
 }
 
@@ -51,7 +57,7 @@ function auditAll() {
   for (const a of accounts) {
     const sum = sums.get(a.address) || 0;
     const delta = a.credits - sum;
-    if (delta !== 0) {
+    if (Math.abs(delta) >= FP_EPSILON) {
       mismatched.push({
         address: a.address,
         credits: a.credits,

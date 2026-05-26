@@ -11,7 +11,7 @@ const marketplace = require('./marketplace');
 const registry = require('./registry');
 const auditor = require('./auditor');
 const db = require('./db');
-const internalDoc = require('./internalDoc');
+const internal = require('./internal');
 
 const PUBLIC_DIR = path.join(__dirname, 'public');
 const COOKIE_NAME = (config.sessions && config.sessions.cookieName) || 'airweb_sid';
@@ -58,6 +58,35 @@ function setSessionCookie(req, res, token) {
 
 function clearSessionCookie(res) {
   res.setHeader('Set-Cookie', `${COOKIE_NAME}=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0`);
+}
+
+// Build the set of origins that are allowed to call the apex API with
+// credentials. Includes every enabled internal server's public URL (e.g.
+// http://doc.lvh.me:8080) so the shared header on those subdomains can fetch
+// /api/me, /api/config and /api/logout and stay in sync with the user's
+// session.
+function allowedInternalOrigins() {
+  const out = new Set();
+  try {
+    for (const item of internal.list() || []) {
+      if (!item || !item.url) continue;
+      try { out.add(new URL(item.url).origin); } catch (_) {}
+    }
+  } catch (_) {}
+  return out;
+}
+
+function applyInternalCors(req, res) {
+  const origin = req.headers.origin;
+  if (!origin) return;
+  if (!allowedInternalOrigins().has(origin)) return;
+  res.setHeader('Access-Control-Allow-Origin', origin);
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Vary', 'Origin');
+  const reqHeaders = req.headers['access-control-request-headers'];
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', reqHeaders || 'Content-Type');
+  res.setHeader('Access-Control-Max-Age', '600');
 }
 
 function readBody(req, limit = 256 * 1024) {
@@ -115,8 +144,9 @@ function tunnelsOf(address) {
     remoteIp: (t.remoteAddr || '').split(':')[0] || null,
     createdAt: t.createdAt,
     disabled: !!t.disabled,
+    internal: !!t.internal,
     metrics: t.metrics,
-    listable: t.type === 'tcp' || t.type === 'http',
+    listable: !t.internal && (t.type === 'tcp' || t.type === 'http'),
     activeListingId: marketplace.activeListingIdForTunnel(t.id),
   }));
 }
@@ -282,6 +312,7 @@ async function postListings(req, res) {
     if (err && err.code === 'NO_SSH_BANNER') return json(res, 400, { error: 'no_ssh_banner', detail: err.message });
     if (err && err.code === 'NOT_TCP')       return json(res, 400, { error: 'listing_requires_tcp_ssh_tunnel' });
     if (err && err.code === 'TUNNEL_NOT_OWNED') return json(res, 403, { error: 'tunnel_not_owned' });
+    if (err && err.code === 'INTERNAL_TUNNEL')  return json(res, 400, { error: 'internal_tunnel' });
     if (err && err.code === 'TUNNEL_REQUIRED')  return json(res, 400, { error: 'tunnel_required' });
     if (err && err.code === 'SUDO_REQUIRED')    return json(res, 400, { error: 'sudo_credentials_required' });
     if (err && err.code === 'INVALID_TITLE')    return json(res, 400, { error: 'invalid_title' });
@@ -424,7 +455,8 @@ function getConfig(req, res) {
     usdPerCredit: config.credits.usdPerCredit || 0.01,
     reservedSubdomains: config.limits.reservedSubdomains || [],
     allowCustomSubdomains: config.limits.allowCustomSubdomains !== false,
-    docUrl: internalDoc.getPublicUrl(),
+    internalServers: internal.list(),
+    docUrl: internal.getPublicUrl('doc'), // legacy alias
   });
 }
 
@@ -482,6 +514,7 @@ function postAdminDisconnect(req, res, id) {
   const s = requireAdmin(req, res); if (!s) return;
   const t = registry.lookupId(id);
   if (!t) return json(res, 404, { error: 'not_found' });
+  if (t.internal) return json(res, 400, { error: 'internal_tunnel' });
   try { t.disconnect && t.disconnect(); } catch {}
   return json(res, 200, { ok: true });
 }
@@ -494,6 +527,7 @@ function postTunnelToggle(req, res, id, disable) {
   const s = requireAuth(req, res); if (!s) return;
   const t = registry.lookupId(id);
   if (!t) return json(res, 404, { error: 'not_found' });
+  if (t.internal) return json(res, 400, { error: 'internal_tunnel' });
   const isOwner = t.ownerAddress && t.ownerAddress === s.account.address;
   const isAdmin = accounts.isAdmin(s.account);
   if (!isOwner && !isAdmin) return json(res, 403, { error: 'forbidden' });
@@ -507,6 +541,7 @@ function postTunnelDisconnect(req, res, id) {
   const s = requireAuth(req, res); if (!s) return;
   const t = registry.lookupId(id);
   if (!t) return json(res, 404, { error: 'not_found' });
+  if (t.internal) return json(res, 400, { error: 'internal_tunnel' });
   const isOwner = t.ownerAddress && t.ownerAddress === s.account.address;
   const isAdmin = accounts.isAdmin(s.account);
   if (!isOwner && !isAdmin) return json(res, 403, { error: 'forbidden' });
@@ -570,6 +605,16 @@ async function handle(req, res) {
   const url = req.url.split('?')[0];
   const method = req.method.toUpperCase();
 
+  // CORS for internal-server subdomains (e.g. doc.<publicDomain>) so the
+  // shared header injected on those pages can call /api/me, /api/config
+  // and /api/logout with the session cookie.
+  applyInternalCors(req, res);
+  if (method === 'OPTIONS') {
+    res.statusCode = 204;
+    res.end();
+    return;
+  }
+
   // API
   if (url === '/api/register' && method === 'POST')          return postRegister(req, res);
   if (url === '/api/login'    && method === 'POST')          return postLogin(req, res);
@@ -607,9 +652,9 @@ async function handle(req, res) {
   if ((url === '/dashboard' || url === '/dashboard/') && method === 'GET')
     return serveStatic(res, 'dashboard.html');
   if ((url === '/marketplace' || url === '/marketplace/') && method === 'GET')
-    return serveStatic(res, 'dashboard.html');
+    return serveStatic(res, 'marketplace.html');
   if ((url === '/connections' || url === '/connections/') && method === 'GET')
-    return serveStatic(res, 'dashboard.html');
+    return serveStatic(res, 'connections.html');
   if ((url === '/login' || url === '/login/') && method === 'GET')
     return serveStatic(res, 'login.html');
   if (url === '/i18n.js' && method === 'GET')
@@ -620,6 +665,10 @@ async function handle(req, res) {
     return serveStatic(res, 'header.js');
   if (url === '/header.css' && method === 'GET')
     return serveStatic(res, 'header.css');
+  if (url === '/app.css' && method === 'GET')
+    return serveStatic(res, 'app.css');
+  if (url === '/app.js' && method === 'GET')
+    return serveStatic(res, 'app.js');
   if (url.startsWith('/assets/') && method === 'GET')
     return serveStatic(res, url.replace(/^\/+/, ''));
 

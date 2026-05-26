@@ -63,7 +63,7 @@ function renderLandingHtml() {
   const host          = publicHost();
   const siteUrl       = `${scheme}://${publicDomain}`;
   const sshPort       = config.ssh.port;
-  const keyFile       = `${host.replace(/[^a-z0-9.-]+/gi, '_')}_key.txt`;
+  const keyFile       = `${host.replace(/[^a-z0-9.-]+/gi, '_')}_<your account id>_key.txt`;
   const tunnels       = registry.list().filter(t => t.type === 'http');
   const tunnelCount   = tunnels.length;
   const description   = `AirWeb on ${host}: a people-powered cloud built from spare devices. ` +
@@ -107,110 +107,10 @@ function renderLandingHtml() {
 <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
 
 <style>
-  /* macOS-inspired palette (matches dashboard + login) */
-  :root {
-    color-scheme: dark;
-    --bg:#1c1c1e; --panel:#2c2c2e; --panel2:#3a3a3c; --code:#161618;
-    --line:rgba(255,255,255,.09); --line2:rgba(255,255,255,.16);
-    --fg:#f5f5f7; --fg2:#e8e8ea; --mute:#98989d; --mute2:#8e8e93;
-    --accent:#0a84ff; --accent2:#409cff; --accent-fg:#ffffff;
-    --good:#30d158; --warn:#ffd60a; --bad:#ff453a;
-    --hover: rgba(255,255,255,.05);
-    --hover2: rgba(255,255,255,.09);
-    --header-bg: rgba(28,28,30,.78);
-    --footer-bg: rgba(0,0,0,.18);
-    --selection-bg: rgba(10,132,255,.35);
-    --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text",
-            "Segoe UI Variable Text", "Segoe UI", "Helvetica Neue",
-            system-ui, Arial, sans-serif;
-    --display: -apple-system, BlinkMacSystemFont, "SF Pro Display",
-               "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
-    --mono: ui-monospace, "SF Mono", "Cascadia Mono", "Cascadia Code",
-            "Consolas", Menlo, monospace;
-    --radius: 10px; --radius-sm: 6px; --radius-lg: 14px;
-    --shadow-card: 0 1px 2px rgba(0,0,0,.30), 0 0 0 .5px rgba(255,255,255,.04);
-    --shadow-pop:  0 10px 30px rgba(0,0,0,.45), 0 0 0 .5px rgba(255,255,255,.08);
-  }
-  html[data-theme="light"] {
-    color-scheme: light;
-    --bg:#f5f5f7; --panel:#ffffff; --panel2:#fbfbfd; --code:#f0f0f3;
-    --line:rgba(0,0,0,.08); --line2:rgba(0,0,0,.16);
-    --fg:#1d1d1f; --fg2:#2f2f33; --mute:#6e6e73; --mute2:#86868b;
-    --accent:#007aff; --accent2:#339dff; --accent-fg:#ffffff;
-    --good:#28a745; --warn:#b25e09; --bad:#d70015;
-    --hover: rgba(0,0,0,.04);
-    --hover2: rgba(0,0,0,.07);
-    --header-bg: rgba(255,255,255,.78);
-    --footer-bg: rgba(0,0,0,.025);
-    --selection-bg: rgba(0,122,255,.25);
-    --shadow-card: 0 1px 2px rgba(0,0,0,.05), 0 0 0 .5px rgba(0,0,0,.04);
-    --shadow-pop:  0 14px 40px rgba(0,0,0,.18), 0 0 0 .5px rgba(0,0,0,.06);
-  }
-  * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; background: var(--bg); }
-  html { scrollbar-gutter: stable; }
-  body {
-    background: var(--bg); color: var(--fg2);
-    font: 14px/1.5 var(--sans);
-    -webkit-font-smoothing: antialiased;
-  }
-  ::selection { background: var(--selection-bg); color: var(--fg); }
-  a { color: var(--accent); text-decoration: none; }
-  a:hover { text-decoration: underline; color: var(--accent2); }
-
-  *::-webkit-scrollbar { width: 12px; height: 12px; }
-  *::-webkit-scrollbar-track { background: transparent; }
-  *::-webkit-scrollbar-thumb {
-    background: var(--line2); border-radius: 6px;
-    border: 3px solid transparent; background-clip: padding-box;
-  }
-  *::-webkit-scrollbar-thumb:hover { background: var(--mute); border: 3px solid transparent; background-clip: padding-box; }
-
-  /* Site header — shared with dashboard */
-  header.site {
-    background: var(--header-bg);
-    border-bottom: 1px solid var(--line);
-    backdrop-filter: saturate(180%) blur(20px);
-    -webkit-backdrop-filter: saturate(180%) blur(20px);
-    position: sticky; top: 0; z-index: 20;
-  }
-  header.site .inner {
-    max-width: 1200px; margin: 0 auto;
-    min-height: 48px; box-sizing: border-box;
-    padding: .6rem 1.4rem;
-    display: flex; align-items: center; gap: 1rem;
-  }
-  header.site .brand {
-    display: flex; align-items: center; gap: .6rem;
-    text-decoration: none; color: inherit;
-  }
-  header.site .logo {
-    width: 28px; height: 28px;
-    display: grid; place-items: center;
-    background: linear-gradient(160deg, var(--accent2) 0%, var(--accent) 100%);
-    color: var(--accent-fg);
-    border-radius: var(--radius-sm);
-    font-family: var(--display); font-weight: 700; font-size: .95rem;
-  }
-  header.site strong {
-    font-family: var(--display); font-weight: 600;
-    color: var(--fg); font-size: 1rem;
-  }
-  header.site nav {
-    margin-left: auto; display: flex; gap: .25rem;
-    font-size: .9rem;
-  }
-  header.site nav a,
-  header.site .navlink {
-    color: var(--fg2); text-decoration: none;
-    padding: .35rem .75rem; border-radius: var(--radius-sm);
-    transition: background .12s;
-    font-size: .9rem;
-  }
-  header.site nav a:hover,
-  header.site .navlink:hover { background: var(--hover); color: var(--fg); text-decoration: none; }
-
-  main { max-width: 1200px; margin: 0 auto; padding: 1.8rem 1.4rem 3rem; }
+  /* Landing-only tokens (the rest of the palette lives in /app.css and is
+     shared with every other page so the header/theme stay identical). */
+  :root { --footer-bg: rgba(0,0,0,.18); }
+  html[data-theme="light"] { --footer-bg: rgba(0,0,0,.025); }
 
   /* Hero / banner */
   .banner {
@@ -460,33 +360,12 @@ function renderLandingHtml() {
     main { padding: 1.2rem .9rem 2rem; }
     section.block, .banner { padding: 1.1rem 1.1rem; }
   }
-
-  /* Header controls — settings gear aligned with Sign in */
-  header.site nav { align-items: center; }
-  header.site nav button.ghost {
-    font-family: inherit;
-    background: transparent;
-    color: var(--fg2);
-    border: 1px solid var(--line2, transparent);
-    padding: .35rem .75rem;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    font-size: .9rem;
-    line-height: 1.2;
-    display: inline-flex; align-items: center;
-    transition: background .12s, color .12s, border-color .12s;
-  }
-  header.site nav button.ghost:hover {
-    background: var(--hover); color: var(--fg);
-    border-color: var(--line2, transparent);
-  }
-
-  /* Settings menu (gear dropdown) — see /header.css */
 </style>
 <link rel="stylesheet" href="/header.css">
+<link rel="stylesheet" href="/app.css">
+<script src="/header.js" defer></script>
 <script src="/i18n.js" defer></script>
 <script src="/currency.js" defer></script>
-<script src="/header.js" defer></script>
 <script>
   // Apply persisted theme before paint to avoid FOUC.
   (function(){
@@ -503,42 +382,7 @@ function renderLandingHtml() {
 </head>
 <body>
 
-<header class="site">
-  <div class="inner">
-    <a href="/" class="brand" title="AirWeb home">
-      <span class="logo">A</span>
-      <strong>AirWeb</strong>
-    </a>
-    <a href="/marketplace" class="navlink" style="margin-left:.5rem">Marketplace</a>
-    <a href="/connections" class="navlink" style="margin-left:.5rem">Connections</a>
-    <nav>
-      <a href="/login">Sign in</a>
-      <span id="settingsMenu" class="settings-menu">
-        <button type="button" id="settingsBtn" class="ghost settings-trigger" title="Settings" aria-label="Settings" aria-haspopup="menu" aria-expanded="false">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-        </button>
-        <div id="settingsPanel" class="settings-panel" role="menu" hidden>
-          <div class="settings-section">
-            <div class="label">Theme</div>
-            <div class="theme-row" id="themeRow">
-              <button type="button" data-theme="dark">Dark</button>
-              <button type="button" data-theme="light">Light</button>
-            </div>
-          </div>
-          <div class="settings-sep"></div>
-          <div class="settings-row">
-            <div class="label">Language</div>
-            <span id="i18nPickerSlotMenu" data-no-i18n="1"></span>
-          </div>
-          <div class="settings-row">
-            <div class="label">Currency</div>
-            <span id="currencyPickerSlotMenu" data-no-i18n="1"></span>
-          </div>
-        </div>
-      </span>
-    </nav>
-  </div>
-</header>
+<div id="aw-header"></div>
 
 <main>
   <div class="banner">
