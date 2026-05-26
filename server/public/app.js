@@ -455,8 +455,13 @@ function renderActivity() {
 
 function protoBadge(proto) {
   const p = (proto || 'tcp').toLowerCase();
+  // Map the generic transport name 'tcp' to the friendlier 'SSH' label only
+  // when no more specific service was supplied. Known services (rdp, mysql,
+  // postgres, mongodb, redis, vnc, ssh, http, https) render with their own
+  // uppercase label and icon.
   const label = p === 'tcp' ? 'SSH' : p.toUpperCase();
-  return `<span class="proto-badge" title="${esc(label)}"><span class="proto-icon">${PROTO_ICONS[p] || PROTO_ICONS.tcp}</span>${esc(label)}</span>`;
+  const icon = PROTO_ICONS[p] || PROTO_ICONS.tcp;
+  return `<span class="proto-badge" title="${esc(label)}"><span class="proto-icon">${icon}</span>${esc(label)}</span>`;
 }
 
 function typeCell(proto, statusHtml) {
@@ -524,7 +529,7 @@ function activityRow(r) {
       : (t.disabled
           ? (t.disabledReason === 'insufficient_credits' ? 'no credits' : 'paused')
           : 'online');
-    const tunnelProto = (listing && listing.protocol) || t.type;
+    const tunnelProto = t.service || (listing && listing.protocol) || t.type;
     const typeHtml = typeCell(tunnelProto, statusText);
     const toggleBtn = t.internal
       ? `<button class="ghost" disabled title="Internal server \u2014 managed by AirWeb">Pause</button>`

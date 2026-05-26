@@ -247,14 +247,27 @@ function handleForwardRequest(client, username, ownerAddress, remoteAddr, info, 
 
   listener.listen(port, bindAddr || '0.0.0.0', () => {
     const actualPort = listener.address().port;
-    const publicUrl = `tcp://${config.http.publicDomain.split(':')[0]}:${actualPort}`;
+    const publicHost = config.http.publicDomain.split(':')[0];
+    // Raw TCP is routed purely by port, but exposing a stable subdomain in
+    // the URL gives the user something memorable to point their RDP / DB /
+    // SSH client at (DNS for *.publicDomain resolves to this same server).
+    // We don't claim the subdomain in the bySubdomain map — that map is only
+    // consulted for HTTP routing — so HTTP tunnels can still use the name.
+    const allowCustom = config.limits.allowCustomSubdomains !== false;
+    const displaySub = (allowCustom && username && /^[a-z0-9][a-z0-9-]{0,38}[a-z0-9]?$/.test(username))
+      ? username
+      : `t${actualPort}`;
+    const publicUrl = `tcp://${displaySub}.${publicHost}:${actualPort}`;
     const tunnel = registry.register({
       type: 'tcp',
+      subdomain: displaySub,
+      _displayOnlySubdomain: true,   // hint to registry: don't reserve in bySubdomain map
       username,
       ownerAddress,
       remoteAddr,
       bindAddr,
       bindPort: actualPort,
+      requestedBindPort: bindPort,   // preserves the user's requested remote port (3389 for RDP, etc.)
       publicUrl,
       openChannel,
       // Safer default: paused on connect; owner enables from the dashboard.

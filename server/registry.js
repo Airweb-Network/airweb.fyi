@@ -17,6 +17,20 @@ function isReservedSubdomain(sub) {
   return list.some(r => String(r).toLowerCase() === s);
 }
 
+// Well-known ports map to friendly service labels so the UI can show e.g.
+// "RDP" instead of the generic "SSH"/"TCP" label for a raw TCP tunnel.
+const SERVICE_BY_PORT = {
+  22: 'ssh', 3389: 'rdp', 3306: 'mysql', 5432: 'postgres',
+  27017: 'mongodb', 6379: 'redis', 5900: 'vnc',
+};
+function serviceForTunnel(t) {
+  if (!t) return 'tcp';
+  if (t.type === 'http') return 'http';
+  // For raw TCP, the SSH client's requested remote bind port is the
+  // strongest signal of the underlying service (e.g. -R 3389:... = RDP).
+  return SERVICE_BY_PORT[t.bindPort] || SERVICE_BY_PORT[t.requestedBindPort] || 'tcp';
+}
+
 function rand(len = 6) {
   const chars = 'abcdefghijkmnpqrstuvwxyz23456789';
   let s = '';
@@ -79,7 +93,9 @@ function register(tunnel) {
   }
 
   tunnels.set(tunnel.id, tunnel);
-  if (tunnel.subdomain) bySubdomain.set(tunnel.subdomain, tunnel);
+  // Only HTTP routing consults bySubdomain; TCP tunnels may carry a
+  // display-only subdomain (for nicer URLs) without reserving the name.
+  if (tunnel.subdomain && !tunnel._displayOnlySubdomain) bySubdomain.set(tunnel.subdomain, tunnel);
   events.emit('add', summarize(tunnel));
   return tunnel;
 }
@@ -87,7 +103,7 @@ function register(tunnel) {
 function unregister(tunnel) {
   if (!tunnel) return;
   tunnels.delete(tunnel.id);
-  if (tunnel.subdomain) bySubdomain.delete(tunnel.subdomain);
+  if (tunnel.subdomain && !tunnel._displayOnlySubdomain) bySubdomain.delete(tunnel.subdomain);
   events.emit('remove', { id: tunnel.id });
 }
 
@@ -99,6 +115,7 @@ function summarize(t) {
   return {
     id: t.id,
     type: t.type,
+    service: serviceForTunnel(t),
     subdomain: t.subdomain || null,
     username: t.username,
     ownerAddress: t.ownerAddress || null,
@@ -106,6 +123,7 @@ function summarize(t) {
     publicUrl: t.publicUrl,
     bindAddr: t.bindAddr || null,
     bindPort: t.bindPort,
+    requestedBindPort: t.requestedBindPort || null,
     createdAt: t.createdAt,
     disabled: !!t.disabled,
     disabledReason: t.disabledReason || null,
@@ -134,4 +152,5 @@ function setDisabled(id, disabled) {
 module.exports = {
   register, unregister, lookupSubdomain, lookupId, list,
   listSummaries, summarize, uniqueSubdomain, setDisabled, events,
+  serviceForTunnel,
 };
