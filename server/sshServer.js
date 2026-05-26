@@ -273,7 +273,12 @@ function handleForwardRequest(client, username, ownerAddress, remoteAddr, info, 
 
   listener.on('close', () => { releasePort(); });
 
-  listener.listen(port, bindAddr || '0.0.0.0', () => {
+  // Always bind on all interfaces (equivalent to OpenSSH `GatewayPorts yes`).
+  // OpenSSH clients send bind_address as "localhost" by default for `-R`, which
+  // would make the tunnel reachable only from the loopback interface — useless
+  // for a public reverse-tunneling service. The original `bindAddr` value is
+  // still preserved in the tunnel record for diagnostics.
+  listener.listen(port, '0.0.0.0', () => {
     const actualPort = listener.address().port;
     const publicHost = config.http.publicDomain.split(':')[0];
     // Raw TCP is routed purely by port, but exposing a stable subdomain in
