@@ -11,6 +11,7 @@ const marketplace = require('./marketplace');
 const registry = require('./registry');
 const auditor = require('./auditor');
 const db = require('./db');
+const internalDoc = require('./internalDoc');
 
 const PUBLIC_DIR = path.join(__dirname, 'public');
 const COOKIE_NAME = (config.sessions && config.sessions.cookieName) || 'airweb_sid';
@@ -423,6 +424,7 @@ function getConfig(req, res) {
     usdPerCredit: config.credits.usdPerCredit || 0.01,
     reservedSubdomains: config.limits.reservedSubdomains || [],
     allowCustomSubdomains: config.limits.allowCustomSubdomains !== false,
+    docUrl: internalDoc.getPublicUrl(),
   });
 }
 
@@ -605,6 +607,8 @@ async function handle(req, res) {
   if ((url === '/dashboard' || url === '/dashboard/') && method === 'GET')
     return serveStatic(res, 'dashboard.html');
   if ((url === '/marketplace' || url === '/marketplace/') && method === 'GET')
+    return serveStatic(res, 'dashboard.html');
+  if ((url === '/connections' || url === '/connections/') && method === 'GET')
     return serveStatic(res, 'dashboard.html');
   if ((url === '/login' || url === '/login/') && method === 'GET')
     return serveStatic(res, 'login.html');

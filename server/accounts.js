@@ -13,6 +13,9 @@
 const crypto = require('crypto');
 const ssh2 = require('ssh2');
 const config = require('./config');
+const { EventEmitter } = require('events');
+
+const events = new EventEmitter();
 const db = require('./db');
 
 const SESSION_TTL_MS = (config.sessions.ttlDays || 30) * 24 * 60 * 60 * 1000;
@@ -110,6 +113,11 @@ function register() {
     }
   });
   tx();
+
+  if (promotedToAdmin) {
+    // Notify listeners (e.g. internalDoc) immediately so they don't have to poll.
+    process.nextTick(() => events.emit('admin', { address, reason: 'bootstrap' }));
+  }
 
   const session = createSession(address);
   return {
@@ -286,6 +294,7 @@ function isAdmin(account) {
 }
 function setAdmin(address, on) {
   stmts.setAdminFlag.run(on ? 1 : 0, address);
+  if (on) process.nextTick(() => events.emit('admin', { address, reason: 'manual' }));
 }
 function listAccounts() {
   return stmts.listAccounts.all();
@@ -309,4 +318,5 @@ module.exports = {
   listAccounts,
   deriveAddress,
   fingerprintOf,
+  events,
 };

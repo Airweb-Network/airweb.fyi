@@ -9,9 +9,9 @@
     "port": 8080
   },
   "limits": {
-    "reservedPorts": [22, 2222, 8080],
+    "reservedPorts": [22, 2222, 8080, 8090],
     "tcpPortRange": [10000, 20000],
-    "reservedSubdomains": ["www", "api", "admin", "dashboard", "app", "docs", "blog", "status", "mail", "smtp", "imap", "pop", "ftp", "ssh"],
+    "reservedSubdomains": ["www", "api", "admin", "dashboard", "app", "docs", "doc", "blog", "status", "mail", "smtp", "imap", "pop", "ftp", "ssh"],
     "allowCustomSubdomains": false
   },
   "credits": {
@@ -31,5 +31,11 @@
   "data": {
     "dir": "./data",
     "dbFile": "airweb.sqlite"
+  },
+  "internalDoc": {
+    "enabled": true,
+    "port": 8090,
+    "subdomain": "doc",
+    "title": "AirWeb Docs"
   }
 }

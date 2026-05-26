@@ -90,6 +90,11 @@
     transition: background .12s;
   }
   header.site nav a:hover { background: var(--hover); color: var(--fg); text-decoration: none; }
+  header.site .navlink {
+    color: var(--fg2); padding: .35rem .75rem; border-radius: var(--radius-sm);
+    font-size: .9rem; transition: background .12s;
+  }
+  header.site .navlink:hover { background: var(--hover); color: var(--fg); text-decoration: none; }
   header.site nav button.ghost {
     font-family: inherit;
     background: transparent;
@@ -189,6 +194,8 @@
       <span class="logo">A</span>
       <strong>AirWeb</strong>
     </a>
+    <a href="/marketplace" class="navlink" style="margin-left:.5rem">Marketplace</a>
+    <a href="/connections" class="navlink" style="margin-left:.5rem">Connections</a>
     <nav>
       <span id="settingsMenu" class="settings-menu">
         <button type="button" id="settingsBtn" class="ghost settings-trigger" title="Settings" aria-label="Settings" aria-haspopup="menu" aria-expanded="false">

@@ -177,6 +177,7 @@
     const slots = [
       document.getElementById('currencyPickerSlot'),
       document.getElementById('currencyPickerSlotMenu'),
+      document.getElementById('currencyPickerSlotUser'),
     ].filter(Boolean);
     slots.forEach(slot => {
       if (slot.querySelector(':scope > .cur-picker')) return;

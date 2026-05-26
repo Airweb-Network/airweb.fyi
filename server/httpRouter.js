@@ -510,6 +510,7 @@ function renderLandingHtml() {
       <strong>AirWeb</strong>
     </a>
     <a href="/marketplace" class="navlink" style="margin-left:.5rem">Marketplace</a>
+    <a href="/connections" class="navlink" style="margin-left:.5rem">Connections</a>
     <nav>
       <a href="/login">Sign in</a>
       <span id="settingsMenu" class="settings-menu">

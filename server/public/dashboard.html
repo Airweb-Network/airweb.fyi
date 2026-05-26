@@ -41,6 +41,9 @@
     --modal-bg:  rgba(36,36,38,.92);
     --btn-disabled-bg: rgba(255,255,255,.08);
     --selection-bg: rgba(10,132,255,.35);
+    --map-bg:    #0f1417;
+    --map-land:  #2a3138;
+    --map-stroke:rgba(255,255,255,.10);
     --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text",
             "Segoe UI Variable Text", "Segoe UI", "Helvetica Neue",
             system-ui, Arial, sans-serif;
@@ -80,6 +83,9 @@
     --modal-bg:  rgba(252,252,254,.96);
     --btn-disabled-bg: rgba(0,0,0,.06);
     --selection-bg: rgba(0,122,255,.25);
+    --map-bg:    #eef2f6;
+    --map-land:  #d6dde4;
+    --map-stroke:rgba(0,0,0,.12);
     --shadow-card: 0 1px 2px rgba(0,0,0,.05), 0 0 0 .5px rgba(0,0,0,.04);
     --shadow-pop:  0 14px 40px rgba(0,0,0,.18), 0 0 0 .5px rgba(0,0,0,.06);
   }
@@ -589,6 +595,62 @@
   }
   .col-filter { width: 100%; margin-top: .2rem; font-size: .8rem; padding: .3rem .4rem; }
 
+  /* Network map */
+  .map-wrap {
+    position: relative;
+    width: 100%;
+    background: var(--map-bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    aspect-ratio: 2 / 1;
+    max-height: 540px;
+  }
+  #worldMap { display: block; width: 100%; height: 100%; }
+  #mapDots circle {
+    cursor: pointer;
+    transition: r .12s ease, opacity .12s ease;
+  }
+  #mapDots circle.dot-listing { fill: var(--accent); stroke: rgba(255,255,255,.85); stroke-width: .6; opacity: .9; }
+  #mapDots circle.dot-mine    { fill: var(--good);   stroke: rgba(255,255,255,.85); stroke-width: .6; opacity: .95; }
+  #mapDots circle.dot-pulse {
+    fill: var(--accent); opacity: .25; pointer-events: none;
+    animation: mapPulse 2.4s ease-out infinite;
+  }
+  #mapDots circle.dot-pulse.mine { fill: var(--good); }
+  #mapDots circle:hover { opacity: 1; }
+  @keyframes mapPulse {
+    0%   { r: 3;  opacity: .45; }
+    100% { r: 14; opacity: 0;   }
+  }
+  .map-tip {
+    position: absolute;
+    background: var(--modal-bg);
+    color: var(--fg);
+    border: 1px solid var(--line2);
+    border-radius: var(--radius-sm);
+    padding: .35rem .55rem;
+    font-size: .75rem;
+    box-shadow: var(--shadow-pop);
+    pointer-events: none;
+    max-width: 240px;
+    z-index: 3;
+  }
+  .map-tip .mt-title { font-weight: 600; margin-bottom: .15rem; }
+  .map-tip .mt-meta  { color: var(--mute); font-size: .7rem; }
+  .map-legend {
+    display: flex; align-items: center; gap: 1rem;
+    margin-top: .6rem; font-size: .78rem; color: var(--mute); flex-wrap: wrap;
+  }
+  .map-swatch {
+    display: inline-block; width: 10px; height: 10px; border-radius: 50%;
+    margin-right: .35rem; vertical-align: middle;
+    border: 1px solid rgba(255,255,255,.7);
+  }
+  .map-swatch.listing { background: var(--accent); }
+  .map-swatch.mine    { background: var(--good); }
+  #mapFilter button { padding: .25rem .55rem; font-size: .75rem; }
+
   /* Compact marketplace filter bar */
   .mf-card { padding: .7rem .9rem; }
   .mf-row {
@@ -764,7 +826,8 @@
       <span class="logo">A</span>
       <strong>AirWeb</strong>
     </a>
-    <a href="/marketplace" id="navMarketplace" class="navlink hide" style="margin-left:.5rem">Marketplace</a>
+    <a href="/marketplace" id="navMarketplace" class="navlink" style="margin-left:.5rem">Marketplace</a>
+    <a href="/connections" id="navConnections" class="navlink" style="margin-left:.5rem">Connections</a>
     <nav>
       <span id="settingsMenu" class="settings-menu" style="margin-right:.5rem">
         <button type="button" id="settingsBtn" class="ghost settings-trigger" title="Settings" aria-label="Settings" aria-haspopup="menu" aria-expanded="false">
@@ -805,6 +868,22 @@
               <code id="menuAddrFull"></code>
               <button id="menuAddrCopy" type="button">Copy</button>
             </div>
+          </div>
+          <div class="user-menu-sep"></div>
+          <div class="settings-section">
+            <div class="label">Theme</div>
+            <div class="theme-row" id="themeRowUser">
+              <button type="button" data-theme="dark">Dark</button>
+              <button type="button" data-theme="light">Light</button>
+            </div>
+          </div>
+          <div class="settings-row">
+            <div class="label">Language</div>
+            <span id="i18nPickerSlotUser" data-no-i18n="1"></span>
+          </div>
+          <div class="settings-row">
+            <div class="label">Currency</div>
+            <span id="currencyPickerSlotUser" data-no-i18n="1"></span>
           </div>
           <div class="user-menu-sep"></div>
           <button id="logoutBtn" class="user-menu-item" type="button">Sign out</button>
@@ -936,6 +1015,35 @@
         </div>
       </div>
       <div id="activityList"></div>
+    </section>
+  </div>
+
+  <!-- ============ Map tab ============ -->
+  <div id="tabMap" class="hide">
+    <section class="section">
+      <div class="section-head">
+        <h2 style="margin:0">Network Map</h2>
+        <span class="reason" id="mapSummary" style="font-size:.78rem; margin-left:.6rem"></span>
+        <span style="margin-left:auto; display:inline-flex; gap:.3rem; flex-wrap:wrap" id="mapFilter">
+          <button class="ghost active" data-mf="all"      style="max-width:110px">All</button>
+          <button class="ghost"        data-mf="listings" style="max-width:110px">Listings</button>
+          <button class="ghost"        data-mf="mine"     style="max-width:110px">My tunnels</button>
+        </span>
+      </div>
+      <div class="map-wrap" id="mapWrap">
+        <svg id="worldMap" viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid meet" role="img" aria-label="World map of AirWeb connections">
+          <rect x="0" y="0" width="1000" height="500" fill="var(--map-bg)"/>
+          <g id="worldLand" fill="var(--map-land)" stroke="var(--map-stroke)" stroke-width="0.4"></g>
+          <g id="mapDots"></g>
+        </svg>
+        <div id="mapEmpty" class="empty hide" style="position:absolute; inset:auto 0 .8rem 0; text-align:center; pointer-events:none">No connections to display.</div>
+        <div id="mapTip" class="map-tip hide" role="tooltip"></div>
+      </div>
+      <div class="map-legend">
+        <span><span class="map-swatch listing"></span>Listing</span>
+        <span><span class="map-swatch mine"></span>My tunnel</span>
+        <span class="reason" style="margin-left:auto">Hover a dot for details</span>
+      </div>
     </section>
   </div>
 
@@ -1362,13 +1470,15 @@ function withBrowserPort(rawUrl) {
 }
 
 async function tryLoadMe() {
-  const _isMarket = /^\/marketplace\/?$/.test(location.pathname);
+  const _isMarket      = /^\/marketplace\/?$/.test(location.pathname);
+  const _isConnections = /^\/connections\/?$/.test(location.pathname);
   try {
     ME = await api('/api/me');
     renderAuthed();
   } catch (e) {
     if (e.status === 401) {
-      if (_isMarket) renderGuestMarketplace();
+      if (_isConnections) renderGuestConnections();
+      else if (_isMarket) renderGuestMarketplace();
       else renderGuest();
     } else console.error(e);
   }
@@ -1379,7 +1489,7 @@ function renderGuest() {
   $('authState').classList.add('hide');
   $('navBalance').classList.add('hide');
   $('userMenu').classList.add('hide');
-  $('navMarketplace').classList.add('hide');
+  $('settingsMenu').classList.remove('hide');
 }
 
 // Public marketplace preview — same listing UI as authed view, but
@@ -1389,17 +1499,34 @@ function renderGuestMarketplace() {
   $('authState').classList.remove('hide');
   $('navBalance').classList.add('hide');
   $('userMenu').classList.add('hide');
-  // Marketplace nav link only makes sense once authed; keep hidden on the
-  // public preview because we're already on the page.
-  $('navMarketplace').classList.add('hide');
+  $('settingsMenu').classList.remove('hide');
   $('pageTitle').textContent = 'Marketplace';
   document.title = 'Marketplace — AirWeb';
   $('tabBar').classList.add('hide');
   $('tabOverview').classList.add('hide');
+  $('tabMap').classList.add('hide');
   $('tabTransactions').classList.add('hide');
   if ($('tabAdmin')) $('tabAdmin').classList.add('hide');
   $('tabMarketplace').classList.remove('hide');
   refreshMarketplace().catch(e => console.error('market:', e));
+}
+
+// Public network-map preview — anyone can see where AirWeb listings are.
+function renderGuestConnections() {
+  $('guestState').classList.add('hide');
+  $('authState').classList.remove('hide');
+  $('navBalance').classList.add('hide');
+  $('userMenu').classList.add('hide');
+  $('settingsMenu').classList.remove('hide');
+  $('pageTitle').textContent = 'Connections';
+  document.title = 'Connections — AirWeb';
+  $('tabBar').classList.add('hide');
+  $('tabOverview').classList.add('hide');
+  $('tabMarketplace').classList.add('hide');
+  $('tabTransactions').classList.add('hide');
+  if ($('tabAdmin')) $('tabAdmin').classList.add('hide');
+  $('tabMap').classList.remove('hide');
+  refreshMap().catch(e => console.error('map:', e));
 }
 
 function renderAuthed() {
@@ -1407,14 +1534,19 @@ function renderAuthed() {
   $('authState').classList.remove('hide');
   $('navBalance').classList.remove('hide');
   $('userMenu').classList.remove('hide');
-  $('navMarketplace').classList.remove('hide');
+  $('settingsMenu').classList.add('hide');
   // Marketplace-only mode when URL is /marketplace
-  const _isMarket = /^\/marketplace\/?$/.test(location.pathname);
-  $('tabBar').classList.toggle('hide', _isMarket);
+  const _isMarket      = /^\/marketplace\/?$/.test(location.pathname);
+  const _isConnections = /^\/connections\/?$/.test(location.pathname);
+  $('tabBar').classList.toggle('hide', _isMarket || _isConnections);
   if (_isMarket) {
     $('pageTitle').textContent = 'Marketplace';
     document.title = 'Marketplace — AirWeb';
     switchTab('marketplace');
+  } else if (_isConnections) {
+    $('pageTitle').textContent = 'Connections';
+    document.title = 'Connections — AirWeb';
+    switchTab('map');
   } else {
     $('pageTitle').textContent = 'Dashboard';
   }
@@ -1479,14 +1611,16 @@ function renderAdmin() {
   }
 }
 
-const TABS = ['overview', 'marketplace', 'transactions', 'admin'];
+const TABS = ['overview', 'map', 'marketplace', 'transactions', 'admin'];
 function switchTab(name) {
   if (!TABS.includes(name)) name = 'overview';
   document.querySelectorAll('#tabBar button').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
   $('tabOverview').classList.toggle(    'hide', name !== 'overview');
+  $('tabMap').classList.toggle(         'hide', name !== 'map');
   $('tabMarketplace').classList.toggle( 'hide', name !== 'marketplace');
   $('tabTransactions').classList.toggle('hide', name !== 'transactions');
   $('tabAdmin').classList.toggle(       'hide', name !== 'admin');
+  if (name === 'map')          refreshMap().catch(e => console.error('map:', e));
   if (name === 'marketplace')  refreshMarketplace().catch(e => console.error('market:', e));
   if (name === 'transactions') refreshLedger(true).catch(e => console.error('ledger:', e));
   if (name === 'admin' && ME && ME.isAdmin) refreshAdmin().catch(e => console.error('admin:', e));
@@ -2099,6 +2233,174 @@ function buildMarketQuery() {
   const s = params.toString();
   return s ? ('?' + s) : '';
 }
+
+/* ============================================================
+   Network Map — equirectangular projection of listings/tunnels
+   ============================================================ */
+// Rough continent outlines in equirectangular projection
+// (viewBox is 0..1000 x 0..500: x=(lon+180)/360*1000, y=(90-lat)/180*500)
+const WORLD_LAND_POLYS = [
+  // North America
+  '28,61 55,50 222,50 278,22 333,50 361,83 333,111 278,167 222,200 181,167 153,139 125,97',
+  // Central America bridge
+  '222,200 240,205 255,215 245,228 232,222 222,200',
+  // Greenland
+  '380,30 425,25 440,55 410,72 385,55',
+  // South America
+  '272,217 300,217 347,236 403,264 389,319 339,347 306,403 283,389 272,333 283,292',
+  // Europe
+  '472,150 500,144 528,139 578,139 611,128 639,97 611,61 556,50 514,83 472,97',
+  // British Isles
+  '478,118 488,112 492,124 482,132',
+  // Iceland
+  '466,80 478,75 484,85 472,90',
+  // Africa
+  '450,208 472,161 528,153 583,161 611,208 639,217 644,264 611,306 583,347 556,347 528,292 486,236',
+  // Madagascar
+  '648,322 658,318 666,338 656,348',
+  // Asia (main)
+  '578,139 611,128 639,97 667,42 750,33 889,42 972,61 972,97 931,133 875,153 889,194 861,236 819,272 778,236 750,194 722,194 708,222 694,181 667,181 625,217 625,167 611,161 597,153',
+  // Arabian peninsula
+  '611,208 644,213 650,236 622,244 614,225',
+  // India
+  '722,194 740,210 745,232 728,242 712,222',
+  // SE Asia / Indonesia archipelago (blobs)
+  '778,255 808,250 822,265 805,278 782,272',
+  '825,272 855,268 868,282 845,290 828,282',
+  '870,272 895,268 905,282 882,290',
+  // Japan
+  '900,140 920,128 930,150 912,162',
+  // Philippines
+  '850,225 860,220 868,238 855,245',
+  // Australia
+  '819,300 870,295 905,308 925,330 905,355 855,358 819,348',
+  // Tasmania
+  '880,372 895,370 898,383 882,385',
+  // New Zealand
+  '945,355 958,353 965,372 950,378',
+  // Antarctica strip
+  '0,431 1000,431 1000,486 0,486',
+];
+function renderWorldLand() {
+  const g = $('worldLand');
+  if (!g || g.dataset.ready === '1') return;
+  g.innerHTML = WORLD_LAND_POLYS.map(p => `<polygon points="${p}"/>`).join('');
+  g.dataset.ready = '1';
+}
+
+// Approximate country centroids [lon, lat]
+const COUNTRY_CENTROIDS = {
+  US:[-98.5,39.8], CA:[-106.3,56.1], MX:[-102.5,23.6], BR:[-51.9,-14.2], AR:[-63.6,-38.4],
+  GB:[-1.5,54.0],  IE:[-7.7,53.1],   FR:[2.2,46.2],    DE:[10.4,51.2],   NL:[5.3,52.1],
+  ES:[-3.7,40.5],  IT:[12.6,42.5],   SE:[18.6,60.1],   NO:[8.5,60.5],    FI:[26.0,61.9],
+  PL:[19.1,52.0],  CH:[8.2,46.8],    AT:[14.6,47.5],   CZ:[15.5,49.8],   UA:[31.2,48.4],
+  RU:[105.3,61.5], TR:[35.2,38.9],   IL:[34.9,31.0],   AE:[53.8,23.4],   SA:[45.1,23.9],
+  IN:[78.9,20.6],  CN:[104.2,35.9],  HK:[114.2,22.3],  TW:[120.9,23.7],  JP:[138.3,36.2],
+  KR:[127.8,36.0], SG:[103.8,1.35],  MY:[101.9,4.2],   ID:[113.9,-0.8],  TH:[100.9,15.9],
+  VN:[108.3,14.1], PH:[121.8,12.9],  AU:[133.8,-25.3], NZ:[172.0,-41.0],
+  ZA:[22.9,-30.6], NG:[8.7,9.1],     KE:[37.9,-0.0],   EG:[30.8,26.8],
+};
+function lonLatToXY(lon, lat) {
+  return [ (lon + 180) / 360 * 1000, (90 - lat) / 180 * 500 ];
+}
+
+let MAP_FILTER = 'all';
+let MAP_LAST_ITEMS = null;
+let MAP_LAST_TUNNELS = null;
+async function refreshMap() {
+  renderWorldLand();
+  // Cache for filter switches without refetch
+  try {
+    const { items } = await api('/api/listings');
+    MAP_LAST_ITEMS = items || [];
+  } catch (e) { MAP_LAST_ITEMS = MAP_LAST_ITEMS || []; }
+  MAP_LAST_TUNNELS = (ME && ME.onlineTunnels) || [];
+  renderMap();
+}
+function renderMap() {
+  const g = $('mapDots'); if (!g) return;
+  const filter = MAP_FILTER;
+  const points = [];
+  if (filter !== 'mine') {
+    for (const it of (MAP_LAST_ITEMS || [])) {
+      const cc = (it.countryCode || '').toUpperCase();
+      const c = COUNTRY_CENTROIDS[cc]; if (!c) continue;
+      points.push({
+        kind: 'listing',
+        lon: c[0], lat: c[1],
+        title: it.title || '(untitled)',
+        meta: `${(it.protocol || 'tcp').toUpperCase()} · ${cc}${it.tunnelOnline ? ' · online' : ' · offline'}`,
+        owner: it.owner || '',
+      });
+    }
+  }
+  if (filter !== 'listings') {
+    for (const l of (ME && ME.listings) || []) {
+      const cc = (l.countryCode || '').toUpperCase();
+      const c = COUNTRY_CENTROIDS[cc]; if (!c) continue;
+      points.push({
+        kind: 'mine',
+        lon: c[0], lat: c[1],
+        title: l.title || ('Tunnel ' + (l.id || '')),
+        meta: `${(l.protocol || 'tcp').toUpperCase()} · ${cc}${l.tunnelOnline ? ' · online' : ' · offline'}`,
+        owner: 'you',
+      });
+    }
+  }
+  // Deterministic jitter for multiple points in the same country
+  const counts = {};
+  const out = [];
+  for (const p of points) {
+    const k = p.lon + ',' + p.lat;
+    const n = counts[k] = (counts[k] || 0) + 1;
+    let dx = 0, dy = 0;
+    if (n > 1) {
+      const angle = ((n - 1) * 137.508) * Math.PI / 180; // golden-angle
+      const r = 4 + Math.sqrt(n) * 2.2;
+      dx = Math.cos(angle) * r;
+      dy = Math.sin(angle) * r;
+    }
+    const [x, y] = lonLatToXY(p.lon, p.lat);
+    out.push({ ...p, x: x + dx, y: y + dy });
+  }
+  g.innerHTML = out.map((p, i) => `
+    <circle class="dot-pulse${p.kind === 'mine' ? ' mine' : ''}" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3"/>
+    <circle class="${p.kind === 'mine' ? 'dot-mine' : 'dot-listing'}" data-i="${i}"
+            cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3.2"/>
+  `).join('');
+  // Tooltip wiring
+  const tip = $('mapTip');
+  const wrap = $('mapWrap');
+  g.querySelectorAll('circle[data-i]').forEach(c => {
+    c.addEventListener('mouseenter', (e) => {
+      const p = out[+c.dataset.i]; if (!p) return;
+      tip.innerHTML = `<div class="mt-title">${esc(p.title)}</div><div class="mt-meta">${esc(p.meta)}${p.owner ? ' · ' + esc(p.owner) : ''}</div>`;
+      tip.classList.remove('hide');
+    });
+    c.addEventListener('mousemove', (e) => {
+      const r = wrap.getBoundingClientRect();
+      const x = e.clientX - r.left + 10;
+      const y = e.clientY - r.top  + 10;
+      tip.style.left = Math.min(x, r.width  - 250) + 'px';
+      tip.style.top  = Math.min(y, r.height - 60)  + 'px';
+    });
+    c.addEventListener('mouseleave', () => tip.classList.add('hide'));
+  });
+  $('mapEmpty').classList.toggle('hide', out.length > 0);
+  const ls = out.filter(p => p.kind === 'listing').length;
+  const ms = out.filter(p => p.kind === 'mine').length;
+  $('mapSummary').textContent = `${ls} listing${ls === 1 ? '' : 's'} · ${ms} of yours`;
+}
+// Filter button wiring (deferred until DOM ready below)
+function wireMapFilter() {
+  const bar = $('mapFilter'); if (!bar) return;
+  bar.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+    bar.querySelectorAll('button').forEach(x => x.classList.toggle('active', x === b));
+    MAP_FILTER = b.dataset.mf || 'all';
+    renderMap();
+  }));
+}
+wireMapFilter();
 
 async function refreshMarketplace() {
   const qs = buildMarketQuery();

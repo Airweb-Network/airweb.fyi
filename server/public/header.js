@@ -24,7 +24,7 @@
 
   function applyTheme(t) {
     document.documentElement.setAttribute('data-theme', t);
-    var buttons = document.querySelectorAll('#themeRow button');
+    var buttons = document.querySelectorAll('.theme-row [data-theme]');
     for (var i = 0; i < buttons.length; i++) {
       buttons[i].classList.toggle('active', buttons[i].dataset.theme === t);
     }
@@ -53,7 +53,7 @@
       panel.addEventListener('click', function (e) { e.stopPropagation(); });
     }
 
-    var themeBtns = document.querySelectorAll('#themeRow button');
+    var themeBtns = document.querySelectorAll('.theme-row [data-theme]');
     for (var i = 0; i < themeBtns.length; i++) {
       themeBtns[i].addEventListener('click', function (e) {
         e.stopPropagation();
@@ -65,6 +65,38 @@
 
     // Re-sync active class after wiring (in case DOM was injected later).
     applyTheme(currentTheme());
+
+    // Inject a "Docs" link as the first nav item if the internal doc
+    // tunnel is configured. We probe /api/config (cheap, already used
+    // elsewhere) and only render the link if the server reports a docUrl.
+    injectDocsNavLink();
+  }
+
+  function injectDocsNavLink() {
+    if (document.querySelector('[data-aw-docs-nav]')) return; // already added
+    try {
+      fetch('/api/config', { credentials: 'same-origin' })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (cfg) {
+          if (!cfg || !cfg.docUrl) return;
+          if (document.querySelector('[data-aw-docs-nav]')) return;
+          var brand = document.querySelector('header.site .inner .brand')
+                   || document.querySelector('header .brand');
+          if (!brand || !brand.parentNode) return;
+          var link = document.createElement('a');
+          link.href = cfg.docUrl;
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+          link.className = 'navlink';
+          link.id = 'navDocs';
+          link.setAttribute('data-aw-docs-nav', '');
+          link.setAttribute('data-no-i18n', '1');
+          link.style.marginLeft = '.5rem';
+          link.textContent = 'Docs';
+          brand.parentNode.insertBefore(link, brand.nextSibling);
+        })
+        .catch(function () { /* silently ignore — link is optional */ });
+    } catch (e) { /* ignore */ }
   }
 
   if (document.readyState === 'loading') {

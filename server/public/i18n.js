@@ -35,6 +35,7 @@
       'AirWeb': 'AirWeb',
       'Dashboard': 'Panel',
       'Marketplace': 'Mercado',
+      'Connections': 'Conexiones',
       'My account': 'Mi cuenta',
       'Account': 'Cuenta',
       'Theme': 'Tema',
@@ -377,6 +378,7 @@
       'AirWeb': 'AirWeb',
       'Dashboard': 'Tableau de bord',
       'Marketplace': 'Marché',
+      'Connections': 'Connexions',
       'My account': 'Mon compte',
       'Account': 'Compte',
       'Theme': 'Thème',
@@ -680,6 +682,7 @@
       'AirWeb': 'AirWeb',
       'Dashboard': 'Übersicht',
       'Marketplace': 'Marktplatz',
+      'Connections': 'Verbindungen',
       'My account': 'Mein Konto',
       'Account': 'Konto',
       'Theme': 'Design',
@@ -983,6 +986,7 @@
       'AirWeb': 'AirWeb',
       'Dashboard': '仪表盘',
       'Marketplace': '市场',
+      'Connections': '连接',
       'My account': '我的账户',
       'Account': '账户',
       'Theme': '主题',
@@ -1286,6 +1290,7 @@
       'AirWeb': 'AirWeb',
       'Dashboard': 'ダッシュボード',
       'Marketplace': 'マーケット',
+      'Connections': '接続',
       'My account': 'マイアカウント',
       'Account': 'アカウント',
       'Theme': 'テーマ',
@@ -1589,6 +1594,7 @@
       'AirWeb': 'AirWeb',
       'Dashboard': '대시보드',
       'Marketplace': '마켓플레이스',
+      'Connections': '연결',
       'My account': '내 계정',
       'Account': '계정',
       'Theme': '테마',
@@ -2144,11 +2150,13 @@
   function mountPicker() {
     // Mount into every recognised slot:
     //  - #i18nPickerSlot     (default — header / landing / login)
-    //  - #i18nPickerSlotMenu (dashboard user-menu context)
+    //  - #i18nPickerSlotMenu (dashboard gear settings panel — guest)
+    //  - #i18nPickerSlotUser (dashboard avatar user menu — authed)
     // Falls back to header nav / .inner / body if no slot is present.
     const slots = [
       document.getElementById('i18nPickerSlot'),
       document.getElementById('i18nPickerSlotMenu'),
+      document.getElementById('i18nPickerSlotUser'),
     ].filter(Boolean);
     const targets = slots.length ? slots : [
       document.querySelector('header.site nav')
