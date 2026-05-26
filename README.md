@@ -4,22 +4,22 @@ Expose `localhost` to the internet over a reverse SSH tunnel — and earn credit
 
 One Node.js process runs an **SSH server** (accepts `ssh -R`), an **HTTP reverse proxy** (routes `*.your-domain` to the matching tunnel), and a **dashboard** at `/dashboard` for accounts, credits, handles and the lease marketplace.
 
-No usernames or passwords. Your Ed25519 key (generated and downloaded at sign-up) **is** your account. Address = `0x` + first 20 bytes of `sha256(ssh_public_key)`.
+No usernames or passwords. Your Ed25519 key (generated and downloaded at sign-up) **is** your account. Address = `aw_` + base32 of `sha256(ssh_public_key)[0:10]` (19 chars total).
 
 ---
 
 ## Use it (tunnel owner)
 
-1. Open `https://airweb.fyi/dashboard` → **Generate key & sign up** → save the downloaded `airweb_key`.
-2. `chmod 600 ./airweb_key`
+1. Open `https://airweb.fyi/dashboard` → **Create account** → save the downloaded key file (named after the server's domain, e.g. `airweb.fyi_key.txt`).
+2. `chmod 600 ./airweb.fyi_key.txt`
 3. Tunnel `localhost:3000` out as `mysub.airweb.fyi`:
    ```sh
-   ssh -i ./airweb_key -p 2222 -o IdentitiesOnly=yes \
+   ssh -i ./airweb.fyi_key.txt -p 2222 -o IdentitiesOnly=yes \
        -N -R 80:localhost:3000 mysub@airweb.fyi
    ```
 4. Watch credits accrue on the dashboard (1/min per online tunnel by default).
 
-Convenience wrapper: `node client/airweb.js --key ./airweb_key --sub mysub --local 3000`.
+Convenience wrapper: `node client/airweb.js --key ./airweb.fyi_key.txt --sub mysub --local 3000`.
 
 Lost the key = lost the account. Re-import on another machine at `/login`.
 
@@ -63,14 +63,31 @@ sudo npm --prefix /opt/airweb install
 ```
 
 ### 3. Config
-Create `/opt/airweb/config.json` with just the values that differ from `config.default.json`:
+
+The public domain and scheme are read from environment variables (or a `.env`
+file in the project root). Copy `.env.example` to `.env`:
+
+```bash
+cp .env.example .env
+```
+
+Production `.env`:
+```
+AIRWEB_PUBLIC_DOMAIN=airweb.fyi
+AIRWEB_PUBLIC_SCHEME=https
+```
+
+Local development uses `lvh.me` (which resolves `*.lvh.me` to `127.0.0.1`):
+```
+AIRWEB_PUBLIC_DOMAIN=lvh.me:8080
+AIRWEB_PUBLIC_SCHEME=http
+```
+
+Anything else (ports, credit rates, etc.) can still be overridden by creating
+`config.json` next to `config.default.json`:
 ```json
 {
-  "http": {
-    "host": "127.0.0.1",
-    "publicDomain": "airweb.fyi",
-    "publicScheme": "https"
-  }
+  "http": { "host": "127.0.0.1" }
 }
 ```
 
@@ -172,7 +189,7 @@ Session cookie `airweb_sid` set on register/login. All JSON.
 
 ## Not in scope
 
-Real-money top-ups, KYC, escrow, clustering, secp256k1 signatures (the `0x…` address is wallet-shaped but derived from an Ed25519 SSH key).
+Real-money top-ups, KYC, escrow, clustering, on-chain settlement (the `aw_…` address is derived from an Ed25519 SSH key and is not a blockchain wallet).
 
 ## License
 

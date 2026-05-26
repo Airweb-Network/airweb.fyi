@@ -1,78 +1,817 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" translate="no">
 <head>
 <meta charset="utf-8" />
 <title>AirWeb · Dashboard</title>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <meta name="robots" content="noindex" />
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%233a6ed1'/%3E%3Ctext x='50%25' y='58%25' font-family='system-ui' font-size='38' text-anchor='middle' fill='white' font-weight='700'%3EA%3C/text%3E%3C/svg%3E" />
+<meta name="google" content="notranslate" />
+<meta http-equiv="Content-Language" content="en" />
+<meta name="theme-color" content="#1c1c1e" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23202020'/%3E%3Crect x='8' y='8' width='22' height='22' rx='3' fill='%234cc2ff'/%3E%3Crect x='34' y='8' width='22' height='22' rx='3' fill='%234cc2ff'/%3E%3Crect x='8' y='34' width='22' height='22' rx='3' fill='%234cc2ff'/%3E%3Crect x='34' y='34' width='22' height='22' rx='3' fill='%234cc2ff'/%3E%3C/svg%3E" />
 <style>
-  :root { color-scheme: dark; --bg:#0f1115; --panel:#161a25; --line:#232734; --fg:#e7eaf0; --mute:#8a93a6; --accent:#9fcaff; --accent2:#3a6ed1; --good:#3acf6d; --warn:#e6b15a; --bad:#e36b6b; --code:#0b0d12; }
-  * { box-sizing:border-box; }
-  html,body { margin:0; padding:0; background:var(--bg); color:var(--fg); font:14px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
-  a { color:var(--accent); text-decoration:none; }
-  a:hover { text-decoration:underline; }
-  header.bar { display:flex; align-items:center; gap:1rem; padding:.9rem 1.4rem; border-bottom:1px solid var(--line); }
-  header.bar .logo { width:28px; height:28px; border-radius:7px; background:var(--accent2); display:grid; place-items:center; font-weight:800; color:white; }
-  header.bar nav { margin-left:auto; display:flex; gap:1rem; font-size:.85rem; color:var(--mute); }
-  header.bar nav a { color:var(--mute); }
-  main { max-width: 1100px; margin: 0 auto; padding: 1.6rem 1.4rem 4rem; }
-  h1 { font-size:1.4rem; margin: .2rem 0 1.2rem; }
-  h2 { font-size:1rem; margin: 0 0 .8rem; color:var(--fg); letter-spacing:.02em; text-transform:uppercase; font-weight:700; color:var(--mute); }
-  .grid { display:grid; gap:1rem; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); margin-bottom:1.4rem; }
-  .card { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:1.2rem 1.3rem; }
-  .stat { display:flex; flex-direction:column; gap:.2rem; }
-  .stat .v { font-size:1.8rem; font-weight:700; line-height:1; }
-  .stat .l { color:var(--mute); font-size:.8rem; text-transform:uppercase; letter-spacing:.04em; }
-  .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size:.85rem; word-break: break-all; }
-  .pill { display:inline-block; padding:2px 8px; border-radius:999px; font-size:.7rem; border:1px solid var(--line); color:var(--mute); background:rgba(255,255,255,.03); }
-  .pill.good { color:var(--good); border-color:#1f4d2f; background:#0f1f17; }
-  .pill.warn { color:var(--warn); border-color:#5a4528; background:#211a10; }
-  .pill.bad  { color:var(--bad);  border-color:#5a2828; background:#211010; }
-  button, .btn { background:var(--accent2); color:white; border:none; padding:.55rem 1rem; border-radius:7px; font-size:.85rem; cursor:pointer; font-weight:600; }
-  button:hover { filter:brightness(1.1); }
-  button.ghost { background:transparent; border:1px solid var(--line); color:var(--fg); }
-  button.danger { background:#3a1717; color:#ffb3b3; border:1px solid #5a2828; }
-  input, textarea { background:var(--code); border:1px solid var(--line); color:var(--fg); border-radius:7px; padding:.5rem .7rem; font: inherit; width:100%; }
-  textarea { font-family: ui-monospace, Menlo, monospace; font-size:.8rem; min-height:100px; }
-  label { display:block; font-size:.8rem; color:var(--mute); margin-bottom:.25rem; }
-  table { width:100%; border-collapse:collapse; font-size:.85rem; }
-  th, td { text-align:left; padding:.55rem .6rem; border-bottom:1px solid var(--line); }
-  th { color:var(--mute); font-weight:600; font-size:.75rem; text-transform:uppercase; letter-spacing:.04em; }
-  td.mono { word-break:break-all; }
-  .row { display:flex; gap:.6rem; align-items:center; }
-  .row > * { flex:1; }
-  .right { text-align:right; }
-  pre { background:var(--code); border:1px solid var(--line); border-radius:7px; padding:.7rem .9rem; overflow:auto; font-family: ui-monospace, Menlo, monospace; font-size:.8rem; color:#d8e0ee; }
-  .modal-bg { position:fixed; inset:0; background:rgba(0,0,0,.7); display:none; align-items:center; justify-content:center; padding:1rem; z-index:50; }
-  .modal-bg.open { display:flex; }
-  .modal { background:var(--panel); border:1px solid var(--line); border-radius:14px; max-width:640px; width:100%; padding:1.6rem 1.8rem; max-height: 90vh; overflow:auto; }
-  .modal h2 { color:var(--fg); font-size:1.15rem; text-transform:none; letter-spacing:0; }
-  .empty { color:var(--mute); padding:1rem 0; font-size:.85rem; }
-  .hide { display:none !important; }
-  .reason { color:var(--mute); }
-  .delta-pos { color:var(--good); }
-  .delta-neg { color:var(--bad); }
+  /* =====================================================================
+     Windows 11 — Dark mode (Fluent / Mica inspired)
+     ===================================================================== */
+  /* =====================================================================
+     macOS-inspired theme (Sequoia / Sonoma) — calm, soft, system-flavored
+     ===================================================================== */
+  :root {
+    color-scheme: dark;
+    --bg:        #1c1c1e;
+    --panel:     #2c2c2e;
+    --panel2:    #3a3a3c;
+    --code:      #161618;
+    --line:      rgba(255,255,255,.09);
+    --line2:     rgba(255,255,255,.16);
+    --fg:        #f5f5f7;
+    --fg2:       #e8e8ea;
+    --mute:      #98989d;
+    --mute2:     #8e8e93;
+    --accent:    #0a84ff;
+    --accent2:   #409cff;
+    --accent-fg: #ffffff;
+    --good:      #30d158;
+    --warn:      #ffd60a;
+    --bad:       #ff453a;
+    --bad2:      #d70015;
+    --hover:     rgba(255,255,255,.05);
+    --hover2:    rgba(255,255,255,.09);
+    --header-bg: rgba(28,28,30,.78);
+    --modal-bg:  rgba(36,36,38,.92);
+    --btn-disabled-bg: rgba(255,255,255,.08);
+    --selection-bg: rgba(10,132,255,.35);
+    --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+            "Segoe UI Variable Text", "Segoe UI", "Helvetica Neue",
+            system-ui, Arial, sans-serif;
+    --display: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+               "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", "Cascadia Code",
+            "JetBrains Mono", "Consolas", Menlo, monospace;
+    --radius:    10px;
+    --radius-sm: 6px;
+    --radius-lg: 14px;
+    --shadow-card: 0 1px 2px rgba(0,0,0,.30), 0 0 0 .5px rgba(255,255,255,.04);
+    --shadow-pop:  0 10px 30px rgba(0,0,0,.45), 0 0 0 .5px rgba(255,255,255,.08);
+  }
+  /* macOS Light palette */
+  html[data-theme="light"] {
+    color-scheme: light;
+    --bg:        #f5f5f7;
+    --panel:     #ffffff;
+    --panel2:    #fbfbfd;
+    --code:      #f0f0f3;
+    --line:      rgba(0,0,0,.08);
+    --line2:     rgba(0,0,0,.16);
+    --fg:        #1d1d1f;
+    --fg2:       #2f2f33;
+    --mute:      #6e6e73;
+    --mute2:     #86868b;
+    --accent:    #007aff;
+    --accent2:   #339dff;
+    --accent-fg: #ffffff;
+    --good:      #28a745;
+    --warn:      #b25e09;
+    --bad:       #d70015;
+    --bad2:      #b1271b;
+    --hover:     rgba(0,0,0,.04);
+    --hover2:    rgba(0,0,0,.07);
+    --header-bg: rgba(255,255,255,.78);
+    --modal-bg:  rgba(252,252,254,.96);
+    --btn-disabled-bg: rgba(0,0,0,.06);
+    --selection-bg: rgba(0,122,255,.25);
+    --shadow-card: 0 1px 2px rgba(0,0,0,.05), 0 0 0 .5px rgba(0,0,0,.04);
+    --shadow-pop:  0 14px 40px rgba(0,0,0,.18), 0 0 0 .5px rgba(0,0,0,.06);
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg);
+  }
+  html { scrollbar-gutter: stable; }
+  body {
+    background: var(--bg); color: var(--fg2);
+    font: 14px/1.5 var(--sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; color: var(--accent2); }
+  ::selection { background: var(--selection-bg); color: var(--fg); }
 
-  /* Tabs */
-  .tabs { display:flex; gap:.3rem; border-bottom:1px solid var(--line); margin:0 0 1.4rem; }
-  .tabs button { background:transparent; color:var(--mute); border:none; border-bottom:2px solid transparent; border-radius:0; padding:.7rem 1.1rem; font-weight:600; font-size:.9rem; cursor:pointer; }
-  .tabs button:hover { color:var(--fg); }
-  .tabs button.active { color:var(--fg); border-bottom-color:var(--accent2); }
-  .tabs button.admin-only { color:var(--accent); }
+  /* Custom scrollbars */
+  *::-webkit-scrollbar { width: 12px; height: 12px; }
+  *::-webkit-scrollbar-track { background: transparent; }
+  *::-webkit-scrollbar-thumb {
+    background: var(--line2); border-radius: 6px;
+    border: 3px solid transparent; background-clip: padding-box;
+  }
+  *::-webkit-scrollbar-thumb:hover { background: var(--mute); border: 3px solid transparent; background-clip: padding-box; }
+
+  /* Header / title bar — shared with landing */
+  header.site {
+    background: var(--header-bg);
+    border-bottom: 1px solid var(--line);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    position: sticky; top: 0; z-index: 20;
+  }
+  header.site .inner {
+    max-width: 1200px; margin: 0 auto;
+    min-height: 48px; box-sizing: border-box;
+    padding: .6rem 1.4rem;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  header.site a { color: var(--fg); text-decoration: none; }
+  header.site .brand {
+    display: flex; align-items: center; gap: .6rem;
+    text-decoration: none; color: inherit;
+  }
+  header.site .logo {
+    width: 28px; height: 28px; border-radius: var(--radius-sm);
+    background: var(--accent); color: var(--accent-fg);
+    display: grid; place-items: center;
+    font-family: var(--display); font-weight: 700; font-size: .95rem;
+  }
+  header.site strong {
+    font-family: var(--display); font-weight: 600;
+    letter-spacing: 0; color: var(--fg); font-size: 1rem;
+  }
+  header.site nav {
+    margin-left: auto; display: flex; gap: .25rem;
+    font-size: .9rem; align-items: center;
+  }
+  header.site nav a, header.site nav .navlink {
+    color: var(--fg2);
+    padding: .35rem .75rem; border-radius: var(--radius-sm);
+    transition: background .12s;
+  }
+  header.site nav a:hover, header.site nav .navlink:hover {
+    background: var(--hover); color: var(--fg); text-decoration: none;
+  }
+
+  /* Header user menu (avatar + balance, dropdown) */
+  .nav-balance {
+    display: inline-flex; flex-direction: column; align-items: flex-end;
+    color: var(--fg); padding: .1rem .5rem .1rem 0; line-height: 1.1;
+    text-align: right;
+  }
+  .nav-balance .usd { color: var(--mute); font-size: .62rem; letter-spacing: .02em; font-variant-numeric: tabular-nums; }
+  .nav-balance .amt { font-family: var(--mono); font-weight: 600; font-size: .95rem; font-variant-numeric: tabular-nums; margin-top: .05rem; }
+  .user-menu { position: relative; display: inline-flex; align-items: center; gap: .15rem; }
+  .avatar-trigger {
+    display: inline-flex; align-items: center; gap: .4rem;
+    background: transparent; border: none; cursor: pointer;
+    padding: .15rem .55rem .15rem .15rem; max-width: none; flex: 0 0 auto;
+    border-radius: 999px;
+    transition: background .15s;
+  }
+  .avatar-trigger:hover { background: var(--hover); }
+  .avatar-trigger:active { transform: scale(.98); }
+  .nav-addr {
+    font-family: var(--mono); font-size: .78rem; color: var(--mute);
+    letter-spacing: .02em;
+    max-width: 14ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .avatar {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--hover);
+    display: grid; place-items: center;
+    padding: 0; flex: 0 0 auto;
+    overflow: hidden;
+    box-shadow: inset 0 0 0 .5px rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.18);
+  }
+  .avatar > span { display: block; width: 100%; height: 100%; line-height: 0; }
+  .avatar svg { display: block; width: 100%; height: 100%; }
+  .user-menu-addr {
+    display: flex; align-items: center; gap: .4rem;
+    margin-top: .35rem; padding: .4rem .5rem;
+    background: var(--hover); border-radius: var(--radius-sm);
+  }
+  .user-menu-addr code {
+    flex: 1; font-family: var(--mono); font-size: .78rem; color: var(--fg);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; user-select: all;
+  }
+  .user-menu-addr button {
+    padding: .25rem .55rem; font-size: .72rem; max-width: none;
+    background: var(--panel); color: var(--fg); border: 1px solid var(--line);
+    border-radius: calc(var(--radius-sm) - 2px); cursor: pointer;
+  }
+  .user-menu-addr button:hover { background: var(--hover2); }
+  .user-menu-panel {
+    position: absolute; top: calc(100% + .5rem); right: 0;
+    min-width: 220px; max-width: 280px;
+    background: var(--modal-bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-pop);
+    padding: .5rem;
+    z-index: 50;
+    backdrop-filter: saturate(180%) blur(24px);
+    -webkit-backdrop-filter: saturate(180%) blur(24px);
+  }
+  .user-menu-section { padding: .45rem .6rem .35rem; }
+  .user-menu-section .label {
+    color: var(--mute); font-size: .68rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .06em;
+  }
+  .user-menu-sep { height: 1px; background: var(--line); margin: .25rem .35rem; }
+  .theme-row { display: flex; gap: .25rem; margin-top: .4rem; padding: .2rem; background: var(--hover); border-radius: var(--radius-sm); }
+  .theme-row button {
+    flex: 1; padding: .38rem .4rem; font-size: .78rem; max-width: none;
+    background: transparent; color: var(--fg2); border: none; font-weight: 500;
+    border-radius: calc(var(--radius-sm) - 2px);
+  }
+  .theme-row button:hover { background: var(--hover2); color: var(--fg); border-color: transparent; }
+  .theme-row button.active {
+    background: var(--panel); color: var(--fg); border-color: transparent;
+    box-shadow: 0 1px 2px rgba(0,0,0,.15), 0 0 0 .5px var(--line2);
+  }
+  .theme-row button.active:hover { background: var(--panel); }
+  .settings-row {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: .6rem; padding: .35rem .6rem;
+  }
+  .settings-row .label {
+    color: var(--mute); font-size: .75rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .04em;
+  }
+  .settings-row .i18n-picker,
+  .settings-row .cur-picker { display: inline-flex; }
+  .settings-row .i18n-picker-trigger,
+  .settings-row .cur-picker-trigger {
+    background: transparent; border: 1px solid var(--line);
+    padding: .32rem .55rem !important; border-radius: var(--radius-sm);
+    color: var(--fg); font-size: .82rem; cursor: pointer;
+  }
+  .settings-row .i18n-picker-trigger:hover,
+  .settings-row .cur-picker-trigger:hover { background: var(--hover); }
+  .user-menu-item {
+    display: block; width: 100%; text-align: left;
+    background: transparent; color: var(--fg); border: none;
+    padding: .5rem .6rem; border-radius: var(--radius-sm);
+    font: inherit; font-size: .88rem; cursor: pointer; max-width: none;
+  }
+  .user-menu-item:hover { background: var(--hover2); }
+
+  /* Layout */
+  main { max-width: 1200px; margin: 0 auto; padding: 1.6rem 1.4rem 4rem; }
+  h1 {
+    font: 600 1.65rem/1.2 var(--display);
+    margin: .2rem 0 1.4rem;
+    color: var(--fg);
+    letter-spacing: -.005em;
+  }
+  h2 {
+    font: 600 1.05rem/1.3 var(--display);
+    margin: 0 0 .75rem;
+    color: var(--fg);
+    text-transform: none; letter-spacing: 0;
+  }
+
+  /* Cards / panels — Mica surface */
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1rem 1.2rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow-card);
+  }
+  .card.stat { padding: .7rem 1rem; margin-bottom: 0; }
+
+  /* Collapsible cards */
+  .card[data-collapsible] > h2,
+  .card[data-collapsible] > div:first-child > h2 {
+    cursor: pointer; user-select: none;
+    display: inline-flex; align-items: center; gap: .45rem;
+  }
+  .card[data-collapsible] > h2::after,
+  .card[data-collapsible] > div:first-child > h2::after {
+    content: "▾"; color: var(--mute); font-weight: 400;
+    transition: transform .15s;
+  }
+  .card.collapsed > h2::after,
+  .card.collapsed > div:first-child > h2::after { transform: rotate(-90deg); }
+  .card.collapsed { padding-bottom: .6rem; padding-top: .6rem; }
+  .card.collapsed > *:not(:first-child) { display: none !important; }
+  .card.collapsed > div:first-child > *:not(h2) { display: none !important; }
+
+  /* Grid (legacy) */
+  .grid { display: grid; gap: .7rem; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-bottom: 1rem; }
+
+  /* ---------------- Hero (overview metrics) ---------------- */
+  .hero {
+    margin: .2rem 0 1.4rem;
+    padding: .9rem 1.2rem 1rem;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+  }
+  .hero-head {
+    display: flex; align-items: center; gap: .65rem;
+    width: 100%; background: transparent; border: none; color: inherit;
+    padding: .15rem .3rem .65rem; margin: 0 0 .8rem;
+    border-bottom: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    cursor: pointer; user-select: none; text-align: left;
+    font: inherit;
+    transition: background .12s, color .12s;
+  }
+  .hero-head:hover { background: var(--hover); }
+  .hero-head:hover .hero-head-value { color: var(--accent); }
+  .hero-head-icon { display: none; }
+  .hero-head-label {
+    color: var(--mute); font-size: .9rem;
+    font-family: var(--sans); font-weight: 600;
+  }
+  .hero-head-value {
+    color: var(--fg); font-family: var(--mono); font-size: .9rem;
+    flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis;
+    transition: color .12s;
+  }
+  .hero-head-chev { color: var(--mute); font-size: .85rem; flex: 0 0 auto; transition: transform .15s; }
+  .hero.collapsed .hero-head-chev { transform: rotate(-90deg); }
+  .hero.collapsed .hero-head { padding-bottom: .15rem; margin-bottom: 0; border-bottom-color: transparent; }
+  .hero.collapsed .hero-row { display: none; }
+  .hero.collapsed { padding: .7rem 1.2rem; }
+
+  .hero-row {
+    display: flex; flex-wrap: wrap; align-items: flex-start;
+    gap: .5rem 2rem;
+  }
+  .hero-sep { width: 1px; align-self: stretch; background: var(--line); margin: .15rem 0; }
+  .metric { display: flex; flex-direction: column; gap: .2rem; padding: .2rem .1rem; min-width: 0; text-align: right; }
+  .metric .label {
+    color: var(--mute); font-size: .55rem !important; font-weight: 500;
+    text-transform: none; letter-spacing: 0;
+    display: flex; align-items: center; gap: .3rem;
+    text-align: left; align-self: stretch;
+    margin-bottom: .35rem;
+  }
+  .metric .label .info {
+    display: inline-grid; place-items: center;
+    width: 13px; height: 13px; border-radius: 50%;
+    background: var(--hover2); color: var(--mute);
+    font-size: 9px; font-weight: 700; line-height: 1;
+    font-family: var(--sans); letter-spacing: 0;
+    text-transform: none;
+    margin-left: auto;
+  }
+  .metric .label .info:hover { background: var(--accent); color: #fff; }
+  .metric .label svg { display: none; }
+  .metric .value {
+    font: 600 1.75rem/1.1 var(--display);
+    font-variant-numeric: tabular-nums; color: var(--fg);
+    letter-spacing: -.02em;
+  }
+  .metric .value .cr { color: var(--mute); font-weight: 400; font-size: .55em; margin-left: .08em; letter-spacing: 0; }
+  /* Generic small currency-unit suffix (e.g. "ACR", "ACR/min") */
+  .unit { color: var(--mute); font-weight: 400; font-size: .68em; margin-left: .18em; letter-spacing: 0; }
+  .metric .sub { color: var(--mute); font-size: .7rem; line-height: 1.35; }
+  .metric .usd-est { color: var(--mute); font-size: .62rem; letter-spacing: .02em; font-variant-numeric: tabular-nums; line-height: 1; margin-bottom: -.25rem; text-align: right; }
+  .metric-pos .value { color: var(--good); }
+  .metric-neg .value { color: var(--bad); }
+  .metric-reward .value { color: var(--accent); }
+  @media (max-width: 720px) {
+    .hero-sep { display: none; }
+    .hero-row { gap: .8rem 1.3rem; }
+    .metric .value { font-size: 1.4rem !important; }
+  }
+
+  /* Section (My Connections, etc.) */
+  .section { margin: 1.4rem 0 1.4rem; }
+  .section-head {
+    display: flex; align-items: center; gap: .7rem; flex-wrap: wrap;
+    padding-bottom: .6rem; margin-bottom: .9rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .section-head h2 { margin: 0; }
+
+  /* Inline elements */
+  .mono { font-family: var(--mono); font-size: 1em; word-break: break-all; }
+  .reason { color: var(--mute); }
+  .delta-pos { color: var(--good); }
+  .delta-neg { color: var(--bad); }
+  .right { text-align: right; }
+  .empty { color: var(--mute); padding: .9rem 0; }
+  .hide { display: none !important; }
+
+  /* Readability floor */
+  .reason, .sub, .badge, label, p, td, th, li, dd, dt, summary {
+    font-size: max(0.9rem, 13px) !important;
+  }
+  .metric .label, .pill, .validated-pill,
+  .hero-head-label, .hero-head-value, .hero-head-chev,
+  .tabs button, .col-filter, .spec, .copy-btn,
+  th, tbody td, header.site nav,
+  .stat .v {
+    font-size: revert !important;
+  }
+  .metric .value { font-size: 1.75rem !important; }
+  .metric .sub { font-size: .68rem !important; }
+  .metric .usd-est { font-size: .62rem !important; }
+
+  /* Pills */
+  .pill {
+    display: inline-block;
+    padding: 2px .6rem;
+    font-size: .85rem;
+    border: 1px solid var(--line2);
+    color: var(--fg2);
+    background: var(--hover);
+    border-radius: 999px;
+  }
+  .pill.good { color: var(--good); border-color: color-mix(in srgb, var(--good) 40%, transparent); background: color-mix(in srgb, var(--good) 12%, transparent); }
+  .pill.warn { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 40%, transparent); background: color-mix(in srgb, var(--warn) 12%, transparent); }
+  .pill.bad  { color: var(--bad);  border-color: color-mix(in srgb, var(--bad)  45%, transparent); background: color-mix(in srgb, var(--bad)  12%, transparent); }
+  .pill.off  { color: var(--mute); border-color: color-mix(in srgb, var(--mute) 35%, transparent); background: color-mix(in srgb, var(--mute) 10%, transparent); }
+  .validated-pill {
+    background: color-mix(in srgb, var(--good) 12%, transparent); color: var(--good);
+    border: 1px solid color-mix(in srgb, var(--good) 40%, transparent); padding: 1px .55rem;
+    border-radius: 999px; font-size: .85rem;
+  }
+
+  /* Buttons — Fluent accent */
+  button, .btn {
+    background: var(--accent);
+    color: var(--accent-fg);
+    border: 1px solid transparent;
+    padding: .42rem 1rem;
+    border-radius: var(--radius-sm);
+    font: 600 .9rem/1.3 var(--sans);
+    cursor: pointer;
+    transition: background .12s, border-color .12s, color .12s, transform .04s;
+  }
+  button:hover, .btn:hover {
+    background: var(--accent2);
+    color: var(--accent-fg);
+  }
+  button:active { background: var(--accent2); transform: translateY(0); filter: brightness(.95); }
+  button:disabled { background: var(--btn-disabled-bg); color: var(--mute2); cursor: not-allowed; }
+  button.ghost {
+    color: var(--fg);
+    background: var(--hover);
+    border: 1px solid var(--line2);
+    font-weight: 500;
+  }
+  button.ghost:hover { background: var(--hover2); color: var(--fg); border-color: var(--line2); }
+  button.ghost.active {
+    color: var(--accent-fg); background: var(--accent); border-color: var(--accent);
+  }
+  button.ghost.active:hover { background: var(--accent2); border-color: var(--accent2); }
+  button.danger {
+    color: #fff; background: var(--bad2); border-color: var(--bad2);
+  }
+  button.danger:hover { background: color-mix(in srgb, var(--bad2) 80%, #000); border-color: color-mix(in srgb, var(--bad2) 80%, #000); }
+
+  /* Inputs */
+  input, textarea, select {
+    background: var(--hover);
+    border: 1px solid var(--line2);
+    color: var(--fg);
+    border-radius: var(--radius-sm);
+    padding: .42rem .65rem;
+    font: inherit;
+    width: 100%;
+    transition: border-color .12s, background .12s, box-shadow .12s;
+  }
+  input::placeholder, textarea::placeholder { color: var(--mute2); }
+  input:hover, textarea:hover, select:hover { background: var(--hover2); }
+  input:focus, textarea:focus, select:focus {
+    outline: none;
+    background: var(--panel);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent);
+  }
+  textarea { font-family: var(--mono); font-size: .9rem; min-height: 110px; }
+  label { display: block; font-size: .85rem; color: var(--fg2); margin-bottom: .3rem; font-weight: 500; }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; font-size: .92rem; background: transparent; }
+  th, td {
+    text-align: left; padding: .55rem .75rem;
+    border-bottom: 1px solid var(--line);
+  }
+  th {
+    color: var(--mute); font-weight: 600; font-size: .85rem;
+    font-family: var(--sans);
+    text-transform: none; letter-spacing: 0;
+    background: transparent;
+    border-bottom: 1px solid var(--line2);
+  }
+  td.mono { word-break: break-all; }
+  tbody tr:hover td { background: var(--hover); }
+
+  /* Compact activity table — small font, one-line rows with optional subscript. */
+  .activity-table { font-size: .76rem; }
+  .activity-table th, .activity-table td {
+    padding: .35rem .5rem;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+  .activity-table td.wrap, .activity-table th.wrap { white-space: normal; }
+  .activity-table .pill,
+  .activity-table .validated-pill,
+  .activity-table .proto-badge {
+    font-size: .62rem;
+    padding: 1px .4rem;
+    line-height: 1.3;
+  }
+  .activity-table .proto-badge { gap: .2rem; }
+  .activity-table .proto-icon { width: 11px; height: 11px; }
+  .activity-table .sub,
+  .activity-table .sup {
+    display: block;
+    font-size: .65rem;
+    color: var(--mute);
+    line-height: 1.2;
+    font-weight: 400;
+    opacity: .85;
+  }
+  .activity-table .sub { margin-top: 1px; }
+  .activity-table .sup { margin-bottom: 1px; }
+  .activity-table .cell-stack { display: inline-flex; flex-direction: column; gap: 0; }
+  .activity-table .badges { display: inline-flex; align-items: center; gap: .25rem; flex-wrap: nowrap; }
+  .activity-table button { font-size: .7rem; padding: 3px 8px; }
+  .activity-table button.icon-btn { padding: 3px 7px; min-width: 0; }
+
+  .row { display: flex; gap: .6rem; align-items: center; }
+  .row > * { flex: 1; }
+
+  /* Code / pre blocks */
+  pre {
+    background: var(--code);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: .7rem .85rem;
+    overflow: auto;
+    font-family: var(--mono);
+    font-size: .9rem;
+    color: var(--fg2);
+    white-space: pre;
+  }
+
+  /* Tabs — Win11 pivot style */
+  .tabs {
+    display: flex; gap: .25rem;
+    border-bottom: 1px solid var(--line);
+    margin: 0 0 1.2rem;
+  }
+  .tabs button {
+    background: transparent; color: var(--mute);
+    border: none; border-bottom: 2px solid transparent;
+    border-radius: 0;
+    padding: .55rem .9rem;
+    font: 500 .95rem/1.3 var(--sans);
+    cursor: pointer;
+    position: relative;
+  }
+  .tabs button:hover { color: var(--fg); background: transparent; }
+  .tabs button.active {
+    color: var(--fg);
+    font-weight: 600;
+  }
+  .tabs button.active::after {
+    content: ""; position: absolute;
+    left: .9rem; right: .9rem; bottom: -1px;
+    height: 3px; border-radius: 2px;
+    background: var(--accent);
+  }
+  .tabs button.active:hover { background: transparent; color: var(--fg); }
+  .tabs button.admin-only { color: var(--accent); }
+
+  /* Filter grid (marketplace) */
+  .filter-grid {
+    display: grid; gap: .8rem 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  }
+  .col-filter { width: 100%; margin-top: .2rem; font-size: .8rem; padding: .3rem .4rem; }
+
+  /* Compact marketplace filter bar */
+  .mf-card { padding: .7rem .9rem; }
+  .mf-row {
+    display: flex; align-items: stretch; gap: .5rem; flex-wrap: wrap;
+    --mf-h: 32px;
+  }
+  .mf-row + .mf-row { margin-top: .55rem; }
+  .mf-row > select,
+  .mf-row > input,
+  .mf-row > button,
+  .mf-row > label {
+    height: var(--mf-h);
+    box-sizing: border-box;
+    font-size: .82rem;
+    line-height: 1;
+  }
+  .mf-row select, .mf-row input[type="text"], .mf-row input:not([type]) {
+    padding: 0 .55rem;
+  }
+  .mf-row button { padding: 0 .85rem; max-width: none; }
+  .mf-search { flex: 1 1 180px; min-width: 140px; }
+  .mf-proto  { flex: 0 0 auto; min-width: 100px; max-width: 140px; }
+  .mf-row .proto-picker { min-width: 0; flex: 0 0 auto; height: var(--mf-h); }
+  .mf-row .proto-picker-trigger {
+    height: var(--mf-h); min-height: 0;
+    padding: 0 .5rem; font-size: .78rem;
+  }
+  .mf-price {
+    display: inline-flex; align-items: center; gap: .35rem;
+    padding: 0 .5rem;
+    background: var(--hover); border-radius: var(--radius-sm);
+    border: 1px solid var(--line);
+    font-size: .74rem; color: var(--mute);
+    flex: 0 0 auto; white-space: nowrap;
+  }
+  .mf-price input[type="range"] {
+    width: 80px; accent-color: var(--accent);
+    height: auto; margin: 0; padding: 0;
+  }
+  .mf-price-val { color: var(--fg); font-weight: 600; min-width: 2.6em; text-align: right; }
+  .mf-adv-toggle {
+    background: transparent; color: var(--mute); border: 1px dashed var(--line2);
+    padding: 0 .55rem !important; font-size: .74rem; font-weight: 500;
+    border-radius: var(--radius-sm); cursor: pointer; font-family: inherit;
+    max-width: none; display: inline-flex; align-items: center; justify-content: center;
+    line-height: 1;
+  }
+  .mf-adv-toggle.active { color: var(--accent); border-color: var(--accent); border-style: solid; }
+  .mf-adv-toggle:hover { color: var(--fg); border-color: var(--line2); background: var(--hover); }
+  .mf-adv {
+    display: grid; gap: .5rem .7rem;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    margin-top: .55rem; padding-top: .55rem;
+    border-top: 1px solid var(--line);
+  }
+  .mf-adv[hidden] { display: none; }
+  .mf-adv label { font-size: .72rem; color: var(--mute); margin: 0 0 .15rem; display: block; }
+  .mf-adv select, .mf-adv input { font-size: .8rem; padding: .3rem .45rem; }
+
+  /* Protocol icon (next to dropdowns and on listing cards) */
+  .proto-icon {
+    display: inline-grid; place-items: center;
+    width: 18px; height: 18px; flex: 0 0 auto;
+    color: var(--fg2);
+  }
+  .proto-icon svg { width: 100%; height: 100%; display: block; }
+  .proto-badge {
+    display: inline-flex; align-items: center; gap: .3rem;
+    padding: 2px .55rem; border-radius: 999px;
+    border: 1px solid var(--line2); color: var(--fg2);
+    font-size: .72rem; font-weight: 500;
+  }
+  .proto-badge .proto-icon { width: 13px; height: 13px; color: var(--accent); }
+
+  /* Custom proto picker (wraps a hidden <select>) */
+  .proto-picker { position: relative; display: inline-flex; align-items: stretch; min-width: 160px; }
+  .proto-picker.full { width: 100%; }
+  .proto-picker > select { position: absolute; opacity: 0; pointer-events: none; width: 1px; height: 1px; }
+  .proto-picker-trigger {
+    flex: 1; display: inline-flex; align-items: center; gap: .35rem;
+    padding: .35rem .55rem; border-radius: var(--radius);
+    border: 1px solid var(--line2); background: var(--panel);
+    color: var(--fg); font-size: .82rem; cursor: pointer;
+    text-align: left; min-height: 34px;
+  }
+  .proto-picker-trigger:hover { background: var(--hover); }
+  .proto-picker-trigger:focus { outline: 2px solid color-mix(in srgb, var(--accent) 50%, transparent); outline-offset: 1px; }
+  .proto-picker-trigger .caret { margin-left: auto; opacity: .55; font-size: .7rem; }
+  .proto-picker-trigger .label { font-weight: 500; }
+  .proto-picker-trigger .proto-icon { width: 16px; height: 16px; color: var(--accent); }
+  .proto-picker-menu {
+    position: absolute; top: 100%; left: 0; right: 0;
+    margin-top: 4px; padding: 4px;
+    background: var(--panel); border: 1px solid var(--line2);
+    border-radius: var(--radius); box-shadow: var(--shadow-card);
+    z-index: 1000; max-height: 320px; overflow-y: auto;
+    display: none;
+  }
+  .proto-picker.open .proto-picker-menu { display: block; }
+  .proto-picker-option {
+    display: flex; align-items: center; gap: .4rem;
+    padding: .35rem .5rem; border-radius: calc(var(--radius) - 2px);
+    cursor: pointer; font-size: .82rem; color: var(--fg);
+  }
+  .proto-picker-option:hover, .proto-picker-option.focused { background: var(--hover); }
+  .proto-picker-option.selected { background: color-mix(in srgb, var(--accent) 14%, transparent); cursor: default; }
+  .proto-picker-option.selected:hover { background: color-mix(in srgb, var(--accent) 14%, transparent); }
+  .proto-picker-option .proto-icon { width: 16px; height: 16px; color: var(--accent); }
+  .proto-picker-option.hidden { display: none; }
+
+  .node-card {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: .9rem 1.1rem;
+    margin-bottom: .8rem;
+    background: var(--panel);
+    box-shadow: var(--shadow-card);
+    transition: background .12s, border-color .12s;
+  }
+  .node-card:hover { background: var(--panel2); border-color: var(--line2); }
+  .node-card h3 { margin: 0 0 .3rem; font: 600 1.02rem/1.25 var(--display); color: var(--fg); }
+  .specs {
+    display: flex; flex-wrap: wrap; gap: .35rem .6rem;
+    font-size: .85rem; color: var(--mute);
+    margin: .4rem 0 .6rem;
+  }
+  .spec {
+    display: inline-flex; align-items: center; gap: .3rem;
+    padding: 1px .55rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--hover);
+  }
+  .spec strong { color: var(--fg); font-weight: 600; }
+  .flag { font-size: 1rem; line-height: 1; }
+
+  /* Modal — content dialog */
+  .modal-bg {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.4);
+    backdrop-filter: saturate(180%) blur(12px);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    display: none; align-items: center; justify-content: center;
+    padding: 1rem; z-index: 50;
+  }
+  .modal-bg.open { display: flex; }
+  .modal {
+    background: var(--modal-bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    max-width: 640px; width: 100%;
+    padding: 1.4rem 1.6rem;
+    max-height: 90vh; overflow: auto;
+    box-shadow: var(--shadow-pop);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+  }
+  .modal h2 {
+    color: var(--fg); font-size: 1.2rem; font-weight: 600;
+    text-transform: none; letter-spacing: 0;
+  }
 </style>
+<link rel="stylesheet" href="/header.css">
+<script src="/i18n.js" defer></script>
+<script src="/currency.js" defer></script>
+<script src="/header.js" defer></script>
 </head>
-<body>
+<body class="notranslate">
 
-<header class="bar">
-  <span class="logo">A</span>
-  <strong>AirWeb</strong>
-  <nav>
-    <a href="/">Home</a>
-    <a href="#marketplace">Marketplace</a>
-    <a href="#handles">Handles</a>
-    <a href="#" id="logoutBtn">Sign out</a>
-  </nav>
+<header class="site">
+  <div class="inner">
+    <a href="/" class="brand" title="AirWeb home">
+      <span class="logo">A</span>
+      <strong>AirWeb</strong>
+    </a>
+    <a href="/marketplace" id="navMarketplace" class="navlink hide" style="margin-left:.5rem">Marketplace</a>
+    <nav>
+      <span id="settingsMenu" class="settings-menu" style="margin-right:.5rem">
+        <button type="button" id="settingsBtn" class="ghost settings-trigger" title="Settings" aria-label="Settings" aria-haspopup="menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </button>
+        <div id="settingsPanel" class="settings-panel" role="menu" hidden>
+          <div class="settings-section">
+            <div class="label">Theme</div>
+            <div class="theme-row" id="themeRow">
+              <button type="button" data-theme="dark">Dark</button>
+              <button type="button" data-theme="light">Light</button>
+            </div>
+          </div>
+          <div class="settings-sep"></div>
+          <div class="settings-row">
+            <div class="label">Language</div>
+            <span id="i18nPickerSlotMenu" data-no-i18n="1"></span>
+          </div>
+          <div class="settings-row">
+            <div class="label">Currency</div>
+            <span id="currencyPickerSlotMenu" data-no-i18n="1"></span>
+          </div>
+        </div>
+      </span>
+      <span id="userMenu" class="user-menu hide">
+        <a id="navBalance" class="nav-balance hide" href="/dashboard" title="Go to dashboard">
+          <span class="usd" id="navCreditsUsd"></span>
+          <span class="amt"><span id="navCreditsVal">…</span><span class="unit">ACR</span></span>
+        </a>
+        <button id="avatarBtn" class="avatar-trigger" type="button" aria-haspopup="menu" aria-expanded="false" title="Account">
+          <span class="avatar"><span id="avatarLetter" aria-hidden="true"></span></span>
+          <span id="navAddr" class="nav-addr hide"></span>
+        </button>
+        <div id="userMenuPanel" class="user-menu-panel" role="menu" hidden>
+          <div class="user-menu-section">
+            <div class="label">Account</div>
+            <div class="user-menu-addr">
+              <code id="menuAddrFull"></code>
+              <button id="menuAddrCopy" type="button">Copy</button>
+            </div>
+          </div>
+          <div class="user-menu-sep"></div>
+          <button id="logoutBtn" class="user-menu-item" type="button">Sign out</button>
+        </div>
+      </span>
+    </nav>
+  </div>
 </header>
 
 <main>
@@ -84,12 +823,14 @@
   <div class="card" style="text-align:center; padding:2.4rem">
     <h1 style="font-size:1.7rem; margin-bottom:.6rem">Get started in 10 seconds</h1>
     <p style="color:var(--mute); max-width:520px; margin:0 auto 1.6rem">
-      We'll generate an Ed25519 SSH key in your browser, hand you the private key file once, and derive your wallet-style address from it. You'll receive a <strong id="bonusVal">100</strong> credit signup bonus.
+      We'll generate an Ed25519 SSH key in your browser, hand you the private key file once, and derive your short account ID from it. You'll receive a <strong id="bonusVal">100</strong> credit signup bonus.
     </p>
-    <button id="registerBtn" style="font-size:1rem; padding:.8rem 1.6rem">Generate key &amp; sign up →</button>
-    <p style="margin-top:1.2rem; color:var(--mute); font-size:.85rem">
-      Already have a key file? <a href="/login">Restore session</a>.
-    </p>
+    <div style="display:flex; gap:.8rem; justify-content:center; flex-wrap:wrap">
+      <button id="openDisclaimerBtn" style="font-size:1rem; padding:.8rem 1.6rem; min-width:200px">Create account</button>
+      <a href="/login" style="text-decoration:none">
+        <button class="ghost" style="font-size:1rem; padding:.8rem 1.6rem; min-width:200px">Sign in with key</button>
+      </a>
+    </div>
   </div>
 </section>
 
@@ -98,76 +839,190 @@
 <!-- ============================================================ -->
 <section id="authState" class="hide">
 
-  <h1>Dashboard</h1>
+  <h1 id="pageTitle">Dashboard</h1>
 
   <div class="tabs" id="tabBar">
-    <button data-tab="user" class="active">My account</button>
+    <button data-tab="overview"     class="active">Overview</button>
+    <button data-tab="transactions">Transactions</button>
     <button data-tab="admin" id="adminTabBtn" class="admin-only hide">Admin</button>
   </div>
 
-  <!-- ============ User tab ============ -->
-  <div id="tabUser">
+  <!-- ============ Overview tab ============ -->
+  <div id="tabOverview">
 
-  <div class="grid">
-    <div class="card stat"><span class="l">Balance</span><span class="v"><span id="creditsVal">…</span> <small style="font-size:.65em;color:var(--mute);font-weight:500">credits</small></span><span class="reason" style="font-size:.8rem;margin-top:.2rem" id="creditsUsd">…</span></div>
-    <div class="card stat"><span class="l">Address</span><span class="mono" id="addrVal" style="font-size:.9rem; margin-top:.4rem">…</span></div>
-    <div class="card stat"><span class="l">Online tunnels</span><span class="v" id="tunnelsCount">0</span></div>
-    <div class="card stat"><span class="l">Active leases</span><span class="v" id="leasesCount">0</span></div>
+    <div class="hero" id="overviewHero">
+      <div class="hero-head" role="button" tabindex="0" id="heroHead" aria-label="Toggle overview">
+        <svg class="hero-head-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M10.5 1a4.5 4.5 0 1 0-1.43 8.77L8 11l1 1-1 1 1 1-2 2H4v-3l5.07-5.07A4.5 4.5 0 0 0 10.5 1Zm.5 4a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z" fill="currentColor"/></svg>
+        <span class="hero-head-label">Account</span>
+        <span class="hero-head-value mono" id="addrVal">…</span>
+        <button id="addrCopyBtn" type="button" class="ghost" title="Copy account ID"
+                style="flex:0 0 auto; padding:.15rem .55rem; font-size:.7rem; max-width:none; margin-right:.4rem">Copy</button>
+        <span class="hero-head-chev" aria-hidden="true">▾</span>
+      </div>
+
+      <div class="hero-row">
+        <div class="metric">
+          <span class="label">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 8a3 3 0 0 1 3-3h3v2H4a1 1 0 0 0 0 2h3v2H4a3 3 0 0 1-3-3Zm14 0a3 3 0 0 1-3 3H9V9h3a1 1 0 0 0 0-2H9V5h3a3 3 0 0 1 3 3ZM5 7h6v2H5V7Z" fill="currentColor"/></svg>
+            Tunnels
+            <span class="info" title="Number of your SSH tunnels currently online and reachable.">i</span>
+          </span>
+          <span class="sub usd-est" aria-hidden="true">&nbsp;</span>
+          <span class="value" id="tunnelsCount">0</span>
+        </div>
+        <span class="hero-sep" aria-hidden="true"></span>
+
+        <div class="metric">
+          <span class="label">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 4h10l-1 7H4L3 4Zm0 0L2 2H0M5 14a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm6 0a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Leases
+            <span class="info" title="Active marketplace leases you have purchased on others' tunnels.">i</span>
+          </span>
+          <span class="sub usd-est" aria-hidden="true">&nbsp;</span>
+          <span class="value" id="leasesCount">0</span>
+        </div>
+        <span class="hero-sep" aria-hidden="true"></span>
+
+        <div class="metric metric-reward">
+          <span class="label">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 13l4-5 3 3 7-9" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Reward / min
+            <span class="info" title="Average credits earned per minute from tunnel uptime over the last 24 hours. Falls back to the configured rate × online tunnels when no history exists yet.">i</span>
+          </span>
+          <span class="sub usd-est">est. <span id="earnRateUsd">$0.00</span></span>
+          <span class="value" id="earnRateVal">0</span>
+          <span class="sub" id="earn24hVal">—</span>
+        </div>
+        <span class="hero-sep" aria-hidden="true"></span>
+
+        <div class="metric metric-neg">
+          <span class="label">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M15 4l-5 5-3-3-6 7" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Charge / min
+            <span class="info" title="Average credits charged per minute for bandwidth consumed by your active leases over the last 24 hours.">i</span>
+          </span>
+          <span class="sub usd-est">est. <span id="totalChargedUsd">$0.00</span></span>
+          <span class="value" id="totalChargedVal">0.0000</span>
+          <span class="sub" id="charged24hVal">—</span>
+        </div>
+        <span class="hero-sep" aria-hidden="true"></span>
+
+        <div class="metric" id="netMetric">
+          <span class="label">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h12M8 2v12" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
+            <span id="netLabel">Earning / min</span>
+            <span class="info" title="Net credit flow per minute: Reward minus Charge. Positive means you are earning, negative means you are consuming more than you earn.">i</span>
+          </span>
+          <span class="sub usd-est">est. <span id="netRateUsd">$0.00</span></span>
+          <span class="value" id="netRateVal">0.0000</span>
+          <span class="sub" id="net24hVal">—</span>
+        </div>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="section-head">
+        <h2 style="margin:0">My Connections</h2>
+        <span class="reason" id="activitySummary" style="font-size:.78rem"></span>
+        <button id="openConnectBtn" style="margin-left:auto; max-width:160px">+ Connection</button>
+      </div>
+      <div style="display:flex; align-items:center; gap:.6rem; margin-bottom:.8rem; flex-wrap:wrap">
+        <input id="activitySearch" placeholder="Search connections\u2026" style="flex:1; min-width:180px; max-width:360px" />
+        <div id="activityFilter" style="display:inline-flex; gap:.3rem; flex-wrap:wrap">
+          <button class="ghost active" data-act="all" style="max-width:90px">All</button>
+          <button class="ghost" data-act="tunnel" style="max-width:90px">Tunnels</button>
+          <button class="ghost" data-act="listing" style="max-width:90px">Listings</button>
+          <button class="ghost" data-act="lease" style="max-width:90px">Leases</button>
+        </div>
+      </div>
+      <div id="activityList"></div>
+    </section>
   </div>
 
-  <div class="card" style="margin-bottom:1.4rem">
-    <h2>Online tunnels (earning <span id="uptimeRate">1.00</span> cr/min each — <span id="uptimeUsd">$0.01</span>/min)</h2>
-    <div id="tunnelsList"></div>
-    <details style="margin-top:1rem">
-      <summary style="cursor:pointer; color:var(--mute); font-size:.85rem">How do I bring a tunnel online?</summary>
-      <pre id="sshExample">ssh -i ./airweb_key -p 2222 -R 80:localhost:3000 mysub@airweb.fyi</pre>
-    </details>
-  </div>
+  <!-- ============ Marketplace tab ============ -->
+  <div id="tabMarketplace" class="hide">
+    <div class="card mf-card" style="margin-bottom:1rem">
+      <div class="mf-row">
+        <select id="mfProto" class="mf-proto">
+          <option value="">Protocol</option>
+          <option value="ssh">SSH</option>
+          <option value="rdp">RDP</option>
+          <option value="mysql">MySQL</option>
+          <option value="postgres">PostgreSQL</option>
+          <option value="mongodb">MongoDB</option>
+          <option value="redis">Redis</option>
+          <option value="vnc">VNC</option>
+          <option value="http">HTTP</option>
+          <option value="https">HTTPS</option>
+        </select>
+        <input id="mfQ" class="mf-search" type="text" placeholder="Search title or description…" />
+        <label class="mf-price" title="Max price (credits / min)">
+          <input id="mfMaxPrice" type="range" min="0" max="10" step="0.01" value="10" />
+          <span class="mf-price-val" id="mfMaxPriceVal">All</span>
+          <span>ACR/min</span>
+        </label>
+        <button id="mfApply">Apply</button>
+        <button class="ghost" id="mfClear">Reset</button>
+        <button type="button" class="mf-adv-toggle" id="mfAdvToggle" aria-expanded="false" aria-label="Toggle advanced filters" title="Advanced filters">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h18M6 12h12M10 19h4"/></svg>
+        </button>
+      </div>
+      <div class="mf-adv" id="mfAdv" hidden>
+        <div>
+          <label>Country</label>
+          <select id="mfCountry"><option value="">Any</option></select>
+        </div>
+        <div>
+          <label>Min cores</label>
+          <input id="mfMinCores" type="number" min="0" placeholder="0" />
+        </div>
+        <div>
+          <label>Min RAM (GB)</label>
+          <input id="mfMinRam" type="number" min="0" placeholder="0" />
+        </div>
+        <div>
+          <label>OS contains</label>
+          <input id="mfOs" placeholder="linux, debian…" />
+        </div>
+      </div>
+    </div>
 
-  <div class="grid">
-    <!-- Marketplace -->
-    <div class="card" id="marketplace">
-      <h2>Marketplace · lease a tunnel</h2>
+    <div class="card">
+      <h2>All listings <span class="reason" id="marketCount" style="font-weight:400; text-transform:none; letter-spacing:0; font-size:.8rem"></span></h2>
       <div id="marketList"></div>
     </div>
-
-    <!-- My listings -->
-    <div class="card">
-      <h2>My listings · earn from your tunnels</h2>
-      <div class="row" style="margin-bottom:.6rem">
-        <input id="listingTitle" placeholder="Title (e.g. 'Beefy home server')" />
-      </div>
-      <div class="row" style="margin-bottom:.6rem">
-        <input id="listingDesc" placeholder="Description (optional)" />
-        <input id="listingPrice" type="number" min="1" placeholder="credits / min" style="max-width:130px" />
-      </div>
-      <button id="createListingBtn">List for lease</button>
-      <div id="myListings" style="margin-top:1rem"></div>
-    </div>
   </div>
 
-  <div class="grid">
-    <!-- Handles -->
-    <div class="card" id="handles">
-      <h2>Handles · reserve a permanent subdomain</h2>
-      <p style="color:var(--mute); font-size:.85rem">
-        A handle like <code class="mono">myname.<span id="handleDomain">airweb.fyi</span></code> only you can publish under. Perfect for remote-accessing your home machine. Cost: <strong id="handleCostVal">50.00</strong> credits (<span id="handleCostUsd">$0.50</span>).
-      </p>
-      <div class="row" style="margin-bottom:.6rem">
-        <input id="handleInput" placeholder="myname" maxlength="32" />
-        <button id="buyHandleBtn" style="max-width:140px">Claim handle</button>
-      </div>
-      <div id="myHandles"></div>
-    </div>
-
-    <!-- Recent activity -->
+  <!-- ============ Transactions tab ============ -->
+  <div id="tabTransactions" class="hide">
     <div class="card">
-      <h2>Recent credit activity</h2>
-      <table id="ledgerTable"><tbody></tbody></table>
+      <div style="display:flex; align-items:center; gap:.6rem; margin-bottom:.8rem; flex-wrap:wrap">
+        <h2 style="margin:0">Recent credit activity</h2>
+        <span class="reason" id="txTotal" style="font-size:.8rem"></span>
+        <button class="ghost" id="txClearFilters" style="margin-left:auto; max-width:130px">Clear filters</button>
+      </div>
+      <table id="ledgerTable">
+        <thead>
+          <tr>
+            <th>Reason <input data-col="reason" class="col-filter" placeholder="filter\u2026" /></th>
+            <th>Ref <input data-col="ref" class="col-filter" placeholder="filter\u2026" /></th>
+            <th class="right">Delta
+              <select data-col="sign" class="col-filter" style="max-width:90px; margin-top:.2rem">
+                <option value="">all</option>
+                <option value="pos">+ only</option>
+                <option value="neg">\u2212 only</option>
+              </select>
+            </th>
+            <th class="right">When</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div style="text-align:center; margin-top:.8rem">
+        <button class="ghost" id="txLoadMore">Load 20 more</button>
+      </div>
     </div>
   </div>
-
-  </div><!-- /#tabUser -->
 
   <!-- ============ Admin tab ============ -->
   <div id="tabAdmin" class="hide">
@@ -192,26 +1047,178 @@
 </main>
 
 <!-- ============================================================ -->
-<!-- Registration result modal — shown once after /api/register    -->
+<!-- Disclaimer modal — shown BEFORE registration                  -->
+<!-- ============================================================ -->
+<div class="modal-bg" id="disclaimerModal">
+  <div class="modal">
+    <h2>⚠ Read this before you continue</h2>
+    <p>You are about to:</p>
+    <ul style="color:var(--fg); line-height:1.7">
+      <li><strong>Generate</strong> a brand-new Ed25519 SSH keypair on the server.</li>
+      <li><strong>Download</strong> the private key file (<code class="mono key-file-name">your-domain_key.txt</code>) to this device — <em>immediately and automatically</em>.</li>
+      <li><strong>Sign in</strong> to the account derived from that key.</li>
+    </ul>
+    <p style="color:var(--warn)">
+      The private key is the <strong>only</strong> way to access your account.
+      We do <strong>not</strong> store it. If your browser blocks the download, or you lose the file,
+      your account and credits are gone forever — there is no recovery.
+    </p>
+    <p style="color:var(--mute); font-size:.85rem">
+      Make sure your browser is allowed to download files from this site before continuing.
+      All three steps happen in a single click and cannot be undone or separated.
+    </p>
+    <div class="row" style="margin-top:1.2rem">
+      <label style="display:flex; align-items:center; gap:.5rem; margin:0; color:var(--fg); font-size:.9rem; cursor:pointer">
+        <input type="checkbox" id="disclaimerAck" style="width:auto; margin:0" />
+        I understand: if I lose this download, I lose my account.
+      </label>
+    </div>
+    <div class="row" style="margin-top:1.2rem; justify-content:flex-end">
+      <button class="ghost" id="cancelDisclaimerBtn" style="max-width:120px">Cancel</button>
+      <button id="confirmDisclaimerBtn" disabled style="max-width:340px">Generate, download &amp; sign in</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- Post-registration info modal — key has already downloaded     -->
 <!-- ============================================================ -->
 <div class="modal-bg" id="keyModal">
   <div class="modal">
-    <h2>⚠ Save your private key — you'll only see it once</h2>
-    <p style="color:var(--mute)">This key is your account. If you lose it, you lose access. We don't store it server-side.</p>
-    <p><strong>Address:</strong> <span class="mono" id="newAddr"></span></p>
-    <p><strong>Save the file:</strong></p>
+    <h2>✅ You're signed in — your key has been downloaded</h2>
+    <p style="color:var(--mute)">Check your <strong>Downloads</strong> folder for <code class="mono key-file-name">your-domain_key.txt</code>. Keep it safe — it's the only way back into this account.</p>
+    <p><strong>Account ID:</strong> <span class="mono" id="newAddr"></span></p>
+    <p style="color:var(--mute); font-size:.85rem; margin-top:.8rem">If the download didn't start (browser blocked it, etc.), use the buttons below right now:</p>
     <textarea id="privKeyText" readonly></textarea>
     <div class="row" style="margin-top:.8rem">
-      <button id="downloadKeyBtn">Download airweb_key</button>
+      <button id="downloadKeyBtn">Re-download key file</button>
       <button class="ghost" id="copyKeyBtn">Copy</button>
     </div>
     <p style="margin-top:1rem; color:var(--mute); font-size:.85rem">
-      <strong>Linux/macOS:</strong> after downloading, run <code class="mono">chmod 600 ./airweb_key</code>.
+      <strong>Linux/macOS:</strong> after downloading, run <code class="mono">chmod 600 ./<span class="key-file-name">your-domain_key.txt</span></code>.
     </p>
     <p><strong>Then connect:</strong></p>
     <pre id="firstSshCmd"></pre>
     <div style="text-align:right; margin-top:1rem">
-      <button id="dismissModalBtn">I've saved it — continue</button>
+      <button id="dismissModalBtn">Continue to dashboard</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- List-for-lease modal                                          -->
+<!-- ============================================================ -->
+<div class="modal-bg" id="listModal">
+  <div class="modal">
+    <h2>List this tunnel on the marketplace</h2>
+    <p style="color:var(--mute); font-size:.85rem">
+      Tunnel: <span class="mono" id="lmTunnelUrl"></span>
+      <span id="lmProtoBadge" class="proto-badge" style="margin-left:.4rem; vertical-align:middle"></span>
+    </p>
+    <p id="lmSshNote" style="color:var(--mute); font-size:.8rem; margin:.4rem 0 0">
+      The server will SSH into this endpoint with the sudo credentials you provide. The connection must succeed before the listing is published. <strong>Your password is not stored.</strong>
+    </p>
+    <p id="lmHttpNote" style="color:var(--mute); font-size:.8rem; margin:.4rem 0 0; display:none">
+      Web leases are <strong>private</strong>: each renter receives a unique passcode that must be entered to access the site. The passcode expires automatically at the end of the lease term.
+    </p>
+    <div class="filter-grid" style="margin-top:.6rem">
+      <div><label>Title *</label><input id="lmTitle" maxlength="80" placeholder="Beefy home server" /></div>
+      <div><label>Price (credits / min) *</label><input id="lmPrice" type="number" min="1" placeholder="1" /></div>
+      <div><label>Lease term (minutes) *</label><input id="lmTerm" type="number" min="5" max="10080" placeholder="60" /></div>
+      <div><label>Country</label><select id="lmCountry"></select></div>
+      <div style="grid-column: 1 / -1"><label>Description</label><input id="lmDesc" maxlength="500" placeholder="Optional" /></div>
+      <div><label>Bandwidth (Mbps)</label><input id="lmBw" type="number" min="1" placeholder="optional" /></div>
+      <div class="lm-sudo-row"><label>Sudo username *</label><input id="lmSudoUser" autocomplete="off" /></div>
+      <div class="lm-sudo-row"><label>Sudo password *</label><input id="lmSudoPass" type="password" autocomplete="new-password" /></div>
+    </div>
+    <p id="lmHwNote" style="color:var(--mute); font-size:.8rem; margin-top:.6rem">
+      CPU, RAM, disk and OS are <strong>auto-detected</strong> over SSH after your credentials validate — you don't need to enter them.
+    </p>
+    <p id="lmError" style="color:var(--bad); font-size:.85rem; margin:.8rem 0 0; display:none"></p>
+    <div class="row" style="margin-top:1rem; justify-content:flex-end">
+      <button class="ghost" id="lmCancel" style="max-width:120px">Cancel</button>
+      <button id="lmSubmit" style="max-width:260px">Validate &amp; list</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- "Why can't I list this?" help modal                          -->
+<!-- ============================================================ -->
+<div class="modal-bg" id="connectModal">
+  <div class="modal">
+    <h2>Connect a tunnel</h2>
+    <p style="color:var(--mute); font-size:.85rem; margin:.4rem 0 .8rem">
+      Pick what you want to expose. Run the generated command on the source machine and keep the SSH window open — closing it ends the tunnel.
+    </p>
+
+    <div class="row" style="gap:.5rem; margin:0 0 .8rem; align-items:center">
+      <label for="protoSelect" class="reason" style="font-size:.7rem; margin:0">Protocol</label>
+      <select id="protoSelect" style="flex:0 1 200px">
+        <option value="http">HTTP</option>
+        <option value="https">HTTPS</option>
+        <option value="ssh">SSH</option>
+        <option value="rdp">RDP</option>
+        <option value="mysql">MySQL</option>
+        <option value="postgres">PostgreSQL</option>
+        <option value="mongodb">MongoDB</option>
+        <option value="redis">Redis</option>
+        <option value="vnc">VNC</option>
+      </select>
+    </div>
+    <div id="protoTabs" hidden>
+      <button type="button" class="proto-tab active" data-proto="http"></button>
+    </div>
+
+    <p id="protoDesc" style="color:var(--mute); font-size:.78rem; margin:0 0 .4rem">…</p>
+    <p id="protoEndpoint" style="color:var(--fg2); font-size:.82rem; margin:0 0 .6rem">
+      <span class="reason" style="font-size:.72rem; margin-right:.4rem">Public endpoint</span>
+      <code class="mono" id="protoEndpointVal">—</code>
+    </p>
+
+    <div class="row" id="protoFields" style="gap:.6rem; margin-top:.2rem; align-items:flex-end">
+      <div id="protoSubWrap" style="flex:1 1 140px"><label class="reason" style="font-size:.7rem">Subdomain</label>
+        <input id="protoSub" type="text" value="mysub" autocomplete="off" spellcheck="false" />
+      </div>
+      <div id="protoLocalPortWrap" style="flex:1 1 120px; display:none"><label class="reason" style="font-size:.7rem">Local port</label>
+        <input id="protoLocalPort" type="number" min="1" max="65535" value="3000" />
+      </div>
+    </div>
+    <p id="protoSubLockedNote" style="color:var(--mute); font-size:.75rem; margin:.5rem 0 0; display:none">
+      The server assigns a random subdomain to every new tunnel — you'll see it in <em>My Connections</em> once the SSH command connects.
+    </p>
+
+    <p style="color:var(--mute); font-size:.75rem; margin:.7rem 0 .4rem">
+      New tunnels start <strong>paused</strong> — click <strong>Resume</strong> in <em>My Connections</em> to start serving traffic.
+    </p>
+
+    <label class="reason" style="font-size:.7rem; display:block; margin:.6rem 0 .25rem">Run this command</label>
+    <div style="display:flex; align-items:stretch; gap:.4rem; background:var(--code); border:1px solid var(--line); border-radius:var(--radius-sm); padding:.45rem .55rem">
+      <code id="sshExample" class="mono" style="flex:1; min-width:0; font-size:.72rem; line-height:1.45; color:var(--fg2); white-space:nowrap; overflow-x:auto; padding:.1rem 0">ssh -i ./your-domain_key.txt -p 2222 -R 80:localhost:3000 mysub@airweb.fyi</code>
+      <button id="sshExampleCopy" type="button" class="ghost" style="flex:0 0 auto; align-self:center; padding:.25rem .65rem; font-size:.72rem; max-width:none">Copy</button>
+    </div>
+
+    <div class="row" style="margin-top:1rem; justify-content:flex-end">
+      <button id="connectClose" style="max-width:120px">Got it</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="helpListModal">
+  <div class="modal">
+    <h2>This tunnel is not listable</h2>
+    <p style="color:var(--mute); font-size:.85rem; margin:.4rem 0 1rem">
+      Only <strong>TCP tunnels exposing SSH (port 22)</strong> can be listed on the marketplace — buyers need to log into the box, so an HTTP forward isn't enough.
+    </p>
+    <p id="helpListIntro" style="color:var(--mute); font-size:.85rem; margin:0 0 .4rem">
+      Reconnect using the command below. Pick any free <code class="mono">mysub</code> name (or use one of your handles):
+    </p>
+    <pre id="helpListCmd" style="position:relative; padding-right:5rem">…</pre>
+    <p style="color:var(--mute); font-size:.78rem; margin:.6rem 0 0">
+      After it connects, the new tunnel will show up in <em>My activity</em> with kind <code class="mono">tcp</code>. Click <strong>Resume</strong> on it, then <strong>List for lease</strong>.
+    </p>
+    <div class="row" style="margin-top:1rem; justify-content:flex-end">
+      <button id="helpListClose" style="max-width:120px">Got it</button>
     </div>
   </div>
 </div>
@@ -225,8 +1232,90 @@ let ME = null;
 const USD_PER_CREDIT_DEFAULT = 0.01;
 function usdRate() { return (CONFIG && typeof CONFIG.usdPerCredit === 'number') ? CONFIG.usdPerCredit : USD_PER_CREDIT_DEFAULT; }
 function fmtCredits(n) { return (Number(n) || 0).toFixed(2); }
-function fmtUsd(n)     { return '$' + ((Number(n) || 0) * usdRate()).toFixed(2); }
-function fmtBoth(n)    { return `${fmtCredits(n)} cr (${fmtUsd(n)})`; }
+function fmtUsd(n) {
+  const usd = (Number(n) || 0) * usdRate();
+  return (window.currency && window.currency.format)
+    ? window.currency.format(usd)
+    : '$' + usd.toFixed(2);
+}
+
+// Reversible 9×9 identicon. Encodes the 80-bit hash part of an aw_ address
+// directly into the grid. Cell (0,0) is a fixed anchor bit; the remaining 80
+// cells (row-major) carry the 80 bits, MSB-first per byte. Decode with
+// `decodeIdenticonAddress(svgText)`.
+const ID_B32 = 'abcdefghijkmnpqrstuvwxyz23456789';
+function identiconSvg(address, size) {
+  size = size || 30;
+  const body = (typeof address === 'string' && address.startsWith('aw_'))
+    ? address.slice(3) : (address || '');
+  // Decode the 16 base32 chars into 10 bytes (80 bits). Unknown chars → 0.
+  const bytes = new Uint8Array(10);
+  let bits = 0, val = 0, bi = 0;
+  for (let i = 0; i < 16 && bi < 10; i++) {
+    const idx = ID_B32.indexOf((body[i] || 'a').toLowerCase());
+    val = (val << 5) | (idx < 0 ? 0 : idx);
+    bits += 5;
+    if (bits >= 8) {
+      bits -= 8;
+      bytes[bi++] = (val >>> bits) & 0xff;
+    }
+  }
+  // Pull bit i (0..79) MSB-first per byte.
+  const bit = (i) => (bytes[i >> 3] >>> (7 - (i & 7))) & 1;
+  // Hue from byte sum so the same account always uses the same color.
+  let sum = 0; for (let i = 0; i < 10; i++) sum += bytes[i];
+  const hue = (sum * 7) % 360;
+  const fg = `hsl(${hue}, 65%, 52%)`;
+  let rects = '';
+  // Anchor bit at (0,0) so orientation is recoverable when decoding.
+  rects += '<rect x="0" y="0" width="1" height="1"/>';
+  for (let i = 0; i < 80; i++) {
+    if (bit(i)) {
+      const idx = i + 1;
+      const x = idx % 9, y = (idx - x) / 9;
+      rects += `<rect x="${x}" y="${y}" width="1" height="1"/>`;
+    }
+  }
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 9 9" shape-rendering="crispEdges" fill="${fg}">${rects}</svg>`;
+}
+
+// Parse an identicon SVG (or its inner markup) back into the aw_ address.
+function decodeIdenticonAddress(svgText) {
+  if (!svgText) return null;
+  const cells = new Uint8Array(81);
+  const re = /<rect[^>]*x="(\d+)"[^>]*y="(\d+)"/g;
+  let m;
+  while ((m = re.exec(svgText)) !== null) {
+    const x = +m[1], y = +m[2];
+    if (x >= 0 && x < 9 && y >= 0 && y < 9) cells[y * 9 + x] = 1;
+  }
+  if (cells[0] !== 1) return null; // anchor missing → not our format
+  const bytes = new Uint8Array(10);
+  for (let i = 0; i < 80; i++) {
+    if (cells[i + 1]) bytes[i >> 3] |= 1 << (7 - (i & 7));
+  }
+  // Re-encode bytes with the same base32 alphabet the server uses.
+  let bits = 0, val = 0, out = '';
+  for (let i = 0; i < 10; i++) {
+    val = (val << 8) | bytes[i];
+    bits += 8;
+    while (bits >= 5) { bits -= 5; out += ID_B32[(val >>> bits) & 31]; }
+  }
+  if (bits > 0) out += ID_B32[(val << (5 - bits)) & 31];
+  return 'aw_' + out.slice(0, 16);
+}
+function fmtUsdSmall(n) {
+  const usd = (Number(n) || 0) * usdRate();
+  if (window.currency && window.currency.format) {
+    return window.currency.format(usd, { small: true });
+  }
+  const v = usd;
+  if (v === 0) return '$0.00';
+  if (Math.abs(v) >= 0.01) return '$' + v.toFixed(2);
+  if (Math.abs(v) >= 0.0001) return '$' + v.toFixed(4);
+  return '<$0.0001';
+}
+function fmtBoth(n)    { return `${fmtCredits(n)} ACR (${fmtUsd(n)})`; }
 
 async function api(path, opts = {}) {
   const r = await fetch(path, { credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, ...opts });
@@ -242,64 +1331,168 @@ async function api(path, opts = {}) {
 async function loadConfig() {
   CONFIG = await api('/api/config');
   $('bonusVal').textContent = CONFIG.signupBonus;
-  $('uptimeRate').textContent = fmtCredits(CONFIG.uptimePerMinute);
-  $('uptimeUsd').textContent = fmtUsd(CONFIG.uptimePerMinute);
-  $('handleCostVal').textContent = fmtCredits(CONFIG.handleBaseCost);
-  $('handleCostUsd').textContent = fmtUsd(CONFIG.handleBaseCost);
-  $('handleDomain').textContent = CONFIG.publicDomain;
-  $('listingPrice').placeholder = `${fmtCredits(CONFIG.defaultLeasePricePerMinute)} cr/min`;
+  populateCountrySelects();
+  const name = keyFileName();
+  document.querySelectorAll('.key-file-name').forEach(el => { el.textContent = name; });
+}
+
+function keyFileName() {
+  const host = (CONFIG && (CONFIG.sshHost || (CONFIG.publicDomain || '').split(':')[0])) || 'airweb';
+  return host.replace(/[^a-z0-9.-]+/gi, '_') + '_key.txt';
+}
+
+// If a URL targets the AirWeb public domain but lacks an explicit port,
+// append the port the browser is currently using (skipping defaults 80/443).
+// This keeps subdomain links clickable in dev (e.g. http://mysub.lvh.me:8080)
+// or behind non-standard reverse proxies. Non-http(s) URLs (tcp://, etc.)
+// are returned unchanged.
+function withBrowserPort(rawUrl) {
+  if (!rawUrl || typeof rawUrl !== 'string') return rawUrl;
+  if (!/^https?:\/\//i.test(rawUrl)) return rawUrl;
+  try {
+    const u = new URL(rawUrl);
+    if (u.port) return rawUrl; // already explicit
+    const browserPort = window.location.port;
+    if (!browserPort) return rawUrl; // browser is on default port
+    if ((u.protocol === 'http:'  && browserPort === '80') ||
+        (u.protocol === 'https:' && browserPort === '443')) return rawUrl;
+    u.port = browserPort;
+    return u.toString().replace(/\/$/, ''); // strip trailing slash URL adds
+  } catch { return rawUrl; }
 }
 
 async function tryLoadMe() {
+  const _isMarket = /^\/marketplace\/?$/.test(location.pathname);
   try {
     ME = await api('/api/me');
     renderAuthed();
   } catch (e) {
-    if (e.status === 401) renderGuest();
-    else console.error(e);
+    if (e.status === 401) {
+      if (_isMarket) renderGuestMarketplace();
+      else renderGuest();
+    } else console.error(e);
   }
 }
 
 function renderGuest() {
   $('guestState').classList.remove('hide');
   $('authState').classList.add('hide');
+  $('navBalance').classList.add('hide');
+  $('userMenu').classList.add('hide');
+  $('navMarketplace').classList.add('hide');
+}
+
+// Public marketplace preview — same listing UI as authed view, but
+// hero/metrics/overview tabs are hidden and lease buttons are disabled.
+function renderGuestMarketplace() {
+  $('guestState').classList.add('hide');
+  $('authState').classList.remove('hide');
+  $('navBalance').classList.add('hide');
+  $('userMenu').classList.add('hide');
+  // Marketplace nav link only makes sense once authed; keep hidden on the
+  // public preview because we're already on the page.
+  $('navMarketplace').classList.add('hide');
+  $('pageTitle').textContent = 'Marketplace';
+  document.title = 'Marketplace — AirWeb';
+  $('tabBar').classList.add('hide');
+  $('tabOverview').classList.add('hide');
+  $('tabTransactions').classList.add('hide');
+  if ($('tabAdmin')) $('tabAdmin').classList.add('hide');
+  $('tabMarketplace').classList.remove('hide');
+  refreshMarketplace().catch(e => console.error('market:', e));
 }
 
 function renderAuthed() {
   $('guestState').classList.add('hide');
   $('authState').classList.remove('hide');
+  $('navBalance').classList.remove('hide');
+  $('userMenu').classList.remove('hide');
+  $('navMarketplace').classList.remove('hide');
+  // Marketplace-only mode when URL is /marketplace
+  const _isMarket = /^\/marketplace\/?$/.test(location.pathname);
+  $('tabBar').classList.toggle('hide', _isMarket);
+  if (_isMarket) {
+    $('pageTitle').textContent = 'Marketplace';
+    document.title = 'Marketplace — AirWeb';
+    switchTab('marketplace');
+  } else {
+    $('pageTitle').textContent = 'Dashboard';
+  }
   $('addrVal').textContent = ME.address;
-  $('creditsVal').textContent = fmtCredits(ME.credits);
-  $('creditsUsd').textContent = fmtUsd(ME.credits);
+  $('avatarLetter').innerHTML = identiconSvg(ME.address || '', 30);
+  const _addr = ME.address || '';
+  const _body = _addr.startsWith('aw_') ? _addr.slice(3) : _addr;
+  $('navAddr').textContent = _body.length > 4 ? '…' + _body.slice(-4) : _addr;
+  $('avatarBtn').title = _addr;
+  $('navAddr').classList.remove('hide');
+  $('menuAddrFull').textContent = _addr;
+  $('navCreditsVal').textContent = fmtCredits(ME.credits);
+  $('navCreditsUsd').textContent = 'est. ' + fmtUsd(ME.credits);
   $('tunnelsCount').textContent = ME.onlineTunnels.length;
   $('leasesCount').textContent = ME.activeLeases.length;
-  $('sshExample').textContent = `ssh -i ./airweb_key -p ${CONFIG.sshPort} -R 80:localhost:3000 mysub@${CONFIG.publicDomain}`;
-  renderTunnels();
-  renderMyListings();
-  renderMyHandles();
-  renderLedger();
-  refreshMarketplace();
+  const e = ME.earnings || {};
+  // Live "earn rate" = average per-minute uptime credits over the last 24h.
+  // Falls back to the configured rate × online tunnel count when no history exists yet.
+  const liveAvg = (e.avgPerMinute && e.avgPerMinute > 0)
+    ? e.avgPerMinute
+    : ME.onlineTunnels.length * (CONFIG.uptimePerMinute || 0);
+  $('earnRateVal').innerHTML = fmtCredits(liveAvg) + '<span class="cr">ACR</span>';
+  $('earnRateUsd').textContent = fmtUsdSmall(liveAvg);
+  $('earn24hVal').textContent = `+${fmtCredits(e.uptime24h || 0)} ACR (${fmtUsd(e.uptime24h || 0)}) in 24h`;
+  const chargeRate = e.avgChargePerMinute || 0;
+  $('totalChargedVal').innerHTML = fmtCredits(chargeRate) + '<span class="cr">ACR</span>';
+  $('totalChargedUsd').textContent = fmtUsdSmall(chargeRate);
+  $('charged24hVal').textContent = `\u2212${fmtCredits(e.bandwidth24h || 0)} ACR (${fmtUsd(e.bandwidth24h || 0)}) in 24h`;
+  const netRate = (typeof e.avgNetPerMinute === 'number') ? e.avgNetPerMinute : (liveAvg - chargeRate);
+  const net24h  = (e.uptime24h || 0) - (e.bandwidth24h || 0);
+  const netEl   = $('netMetric');
+  const netPositive = netRate >= 0;
+  netEl.classList.remove('metric-pos', 'metric-neg');
+  netEl.classList.add(netPositive ? 'metric-pos' : 'metric-neg');
+  $('netLabel').textContent = netPositive ? 'Earning / min' : 'Consuming / min';
+  const sign = netPositive ? '+' : '\u2212';
+  $('netRateVal').innerHTML = sign + fmtCredits(Math.abs(netRate)) + '<span class="cr">ACR</span>';
+  $('netRateUsd').textContent = (netPositive ? '+' : '\u2212') + fmtUsdSmall(Math.abs(netRate)).replace(/^[-+]/, '');
+  const sign24 = net24h >= 0 ? '+' : '\u2212';
+  $('net24hVal').textContent = `${sign24}${fmtCredits(Math.abs(net24h))} ACR (${fmtUsd(Math.abs(net24h))}) in 24h`;
+  // The Connect-a-Tunnel modal owns its own command rendering (multi-protocol);
+  // we just prime its default values from the loaded config.
+  if (typeof renderConnectCmd === 'function') renderConnectCmd();
+  renderActivity();
   renderAdmin();
+  // Per-tab on-demand loads:
+  const active = document.querySelector('#tabBar button.active')?.dataset.tab;
+  if (active === 'marketplace')  refreshMarketplace();
+  if (active === 'transactions') refreshLedger(true);
 }
 
 function renderAdmin() {
   const tabBtn = $('adminTabBtn');
   if (!ME.isAdmin) {
     tabBtn.classList.add('hide');
-    // If we were on the admin tab and lost the role, fall back.
-    if (document.querySelector('#tabBar button.active')?.dataset.tab === 'admin') switchTab('user');
+    if (document.querySelector('#tabBar button.active')?.dataset.tab === 'admin') switchTab('overview');
     return;
   }
   tabBtn.classList.remove('hide');
-  refreshAdmin().catch(e => console.error('admin refresh:', e));
+  if (document.querySelector('#tabBar button.active')?.dataset.tab === 'admin') {
+    refreshAdmin().catch(e => console.error('admin refresh:', e));
+  }
 }
 
+const TABS = ['overview', 'marketplace', 'transactions', 'admin'];
 function switchTab(name) {
+  if (!TABS.includes(name)) name = 'overview';
   document.querySelectorAll('#tabBar button').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
-  $('tabUser').classList.toggle('hide', name !== 'user');
-  $('tabAdmin').classList.toggle('hide', name !== 'admin');
+  $('tabOverview').classList.toggle(    'hide', name !== 'overview');
+  $('tabMarketplace').classList.toggle( 'hide', name !== 'marketplace');
+  $('tabTransactions').classList.toggle('hide', name !== 'transactions');
+  $('tabAdmin').classList.toggle(       'hide', name !== 'admin');
+  if (name === 'marketplace')  refreshMarketplace().catch(e => console.error('market:', e));
+  if (name === 'transactions') refreshLedger(true).catch(e => console.error('ledger:', e));
+  if (name === 'admin' && ME && ME.isAdmin) refreshAdmin().catch(e => console.error('admin:', e));
 }
 document.querySelectorAll('#tabBar button').forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
+document.querySelectorAll('[data-jump]').forEach(a => a.addEventListener('click', (e) => { e.preventDefault(); switchTab(a.dataset.jump); }));
 
 async function refreshAdmin() {
   const data = await api('/api/admin/overview');
@@ -308,15 +1501,24 @@ async function refreshAdmin() {
   if (!data.tunnels.length) {
     tEl.innerHTML = '<div class="empty">No live tunnels.</div>';
   } else {
-    tEl.innerHTML = '<table><thead><tr><th>ID</th><th>Type</th><th>Public URL</th><th>Owner</th><th class="right">Started</th><th></th></tr></thead><tbody>' +
+    tEl.innerHTML = '<table><thead><tr><th>ID</th><th>Status</th><th>Public URL</th><th>Owner</th><th class="right">Started</th><th></th></tr></thead><tbody>' +
       data.tunnels.map(t => `<tr>
         <td class="mono">${t.id}</td>
-        <td><span class="pill good">${esc(t.type)}</span></td>
-        <td class="mono">${esc(t.publicUrl || '')}</td>
-        <td class="mono reason" style="font-size:.75rem">${esc(t.ownerAddress || '—')}</td>
+        <td>${t.disabled ? '<span class="pill warn">paused</span>' : '<span class="pill good">' + esc(t.type) + '</span>'}</td>
+        <td class="mono">${esc(withBrowserPort(t.publicUrl) || '')}</td>
+        <td class="mono reason" style="font-size:.75rem">${esc(t.ownerAddress || '\u2014')}</td>
         <td class="right reason">${timeAgo(t.createdAt)}</td>
-        <td class="right"><button class="ghost" data-disc="${t.id}">Disconnect</button></td>
+        <td class="right" style="white-space:nowrap">
+          ${t.disabled
+            ? `<button data-admin-toggle="${t.id}" data-toggle-action="enable">Resume</button>`
+            : `<button class="ghost" data-admin-toggle="${t.id}" data-toggle-action="disable">Pause</button>`}
+          <button class="ghost" data-disc="${t.id}">Disconnect</button>
+        </td>
       </tr>`).join('') + '</tbody></table>';
+    tEl.querySelectorAll('[data-admin-toggle]').forEach(b => b.onclick = async () => {
+      await api('/api/tunnels/' + b.dataset.adminToggle + '/' + b.dataset.toggleAction, { method: 'POST' });
+      await refreshAdmin();
+    });
     tEl.querySelectorAll('[data-disc]').forEach(b => b.onclick = async () => {
       if (!confirm('Disconnect tunnel ' + b.dataset.disc + '?')) return;
       await api('/api/admin/tunnels/' + b.dataset.disc + '/disconnect', { method: 'POST' });
@@ -328,10 +1530,10 @@ async function refreshAdmin() {
   if (!data.accounts.length) {
     aEl.innerHTML = '<div class="empty">No accounts.</div>';
   } else {
-    aEl.innerHTML = '<table><thead><tr><th>Address</th><th class="right">Credits</th><th>Role</th><th class="right">Created</th><th></th></tr></thead><tbody>' +
+    aEl.innerHTML = '<table><thead><tr><th>Account ID</th><th class="right">Credits</th><th>Role</th><th class="right">Created</th><th></th></tr></thead><tbody>' +
       data.accounts.map(a => `<tr>
         <td class="mono" style="font-size:.75rem">${esc(a.address)}</td>
-        <td class="right mono">${fmtCredits(a.credits)}<br><span class="reason" style="font-size:.7rem">${fmtUsd(a.credits)}</span></td>
+        <td class="right mono"><span class="reason" style="font-size:.7rem; display:block; font-family:var(--sans); font-weight:400">est. ${fmtUsd(a.credits)}</span>${fmtCredits(a.credits)}<span class="unit">ACR</span></td>
         <td>${a.is_admin ? '<span class="pill good">admin</span>' : '<span class="reason">user</span>'}</td>
         <td class="right reason">${timeAgo(a.created_at)}</td>
         <td class="right">
@@ -350,79 +1552,800 @@ async function refreshAdmin() {
   }
 }
 
-function renderTunnels() {
-  const el = $('tunnelsList');
-  if (!ME.onlineTunnels.length) {
-    el.innerHTML = '<div class="empty">No active tunnels right now. Run the SSH command below to bring one online.</div>';
+let ACTIVITY_FILTER = 'all';
+
+function renderActivity() {
+  const el = $('activityList');
+  const onlineTunnels = ME.onlineTunnels || [];
+  const allListings   = ME.listings      || [];
+  const leases        = ME.activeLeases  || [];
+
+  // Pair each online tunnel with its listing (if any) so they render as a single row.
+  const listingByTunnel = new Map();
+  for (const l of allListings) {
+    if (l.tunnel_id != null) listingByTunnel.set(l.tunnel_id, l);
+  }
+  const onlineTunnelIds = new Set(onlineTunnels.map(t => t.id));
+
+  const tunnelRows = onlineTunnels.map(t => ({
+    kind: 'tunnel', data: t, listing: listingByTunnel.get(t.id) || null,
+  }));
+  // Listings whose backing tunnel is not currently connected → standalone listing row.
+  const orphanListings = allListings
+    .filter(l => l.tunnel_id == null || !onlineTunnelIds.has(l.tunnel_id))
+    .map(l => ({ kind: 'listing', data: l }));
+  const leaseRows = leases.map(l => ({ kind: 'lease', data: l }));
+
+  const all = [...tunnelRows, ...orphanListings, ...leaseRows];
+
+  // Summary line
+  const onlineCount  = tunnelRows.length;
+  const listingCount = allListings.length;
+  const earnRate     = onlineCount * (CONFIG.uptimePerMinute || 0);
+  const summary = [
+    `${onlineCount} online tunnel${onlineCount===1?'':'s'}`,
+    `${listingCount} listing${listingCount===1?'':'s'}`,
+    `${leases.length} lease${leases.length===1?'':'s'}`,
+    onlineCount ? `earning ${fmtCredits(earnRate)} ACR/min (${fmtUsd(earnRate)}/min)` : null,
+  ].filter(Boolean).join(' \u00b7 ');
+  $('activitySummary').textContent = summary;
+
+  const rows = all.filter(r => {
+    if (ACTIVITY_FILTER === 'all')     return true;
+    if (ACTIVITY_FILTER === 'tunnel')  return r.kind === 'tunnel';
+    if (ACTIVITY_FILTER === 'listing') return r.kind === 'listing' || (r.kind === 'tunnel' && r.listing);
+    if (ACTIVITY_FILTER === 'lease')   return r.kind === 'lease';
+    return true;
+  });
+  if (!rows.length) {
+    const msg = ACTIVITY_FILTER === 'tunnel'  ? 'No active tunnels. Run the SSH command above to bring one online.'
+              : ACTIVITY_FILTER === 'listing' ? 'No marketplace listings. List a TCP (SSH) or HTTP/HTTPS tunnel from the Tunnels view.'
+              : ACTIVITY_FILTER === 'lease'   ? 'You are not leasing anything right now.'
+              : 'Nothing here yet. Connect a tunnel using the SSH command above.';
+    el.innerHTML = `<div class="empty">${msg}</div>`;
     return;
   }
-  el.innerHTML = '<table><thead><tr><th>Public URL</th><th>Type</th><th>Bytes</th><th class="right">Started</th></tr></thead><tbody>' +
-    ME.onlineTunnels.map(t => `<tr>
-      <td class="mono"><a href="${esc(t.publicUrl)}" target="_blank" rel="noopener">${esc(t.publicUrl)}</a></td>
-      <td><span class="pill good">${esc(t.type)}</span></td>
-      <td class="mono">${humanBytes((t.metrics && t.metrics.bytesIn || 0) + (t.metrics && t.metrics.bytesOut || 0))}</td>
-      <td class="right reason">${timeAgo(t.createdAt)}</td>
-    </tr>`).join('') + '</tbody></table>';
-}
 
-function renderMyListings() {
-  const el = $('myListings');
-  if (!ME.listings.length) { el.innerHTML = '<div class="empty">You haven\u2019t listed anything yet.</div>'; return; }
-  el.innerHTML = '<table><tbody>' + ME.listings.map(l => `<tr>
-    <td><strong>${esc(l.title)}</strong><br><span class="reason">${esc(l.description || '')}</span></td>
-    <td class="right">${fmtCredits(l.price_per_minute)} cr/min<br><span class="reason" style="font-size:.75rem">${fmtUsd(l.price_per_minute)}/min</span></td>
-    <td class="right"><button class="ghost" data-rm-listing="${l.id}">Remove</button></td>
-  </tr>`).join('') + '</tbody></table>';
+  el.innerHTML = '<table class="activity-table"><thead><tr><th>Type</th><th>Item</th><th>Details</th><th class="right">Charged</th><th>Listed</th><th class="right">Earned</th><th class="right">Leases</th><th class="right">Rate</th><th class="right">Actions</th></tr></thead><tbody>' +
+    rows.map(r => activityRow(r)).join('') + '</tbody></table>';
+
+  el.querySelectorAll('[data-list-tunnel]').forEach(b => b.onclick = () => openListModal(Number(b.dataset.listTunnel)));
+  el.querySelectorAll('[data-list-help]').forEach(b => b.onclick = () => openHelpListModal());
+  el.querySelectorAll('[data-disconnect-tunnel]').forEach(b => b.onclick = async () => {
+    if (!confirm('Disconnect this tunnel? The SSH session will be closed.')) return;
+    try { await api('/api/tunnels/' + b.dataset.disconnectTunnel + '/disconnect', { method: 'POST' }); }
+    catch (e) { alert('Failed to disconnect: ' + (e.body && e.body.error || e.message)); }
+    await refresh();
+  });
+  el.querySelectorAll('[data-toggle-tunnel]').forEach(b => b.onclick = async () => {
+    const action = b.dataset.toggleAction;
+    await api('/api/tunnels/' + b.dataset.toggleTunnel + '/' + action, { method: 'POST' });
+    await refresh();
+  });
   el.querySelectorAll('[data-rm-listing]').forEach(b => b.onclick = async () => {
+    if (!confirm('Remove this listing?')) return;
     await api('/api/listings/' + b.dataset.rmListing, { method: 'DELETE' });
     await refresh();
   });
+  applyActivitySearch();
 }
 
-function renderMyHandles() {
-  const el = $('myHandles');
-  if (!ME.handles.length) { el.innerHTML = '<div class="empty">No handles claimed yet.</div>'; return; }
-  el.innerHTML = '<table><tbody>' + ME.handles.map(h => `<tr>
-    <td class="mono"><strong>${esc(h.handle)}.${esc(CONFIG.publicDomain)}</strong></td>
-    <td class="right reason">claimed ${timeAgo(h.acquired_at)}</td>
-  </tr>`).join('') + '</tbody></table>';
+function protoBadge(proto) {
+  const p = (proto || 'tcp').toLowerCase();
+  const label = p === 'tcp' ? 'SSH' : p.toUpperCase();
+  return `<span class="proto-badge" title="${esc(label)}"><span class="proto-icon">${PROTO_ICONS[p] || PROTO_ICONS.tcp}</span>${esc(label)}</span>`;
 }
 
-function renderLedger() {
-  const tb = $('ledgerTable').querySelector('tbody');
-  if (!ME.recentLedger.length) { tb.innerHTML = '<tr><td class="empty" colspan="3">No activity yet.</td></tr>'; return; }
-  tb.innerHTML = ME.recentLedger.map(l => `<tr>
-    <td class="reason">${esc(l.reason.replace(/_/g, ' '))}</td>
-    <td class="mono reason">${l.ref ? esc(l.ref) : ''}</td>
-    <td class="right ${l.delta >= 0 ? 'delta-pos' : 'delta-neg'}">${l.delta >= 0 ? '+' : '−'}${fmtCredits(Math.abs(l.delta))}<br><span class="reason" style="font-size:.7rem">${fmtUsd(Math.abs(l.delta))}</span></td>
-  </tr>`).join('');
+function typeCell(proto, statusHtml) {
+  return `<div class="cell-stack">${protoBadge(proto)}${statusHtml ? '<span class="sub">' + statusHtml + '</span>' : ''}</div>`;
+}
+
+function listingStatusCell(l) {
+  const proto = (l.protocol || 'tcp').toLowerCase();
+  const isWeb = (proto === 'http' || proto === 'https');
+  const e = l.earnings || {};
+  const termLabel = l.lease_term_minutes ? fmtTermMinutes(l.lease_term_minutes) : '';
+  const activePill = e.activeLeaseCount
+    ? `<span class="pill warn" title="Currently being leased">${e.activeLeaseCount} active</span>`
+    : '';
+  return `<div class="cell-stack">
+      <span class="badges">
+        <span class="pill good" title="On the marketplace">listed</span>
+        ${isWeb ? '<span class="pill warn" title="Passcode-gated private access">private</span>' : ''}
+        ${l.validated ? '<span class="validated-pill" title="Owner-validated listing">validated</span>' : ''}
+        ${activePill}
+      </span>
+      ${termLabel ? '<span class="sub">term ' + esc(termLabel) + '</span>' : ''}
+    </div>`;
+}
+
+function listingEarnedCell(l) {
+  const e = l.earnings || { totalEarnings:0 };
+  return `+${fmtCredits(e.totalEarnings)}<span class="sub">${fmtUsdSmall(e.totalEarnings)}</span>`;
+}
+
+function listingLeasesCell(l) {
+  const e = l.earnings || { leaseCount:0, avgPerLease:0 };
+  if (!e.leaseCount) return '<span class="reason">none</span>';
+  return `${e.leaseCount}<span class="sub">avg ${fmtCredits(e.avgPerLease)}</span>`;
+}
+
+function removeListingIcon(l) {
+  const e = l.earnings || {};
+  if (e.activeLeaseCount) {
+    return '<button class="ghost icon-btn" disabled title="Cannot remove while a lease is active" style="opacity:.45">\uD83D\uDDD1</button>';
+  }
+  return `<button class="ghost icon-btn" data-rm-listing="${l.id}" title="Remove listing">\uD83D\uDDD1</button>`;
+}
+
+function activityRow(r) {
+  if (r.kind === 'tunnel') {
+    const t = r.data;
+    const listing = r.listing;
+    const bytes = humanBytes((t.metrics && t.metrics.bytesIn || 0) + (t.metrics && t.metrics.bytesOut || 0));
+    const charged = Number((t.metrics && t.metrics.chargedCredits) || 0);
+    const displayUrl = withBrowserPort(t.publicUrl);
+    const linkable = t.type === 'http' && !t.disabled;
+    const url = linkable
+      ? `<a href="${esc(displayUrl)}" target="_blank" rel="noopener">${esc(displayUrl)}</a>`
+      : esc(displayUrl);
+    const statusText = t.disabled
+      ? (t.disabledReason === 'insufficient_credits' ? 'no credits' : 'paused')
+      : 'online';
+    const tunnelProto = (listing && listing.protocol) || t.type;
+    const typeHtml = typeCell(tunnelProto, statusText);
+    const toggleBtn = t.disabled
+      ? `<button data-toggle-tunnel="${t.id}" data-toggle-action="enable" title="Resume public access">Resume</button>`
+      : (listing
+          ? `<button class="ghost" disabled title="This tunnel has an active marketplace listing \u2014 remove the listing first">Pause</button>`
+          : `<button class="ghost" data-toggle-tunnel="${t.id}" data-toggle-action="disable" title="Pause public access without disconnecting">Pause</button>`);
+    const disconnectBtn = `<button class="ghost icon-btn" data-disconnect-tunnel="${t.id}" title="Disconnect this tunnel" style="font-weight:700; color:var(--bad,#ff6b6b)">\u2715</button>`;
+    const listBtn = !listing && t.listable && !t.disabled
+      ? `<button data-list-tunnel="${t.id}" title="List this tunnel on the marketplace">List</button>`
+      : (!listing && !t.listable
+          ? `<button class="ghost" data-list-help="1" title="Why is this not listable?">List?</button>`
+          : '');
+    const removeListingBtn = listing ? removeListingIcon(listing) : '';
+
+    const listedCell  = listing
+      ? listingStatusCell(listing)
+      : (t.listable
+          ? (t.disabled ? '<span class="reason">resume to list</span>' : '<span class="reason">not listed</span>')
+          : '<span class="reason">not listable</span>');
+    const earnedCell  = listing ? listingEarnedCell(listing) : '<span class="reason">\u2014</span>';
+    const leasesCell  = listing ? listingLeasesCell(listing) : '<span class="reason">\u2014</span>';
+    const rateCell    = listing
+      ? `${fmtCredits(CONFIG.uptimePerMinute || 0)}<span class="sub">listed ${fmtCredits(listing.price_per_minute)}/min</span>`
+      : `${fmtCredits(CONFIG.uptimePerMinute || 0)}<span class="sub">ACR/min</span>`;
+
+    return `<tr>
+      <td>${typeHtml}</td>
+      <td class="mono wrap">${url}<span class="sub">id #${t.id}</span></td>
+      <td class="reason">${bytes}<span class="sub">${timeAgo(t.createdAt)}</span></td>
+      <td class="right reason" title="Bandwidth charged so far">-${charged.toFixed(4)}<span class="sub">${fmtUsdSmall(charged)}</span></td>
+      <td>${listedCell}</td>
+      <td class="right">${earnedCell}</td>
+      <td class="right">${leasesCell}</td>
+      <td class="right reason">${rateCell}</td>
+      <td class="right">${toggleBtn} ${listBtn} ${removeListingBtn} ${disconnectBtn}</td>
+    </tr>`;
+  }
+  if (r.kind === 'listing') {
+    const l = r.data;
+    return `<tr>
+      <td>${typeCell(l.protocol, 'offline')}</td>
+      <td class="wrap"><strong>${esc(l.title)}</strong>${l.country_code ? ' <span class="flag">' + flagFor(l.country_code) + '</span>' : ''}<span class="sub">${esc(l.description || '')}</span></td>
+      <td class="reason">${esc(specSummary(l))}<span class="sub">tunnel offline</span></td>
+      <td class="right reason">\u2014</td>
+      <td>${listingStatusCell(l)}</td>
+      <td class="right">${listingEarnedCell(l)}</td>
+      <td class="right">${listingLeasesCell(l)}</td>
+      <td class="right reason">${fmtCredits(l.price_per_minute)}<span class="sub">ACR/min</span></td>
+      <td class="right">${removeListingIcon(l)}</td>
+    </tr>`;
+  }
+  // lease
+  const l = r.data;
+  const isWeb = l.protocol === 'http' || l.protocol === 'https';
+  const expiresLabel = l.expiresAt ? `expires ${timeUntil(l.expiresAt)}` : '';
+  const accessSub = isWeb && l.passcode
+    ? `passcode <code class="inline" style="font-weight:600">${esc(l.passcode)}</code>${l.accessUrl ? ' \u00b7 <a href="' + esc(withBrowserPort(l.accessUrl)) + '" target="_blank" rel="noopener">open</a>' : ''}${expiresLabel ? ' \u00b7 ' + esc(expiresLabel) : ''}`
+    : (expiresLabel ? esc(expiresLabel) : '');
+  return `<tr>
+    <td>${typeCell(l.protocol, 'lease')}</td>
+    <td class="wrap"><strong>${esc(l.title || ('lease ' + l.id))}</strong><span class="sub mono">${esc(l.owner_address || '')}</span>${accessSub ? '<span class="sub">' + accessSub + '</span>' : ''}</td>
+    <td class="reason">spent ${fmtCredits(l.total_credits)} ACR</td>
+    <td class="right reason">\u2014</td>
+    <td class="reason">\u2014</td>
+    <td class="right reason">\u2014</td>
+    <td class="right reason">\u2014</td>
+    <td class="right reason">${fmtCredits(l.price_per_minute)}<span class="sub">ACR/min</span></td>
+    <td class="right reason">—</td>
+  </tr>`;
+}
+
+function timeUntil(ts) {
+  const diff = (ts || 0) - Date.now();
+  if (diff <= 0) return 'expired';
+  const m = Math.round(diff / 60000);
+  if (m < 60) return `in ${m}m`;
+  const h = Math.floor(m / 60), rem = m % 60;
+  if (m < 1440) return rem ? `in ${h}h ${rem}m` : `in ${h}h`;
+  const d = Math.floor(m / 1440); const hh = Math.floor((m % 1440) / 60);
+  return hh ? `in ${d}d ${hh}h` : `in ${d}d`;
+}
+
+document.querySelectorAll('#activityFilter button').forEach(b => b.addEventListener('click', () => {
+  ACTIVITY_FILTER = b.dataset.act;
+  document.querySelectorAll('#activityFilter button').forEach(x => x.classList.toggle('active', x === b));
+  renderActivity();
+  applyActivitySearch();
+}));
+
+// Client-side dynamic search across rendered rows.
+function applyActivitySearch() {
+  const q = ($('activitySearch').value || '').trim().toLowerCase();
+  const rows = document.querySelectorAll('#activityList tbody tr');
+  rows.forEach(tr => {
+    if (!q) { tr.style.display = ''; return; }
+    tr.style.display = tr.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
+$('activitySearch').addEventListener('input', applyActivitySearch);
+
+// ---- Connect-a-tunnel modal --------------------------------------------
+const PROTO_ICONS = {
+  http:    '<svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M2 8h12M8 2c2 1.8 2 10.2 0 12M8 2c-2 1.8-2 10.2 0 12" fill="none" stroke="currentColor" stroke-width="1.1"/></svg>',
+  https:   '<svg viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1.4" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M5 7V5a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>',
+  ssh:     '<svg viewBox="0 0 16 16"><rect x="1.5" y="3" width="13" height="10" rx="1.4" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M4 6.5l2 1.5-2 1.5M7.5 10h4" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  rdp:     '<svg viewBox="0 0 16 16"><rect x="1.5" y="2.5" width="13" height="9" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M5 14h6M8 11.5v2.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>',
+  mysql:   '<svg viewBox="0 0 16 16"><ellipse cx="8" cy="3.5" rx="5.5" ry="1.8" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M2.5 3.5v9c0 1 2.5 1.8 5.5 1.8s5.5-.8 5.5-1.8v-9M2.5 8c0 1 2.5 1.8 5.5 1.8s5.5-.8 5.5-1.8" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>',
+  postgres:'<svg viewBox="0 0 16 16"><ellipse cx="8" cy="3.5" rx="5.5" ry="1.8" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M2.5 3.5v9c0 1 2.5 1.8 5.5 1.8s5.5-.8 5.5-1.8v-9M2.5 8c0 1 2.5 1.8 5.5 1.8s5.5-.8 5.5-1.8" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>',
+  mongodb: '<svg viewBox="0 0 16 16"><path d="M8 1c-1 4-3 7-3 9.5C5 13 6.5 14 8 14s3-1 3-3.5C11 8 9 5 8 1Z" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M8 14v1.5" stroke="currentColor" stroke-width="1.2"/></svg>',
+  redis:   '<svg viewBox="0 0 16 16"><path d="M2 4c0 1.1 2.7 2 6 2s6-.9 6-2-2.7-2-6-2-6 .9-6 2Zm0 4c0 1.1 2.7 2 6 2s6-.9 6-2M2 12c0 1.1 2.7 2 6 2s6-.9 6-2M2 4v8m12-8v8" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>',
+  vnc:     '<svg viewBox="0 0 16 16"><rect x="1.5" y="2.5" width="13" height="9" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.2"/><circle cx="8" cy="7" r="1.6" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M5 14h6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>',
+  tcp:     '<svg viewBox="0 0 16 16"><path d="M2 8h12M4 5l-2 3 2 3M12 5l2 3-2 3" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+};
+const PROTO_DEFS = {
+  http: {
+    label: 'HTTP',
+    desc:  'Expose a local web app over plain HTTP. Best for quick demos and dev previews.',
+    defaultLocalPort: 3000,
+    remoteForward: '80',
+    needsLocalPort: true,
+    endpoint: (sub, host, scheme, port) => buildHttpUrl(sub, host, scheme, port, false),
+  },
+  https: {
+    label: 'HTTPS',
+    desc:  'Expose a local web app over TLS. Requires the AirWeb server to be configured with HTTPS (public scheme = https).',
+    defaultLocalPort: 3000,
+    remoteForward: '80',
+    needsLocalPort: true,
+    endpoint: (sub, host, scheme, port) => buildHttpUrl(sub, host, scheme, port, true),
+  },
+  ssh: {
+    label: 'SSH',
+    desc:  'Expose your local SSH server (port 22) as a raw TCP tunnel. Required for marketplace listings — buyers SSH straight into the box.',
+    defaultLocalPort: 22,
+    remoteForward: '22',
+    needsLocalPort: false,
+    endpoint: (sub, host) => `ssh user@${sub}.${host}`,
+  },
+  rdp: {
+    label: 'RDP',
+    desc:  'Expose Windows Remote Desktop (port 3389) as a raw TCP tunnel. Point your RDP client at the public endpoint.',
+    defaultLocalPort: 3389,
+    remoteForward: '3389',
+    needsLocalPort: false,
+    endpoint: (sub, host) => `${sub}.${host}:3389`,
+  },
+  mysql: {
+    label: 'MySQL',
+    desc:  'Expose a local MySQL/MariaDB server (port 3306) as a raw TCP tunnel.',
+    defaultLocalPort: 3306,
+    remoteForward: '3306',
+    needsLocalPort: false,
+    endpoint: (sub, host) => `${sub}.${host}:3306`,
+  },
+  postgres: {
+    label: 'PostgreSQL',
+    desc:  'Expose a local PostgreSQL server (port 5432) as a raw TCP tunnel.',
+    defaultLocalPort: 5432,
+    remoteForward: '5432',
+    needsLocalPort: false,
+    endpoint: (sub, host) => `${sub}.${host}:5432`,
+  },
+  mongodb: {
+    label: 'MongoDB',
+    desc:  'Expose a local MongoDB server (port 27017) as a raw TCP tunnel.',
+    defaultLocalPort: 27017,
+    remoteForward: '27017',
+    needsLocalPort: false,
+    endpoint: (sub, host) => `${sub}.${host}:27017`,
+  },
+  redis: {
+    label: 'Redis',
+    desc:  'Expose a local Redis server (port 6379) as a raw TCP tunnel.',
+    defaultLocalPort: 6379,
+    remoteForward: '6379',
+    needsLocalPort: false,
+    endpoint: (sub, host) => `${sub}.${host}:6379`,
+  },
+  vnc: {
+    label: 'VNC',
+    desc:  'Expose a local VNC server (port 5900) as a raw TCP tunnel.',
+    defaultLocalPort: 5900,
+    remoteForward: '5900',
+    needsLocalPort: false,
+    endpoint: (sub, host) => `${sub}.${host}:5900`,
+  },
+};
+
+function buildHttpUrl(sub, host, scheme, browserPort, forceHttps) {
+  const proto = forceHttps ? 'https' : scheme;
+  let url = `${proto}://${sub}.${host}`;
+  // Append browser port for dev (non-default ports), matching withBrowserPort behavior.
+  if (browserPort && browserPort !== '80' && browserPort !== '443'
+      && !host.includes(':') && (proto === 'http' || proto === 'https')) {
+    url += `:${browserPort}`;
+  }
+  return url;
+}
+
+function renderConnectCmd() {
+  const proto = $('protoSelect').value || 'http';
+  const def = PROTO_DEFS[proto];
+  const allowCustom = CONFIG.allowCustomSubdomains !== false;
+  // When custom subdomains are disabled, the SSH username is ignored for
+  // subdomain assignment — the server picks a random one. Use a fixed token
+  // so the example doesn't suggest the input matters.
+  const sub = allowCustom
+    ? (($('protoSub').value || 'mysub').trim().replace(/[^a-z0-9-]/gi, '').toLowerCase() || 'mysub')
+    : 'tunnel';
+  const localPort = Math.max(1, Math.min(65535, Number($('protoLocalPort').value) || def.defaultLocalPort));
+  const remote = def.remoteForward || String(localPort);
+  const sshHost = CONFIG.sshHost || (CONFIG.publicDomain || '').split(':')[0];
+  const publicHost = CONFIG.publicDomain || sshHost;
+  const scheme = CONFIG.publicScheme || 'http';
+  const browserPort = window.location.port;
+  const keyName = keyFileName();
+
+  // Toggle local-port input visibility for fixed-port protocols.
+  $('protoLocalPortWrap').style.display = def.needsLocalPort ? '' : 'none';
+  // Hide the subdomain picker (and show the explanatory note) when the server
+  // forbids client-chosen subdomains.
+  const subWrap = $('protoSubWrap');
+  if (subWrap) subWrap.style.display = allowCustom ? '' : 'none';
+  const lockedNote = $('protoSubLockedNote');
+  if (lockedNote) lockedNote.style.display = allowCustom ? 'none' : '';
+
+  $('protoDesc').textContent = def.desc;
+  const endpointSub = allowCustom ? sub : '<random>';
+  $('protoEndpointVal').textContent = def.endpoint(endpointSub, publicHost, scheme, browserPort, localPort);
+
+  // Compose the SSH command, mirroring keyFileName() / sshPort logic.
+  const cmd = `ssh -i ./${keyName} -p ${CONFIG.sshPort} -R ${remote}:localhost:${localPort} ${sub}@${sshHost}`;
+  const pre = $('sshExample');
+  pre.textContent = cmd;
+  const btn = $('sshExampleCopy');
+  btn.onclick = async () => {
+    btn.textContent = (await copyText(cmd)) ? 'Copied!' : 'Failed';
+    setTimeout(() => { btn.textContent = 'Copy'; }, 1500);
+  };
+}
+
+function setProto(proto) {
+  const sel = $('protoSelect');
+  if (sel) sel.value = proto;
+  const def = PROTO_DEFS[proto];
+  // Reset local port to the protocol's typical default when user picks a new protocol.
+  if (def && def.defaultLocalPort) $('protoLocalPort').value = def.defaultLocalPort;
+  renderConnectCmd();
+}
+
+function openConnectModal() {
+  // Hide HTTPS option when server isn't configured for it.
+  const scheme = (CONFIG && CONFIG.publicScheme) || 'http';
+  const httpsOpt = $('protoSelect').querySelector('option[value="https"]');
+  if (httpsOpt) httpsOpt.hidden = (scheme !== 'https');
+  // If the currently-selected option is hidden, fall back to HTTP.
+  const cur = $('protoSelect').value;
+  if (cur === 'https' && scheme !== 'https') setProto('http');
+  else setProto(cur || 'http');
+  $('connectModal').classList.add('open');
+}
+function closeConnectModal() { $('connectModal').classList.remove('open'); }
+$('openConnectBtn').onclick = openConnectModal;
+$('connectClose').onclick = closeConnectModal;
+$('connectModal').addEventListener('click', (e) => {
+  if (e.target.id === 'connectModal') closeConnectModal();
+});
+document.querySelectorAll('#protoTabs .proto-tab').forEach(tab => {
+  tab.addEventListener('click', () => setProto(tab.dataset.proto));
+});
+$('protoSelect').addEventListener('change', () => setProto($('protoSelect').value));
+$('protoSub').addEventListener('input', renderConnectCmd);
+$('protoLocalPort').addEventListener('input', renderConnectCmd);
+
+// ----- Custom proto picker (icon dropdown wrapping a <select>) -----
+// Keeps the underlying <select> as the value source so existing
+// `.value` reads and `change` listeners continue to work.
+function enhanceProtoSelect(selectId, opts) {
+  const sel = document.getElementById(selectId);
+  if (!sel || sel.dataset.enhanced) return;
+  sel.dataset.enhanced = '1';
+
+  const wrap = document.createElement('div');
+  wrap.className = 'proto-picker' + ((opts && opts.full) ? ' full' : '');
+  sel.parentNode.insertBefore(wrap, sel);
+  wrap.appendChild(sel);
+
+  const trigger = document.createElement('button');
+  trigger.type = 'button';
+  trigger.className = 'proto-picker-trigger';
+  trigger.innerHTML = '<span class="proto-icon" aria-hidden="true"></span><span class="label"></span><span class="caret">\u25BE</span>';
+  wrap.appendChild(trigger);
+
+  const menu = document.createElement('div');
+  menu.className = 'proto-picker-menu';
+  menu.setAttribute('role', 'listbox');
+  wrap.appendChild(menu);
+
+  function rebuildOptions() {
+    menu.innerHTML = '';
+    Array.from(sel.options).forEach(opt => {
+      const row = document.createElement('div');
+      row.className = 'proto-picker-option' + (opt.value === sel.value ? ' selected' : '') + (opt.hidden ? ' hidden' : '');
+      row.dataset.value = opt.value;
+      row.setAttribute('role', 'option');
+      const icon = opt.value && PROTO_ICONS[opt.value] ? PROTO_ICONS[opt.value] : '';
+      row.innerHTML = `<span class="proto-icon" aria-hidden="true">${icon}</span><span>${opt.textContent}</span>`;
+      row.addEventListener('click', () => {
+        if (sel.value === opt.value) { close(); return; }
+        sel.value = opt.value;
+        sel.dispatchEvent(new Event('change', { bubbles: true }));
+        close();
+        updateTrigger();
+      });
+      menu.appendChild(row);
+    });
+  }
+  function updateTrigger() {
+    const opt = sel.options[sel.selectedIndex];
+    const labelEl = trigger.querySelector('.label');
+    const iconEl = trigger.querySelector('.proto-icon');
+    const v = sel.value;
+    labelEl.textContent = opt ? opt.textContent : '';
+    const iconSvg = v && PROTO_ICONS[v] ? PROTO_ICONS[v] : '';
+    iconEl.innerHTML = iconSvg;
+    iconEl.style.display = iconSvg ? '' : 'none';
+    // refresh selected/hidden state in menu
+    menu.querySelectorAll('.proto-picker-option').forEach(row => {
+      row.classList.toggle('selected', row.dataset.value === v);
+      const o = Array.from(sel.options).find(o => o.value === row.dataset.value);
+      row.classList.toggle('hidden', !!(o && o.hidden));
+    });
+  }
+  function open() { rebuildOptions(); updateTrigger(); wrap.classList.add('open'); }
+  function close() { wrap.classList.remove('open'); }
+  trigger.addEventListener('click', e => {
+    e.stopPropagation();
+    if (wrap.classList.contains('open')) close(); else open();
+  });
+  document.addEventListener('click', e => { if (!wrap.contains(e.target)) close(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+  // Reflect programmatic changes (setProto, setProto on init, etc.)
+  sel.addEventListener('change', updateTrigger);
+
+  rebuildOptions();
+  updateTrigger();
+}
+
+enhanceProtoSelect('protoSelect');
+enhanceProtoSelect('mfProto');
+
+// ---- Marketplace tab ----------------------------------------------------
+function specSummary(l) {
+  const bits = [];
+  if (l.cpuCores || l.cpu_cores) bits.push((l.cpuCores || l.cpu_cores) + ' cores');
+  if (l.cpuModel || l.cpu_model) bits.push(l.cpuModel || l.cpu_model);
+  if (l.ramGb || l.ram_gb) bits.push((l.ramGb || l.ram_gb) + ' GB RAM');
+  if (l.diskGb || l.disk_gb) bits.push((l.diskGb || l.disk_gb) + ' GB disk');
+  if (l.bandwidthMbps || l.bandwidth_mbps) bits.push((l.bandwidthMbps || l.bandwidth_mbps) + ' Mbps');
+  if (l.os) bits.push(l.os);
+  return bits.join(' \u00b7 ') || '\u2014';
+}
+
+function flagFor(cc) {
+  if (!cc || cc.length !== 2) return '';
+  return cc.toUpperCase().split('').map(c => String.fromCodePoint(0x1F1A5 + c.charCodeAt(0))).join('');
+}
+
+const COUNTRY_LIST = [
+  ['US','United States'],['CA','Canada'],['MX','Mexico'],['BR','Brazil'],['AR','Argentina'],
+  ['GB','United Kingdom'],['IE','Ireland'],['FR','France'],['DE','Germany'],['NL','Netherlands'],
+  ['ES','Spain'],['IT','Italy'],['SE','Sweden'],['NO','Norway'],['FI','Finland'],['PL','Poland'],
+  ['CH','Switzerland'],['AT','Austria'],['CZ','Czechia'],['UA','Ukraine'],['RU','Russia'],
+  ['TR','Turkey'],['IL','Israel'],['AE','UAE'],['SA','Saudi Arabia'],
+  ['IN','India'],['CN','China'],['HK','Hong Kong'],['TW','Taiwan'],['JP','Japan'],
+  ['KR','South Korea'],['SG','Singapore'],['MY','Malaysia'],['ID','Indonesia'],['TH','Thailand'],
+  ['VN','Vietnam'],['PH','Philippines'],['AU','Australia'],['NZ','New Zealand'],
+  ['ZA','South Africa'],['NG','Nigeria'],['KE','Kenya'],['EG','Egypt'],
+];
+function populateCountrySelects() {
+  const opts = ['<option value="">Any</option>']
+    .concat(COUNTRY_LIST.map(([c, n]) => `<option value="${c}">${flagFor(c)} ${esc(n)} (${c})</option>`))
+    .join('');
+  if ($('mfCountry')) $('mfCountry').innerHTML = opts;
+  if ($('lmCountry')) $('lmCountry').innerHTML = '<option value="">\u2014</option>' +
+    COUNTRY_LIST.map(([c, n]) => `<option value="${c}">${flagFor(c)} ${esc(n)} (${c})</option>`).join('');
+}
+
+function buildMarketQuery() {
+  const params = new URLSearchParams();
+  const set = (k, v) => { if (v !== '' && v != null) params.set(k, v); };
+  set('q',        $('mfQ').value.trim());
+  // Backend stores listings under three logical protocols (tcp/http/https);
+  // map UI service choices onto those.
+  const mfProto = $('mfProto').value;
+  const protoMap = { ssh: 'tcp', rdp: 'tcp', mysql: 'tcp', postgres: 'tcp', mongodb: 'tcp', redis: 'tcp', vnc: 'tcp', http: 'http', https: 'https' };
+  set('protocol', mfProto ? (protoMap[mfProto] || mfProto) : '');
+  set('country',  $('mfCountry').value);
+  set('minCores', $('mfMinCores').value);
+  set('minRam',   $('mfMinRam').value);
+  const maxPriceRaw = parseFloat($('mfMaxPrice').value);
+  if (!isNaN(maxPriceRaw) && maxPriceRaw < 10) set('maxPrice', maxPriceRaw);
+  set('os',       $('mfOs').value.trim());
+  const s = params.toString();
+  return s ? ('?' + s) : '';
 }
 
 async function refreshMarketplace() {
-  const { items } = await api('/api/listings');
+  const qs = buildMarketQuery();
+  const { items } = await api('/api/listings' + qs);
+  $('marketCount').textContent = items.length + ' result' + (items.length === 1 ? '' : 's');
   const el = $('marketList');
-  if (!items.length) { el.innerHTML = '<div class="empty">No active listings.</div>'; return; }
-  el.innerHTML = '<table><tbody>' + items.map(it => `<tr>
-    <td>
-      <strong>${esc(it.title)}</strong>
-      ${it.ownerOnline ? '<span class="pill good">online</span>' : '<span class="pill warn">offline</span>'}
-      <br><span class="reason">${esc(it.description || '')}</span>
-      <br><span class="mono reason" style="font-size:.7rem">by ${esc(it.owner)}</span>
-    </td>
-    <td class="right">${fmtCredits(it.pricePerMinute)} cr/min<br><span class="reason" style="font-size:.75rem">${fmtUsd(it.pricePerMinute)}/min</span></td>
-    <td class="right">
-      ${it.owner === ME.address
-        ? '<span class="reason">your listing</span>'
-        : `<button data-lease="${it.id}">Lease</button>`}
-    </td>
-  </tr>`).join('') + '</tbody></table>';
+  if (!items.length) { el.innerHTML = '<div class="empty">No listings match your filters.</div>'; return; }
+  el.innerHTML = items.map(it => {
+    const proto = (it.protocol || 'tcp').toLowerCase();
+    const protoLabel = proto === 'tcp' ? 'SSH' : proto.toUpperCase();
+    const isWeb = (proto === 'http' || proto === 'https');
+    const termLabel = it.leaseTermMinutes ? fmtTermMinutes(it.leaseTermMinutes) : '';
+    return `
+    <div class="node-card">
+      <div style="display:flex; align-items:center; gap:.6rem; flex-wrap:wrap">
+        <h3 style="margin:0">${esc(it.title)}</h3>
+        <span class="proto-badge" title="${esc(protoLabel)}"><span class="proto-icon">${PROTO_ICONS[proto] || PROTO_ICONS.tcp}</span>${esc(protoLabel)}</span>
+        ${isWeb ? '<span class="pill warn" title="Passcode-gated private access">private</span>' : ''}
+        ${it.countryCode ? '<span class="flag" title="' + esc(it.countryCode) + '">' + flagFor(it.countryCode) + '</span>' : ''}
+        ${it.tunnelOnline ? '<span class="pill good">online</span>' : '<span class="pill off">offline</span>'}
+        ${it.validated ? '<span class="validated-pill">SSH validated</span>' : ''}
+        <span style="margin-left:auto; text-align:right">
+          <strong>${fmtCredits(it.pricePerMinute)}<span class="unit">ACR/min</span></strong>
+          <br><span class="reason" style="font-size:.75rem">${fmtUsd(it.pricePerMinute)}/min${termLabel ? ' · ' + esc(termLabel) + ' term' : ''}</span>
+        </span>
+      </div>
+      <p style="margin:.4rem 0; color:var(--mute)">${esc(it.description || '')}</p>
+      <div class="specs">
+        ${it.cpuCores ? '<span class="spec"><strong>' + it.cpuCores + '</strong> cores</span>' : ''}
+        ${it.ramGb   ? '<span class="spec"><strong>' + it.ramGb   + '</strong> GB RAM</span>' : ''}
+        ${it.diskGb  ? '<span class="spec"><strong>' + it.diskGb  + '</strong> GB disk</span>' : ''}
+        ${it.bandwidthMbps ? '<span class="spec"><strong>' + it.bandwidthMbps + '</strong> Mbps</span>' : ''}
+        ${it.os      ? '<span class="spec">' + esc(it.os) + '</span>' : ''}
+        ${it.cpuModel? '<span class="spec">' + esc(it.cpuModel) + '</span>' : ''}
+        ${it.ipAddress && !isWeb ? '<span class="spec">IP ' + esc(it.ipAddress) + '</span>' : ''}
+        <span class="spec" style="border-color:transparent">by <span class="mono">${esc(it.owner)}</span></span>
+      </div>
+      <div style="text-align:right">
+        ${!ME
+          ? '<button class="ghost" disabled title="Sign in required to lease">Lease</button>'
+          : (it.owner === ME.address
+              ? '<span class="reason">your listing</span>'
+              : (it.tunnelOnline
+                  ? '<button data-lease="' + it.id + '">Lease</button>'
+                  : '<button class="ghost" disabled title="This connection is offline">Lease</button>'))}
+      </div>
+    </div>
+  `;
+  }).join('');
   el.querySelectorAll('[data-lease]').forEach(b => b.onclick = async () => {
+    const card = b.closest('.node-card');
+    const id = b.dataset.lease;
+    const it = items.find(x => String(x.id) === String(id));
+    if (it) {
+      const term = it.leaseTermMinutes || 60;
+      const total = (it.pricePerMinute || 0) * term;
+      const msg = `Confirm lease:\n\n` +
+        `${it.title}\n` +
+        `${fmtCredits(it.pricePerMinute)} ACR/min × ${fmtTermMinutes(term)}\n` +
+        `Total (prepaid now): ${fmtCredits(total)} ACR (${fmtUsd(total)})\n\n` +
+        `This amount will be charged immediately from your balance.`;
+      if (!confirm(msg)) return;
+    }
     try {
-      await api('/api/listings/' + b.dataset.lease + '/lease', { method: 'POST' });
+      const lease = await api('/api/listings/' + id + '/lease', { method: 'POST' });
       await refresh();
+      if (lease && lease.passcode) {
+        showLeaseGrantedModal(lease);
+      } else {
+        switchTab('overview');
+      }
     } catch (e) { alert('Could not lease: ' + (e.body && e.body.error || e.message)); }
   });
 }
+
+function fmtTermMinutes(m) {
+  if (!m) return '';
+  if (m < 60) return m + 'm';
+  const h = Math.floor(m / 60), rem = m % 60;
+  if (m < 1440) return rem ? `${h}h ${rem}m` : `${h}h`;
+  const d = Math.floor(m / 1440); const hh = Math.floor((m % 1440) / 60);
+  return hh ? `${d}d ${hh}h` : `${d}d`;
+}
+
+function showLeaseGrantedModal(lease) {
+  const expires = lease.expiresAt ? new Date(lease.expiresAt) : null;
+  const expiresStr = expires ? expires.toLocaleString() : '—';
+  const publicUrl = withBrowserPort(lease.publicUrl);
+  const accessUrl = withBrowserPort(lease.accessUrl);
+  const lines = [];
+  lines.push(`Lease started. Passcode: ${lease.passcode}`);
+  if (publicUrl) lines.push(`URL: ${publicUrl}`);
+  if (accessUrl) lines.push(`One-click access: ${accessUrl}`);
+  lines.push(`Expires: ${expiresStr}`);
+  // Use the lightweight built-in alert; the dashboard's Overview row also
+  // shows the passcode persistently for the duration of the lease.
+  alert(lines.join('\n\n'));
+  switchTab('overview');
+}
+
+// ---- Transactions tab ---------------------------------------------------
+let LEDGER_OFFSET = 0;
+let LEDGER_ROWS = [];
+let LEDGER_FILTERS = {};
+
+function buildLedgerQuery(offset, limit) {
+  const p = new URLSearchParams();
+  p.set('offset', offset);
+  p.set('limit',  limit);
+  for (const [k, v] of Object.entries(LEDGER_FILTERS)) {
+    if (v !== '' && v != null) p.set(k, v);
+  }
+  return '?' + p.toString();
+}
+
+async function refreshLedger(reset) {
+  if (reset) { LEDGER_OFFSET = 0; LEDGER_ROWS = []; }
+  const { items, total } = await api('/api/ledger' + buildLedgerQuery(LEDGER_OFFSET, 20));
+  LEDGER_ROWS = LEDGER_ROWS.concat(items);
+  LEDGER_OFFSET += items.length;
+  $('txTotal').textContent = LEDGER_ROWS.length + ' of ' + total + ' transactions';
+  $('txLoadMore').style.display = (LEDGER_OFFSET < total) ? '' : 'none';
+  const tb = $('ledgerTable').querySelector('tbody');
+  if (!LEDGER_ROWS.length) {
+    tb.innerHTML = '<tr><td class="empty" colspan="4">No transactions match.</td></tr>';
+    return;
+  }
+  tb.innerHTML = LEDGER_ROWS.map(l => `<tr>
+    <td class="reason">${esc(l.reason.replace(/_/g, ' '))}</td>
+    <td class="mono reason">${l.ref ? esc(l.ref) : ''}</td>
+    <td class="right ${l.delta >= 0 ? 'delta-pos' : 'delta-neg'}"><span class="reason" style="font-size:.7rem; display:block; font-weight:400; color:var(--mute)">est. ${fmtUsd(Math.abs(l.delta))}</span><span class="mono">${l.delta >= 0 ? '+' : '\u2212'}${fmtCredits(Math.abs(l.delta))}<span class="unit">ACR</span></span></td>
+    <td class="right reason">${timeAgo(l.created_at)}</td>
+  </tr>`).join('');
+}
+
+// Debounce helper for column filters.
+function debounce(fn, ms) { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; }
+
+// ---- List-for-lease modal ----------------------------------------------
+let LM_TUNNEL_ID = null;
+let LM_PROTOCOL = 'tcp';
+function openListModal(tunnelId) {
+  const t = ME.onlineTunnels.find(x => x.id === tunnelId);
+  if (!t) return alert('Tunnel not found.');
+  if (!t.listable) return alert('This tunnel cannot be listed.');
+  LM_TUNNEL_ID = tunnelId;
+  LM_PROTOCOL = (t.type === 'http') ? 'http' : 'tcp';
+  $('lmTunnelUrl').textContent = withBrowserPort(t.publicUrl);
+  ['lmTitle','lmDesc','lmBw','lmSudoUser','lmSudoPass']
+    .forEach(id => { $(id).value = ''; });
+  $('lmPrice').value = CONFIG.defaultLeasePricePerMinute || 1;
+  $('lmTerm').value  = 60;
+  $('lmCountry').value = '';
+  $('lmError').style.display = 'none';
+  $('lmSubmit').disabled = false;
+  const isHttp = (LM_PROTOCOL === 'http' || LM_PROTOCOL === 'https');
+  const protoLabel = LM_PROTOCOL.toUpperCase();
+  $('lmProtoBadge').innerHTML = `<span class="proto-icon">${PROTO_ICONS[LM_PROTOCOL] || ''}</span>${protoLabel}`;
+  document.querySelectorAll('.lm-sudo-row').forEach(el => el.style.display = isHttp ? 'none' : '');
+  $('lmHwNote').style.display   = isHttp ? 'none' : '';
+  $('lmSshNote').style.display  = isHttp ? 'none' : '';
+  $('lmHttpNote').style.display = isHttp ? '' : 'none';
+  $('lmSubmit').textContent = isHttp ? 'List for lease' : 'Validate & list';
+  $('listModal').classList.add('open');
+}
+function closeListModal() { $('listModal').classList.remove('open'); LM_TUNNEL_ID = null; }
+$('lmCancel').onclick = closeListModal;
+
+$('lmSubmit').onclick = async () => {
+  if (!LM_TUNNEL_ID) return;
+  const isHttp = (LM_PROTOCOL === 'http' || LM_PROTOCOL === 'https');
+  const body = {
+    tunnelId:        LM_TUNNEL_ID,
+    title:           $('lmTitle').value.trim(),
+    description:     $('lmDesc').value.trim(),
+    pricePerMinute:  Number($('lmPrice').value) || CONFIG.defaultLeasePricePerMinute,
+    leaseTermMinutes:Number($('lmTerm').value) || 60,
+    bandwidthMbps:   $('lmBw').value,
+    countryCode:     $('lmCountry').value,
+    protocol:        LM_PROTOCOL,
+  };
+  if (!isHttp) {
+    body.sudoUser     = $('lmSudoUser').value;
+    body.sudoPassword = $('lmSudoPass').value;
+  }
+  if (!body.title)       { return showLmError('Title is required.'); }
+  if (!isHttp && (!body.sudoUser || !body.sudoPassword)) {
+    return showLmError('Sudo username and password are required for validation.');
+  }
+  $('lmSubmit').disabled = true;
+  $('lmSubmit').textContent = isHttp ? 'Listing\u2026' : 'Validating SSH login & probing hardware\u2026';
+  $('lmError').style.display = 'none';
+  try {
+    await api('/api/listings', { method: 'POST', body: JSON.stringify(body) });
+    closeListModal();
+    await refresh();
+  } catch (e) {
+    const code = e.body && e.body.error;
+    let msg = (e.body && e.body.detail) || e.message;
+    if (code === 'sudo_auth_failed')     msg = 'Sudo login failed. Wrong username/password, or the SSH daemon rejected the attempt.';
+    if (code === 'no_ssh_banner')        msg = 'No SSH banner from the tunnel endpoint. Is your sshd actually exposed on this tunnel?';
+    if (code === 'listing_requires_tcp_ssh_tunnel') msg = 'This tunnel is HTTP. Re-open it as TCP forwarding port 22 (e.g. ssh -R 22:localhost:22 \u2026).';
+    if (code === 'protocol_tunnel_mismatch') msg = 'The tunnel type does not match the chosen protocol.';
+    if (code === 'no_subdomain')         msg = 'This tunnel has no subdomain yet \u2014 reconnect with a subdomain to list it.';
+    showLmError(msg);
+    $('lmSubmit').disabled = false;
+    $('lmSubmit').textContent = isHttp ? 'List for lease' : 'Validate & list';
+  }
+};
+function showLmError(text) {
+  const el = $('lmError');
+  el.textContent = text;
+  el.style.display = '';
+}
+
+// ---- "Why can't I list this?" help modal -------------------------------
+function openHelpListModal() {
+  const sshHost = (CONFIG && CONFIG.sshHost) || (CONFIG && CONFIG.publicDomain && CONFIG.publicDomain.split(':')[0]) || 'airweb.fyi';
+  const sshPort = (CONFIG && CONFIG.sshPort) || 2222;
+  const allowCustom = !CONFIG || CONFIG.allowCustomSubdomains !== false;
+  const user = allowCustom ? 'mysub' : 'tunnel';
+  const intro = $('helpListIntro');
+  if (intro) {
+    intro.innerHTML = allowCustom
+      ? 'Reconnect using the command below. Pick any free <code class="mono">mysub</code> name (or use one of your handles):'
+      : 'Reconnect using the command below. The server will assign a random subdomain — the SSH username below is just a placeholder.';
+  }
+  const cmd = `ssh -i ./${keyFileName()} -p ${sshPort} -R 22:localhost:22 ${user}@${sshHost}`;
+  const pre = $('helpListCmd');
+  pre.textContent = cmd;
+  // Inject a small copy button in the top-right corner of the <pre>.
+  const btn = document.createElement('button');
+  btn.textContent = 'copy';
+  btn.className = 'ghost';
+  btn.style.cssText = 'position:absolute; top:.5rem; right:.5rem; max-width:70px; padding:3px 10px; font-size:.75rem';
+  btn.onclick = async () => {
+    btn.textContent = (await copyText(cmd)) ? 'copied!' : 'copy failed';
+    setTimeout(() => { btn.textContent = 'copy'; }, 1500);
+  };
+  pre.appendChild(btn);
+  $('helpListModal').classList.add('open');
+}
+function closeHelpListModal() { $('helpListModal').classList.remove('open'); }
+$('helpListClose').onclick = closeHelpListModal;
+$('helpListModal').addEventListener('click', (e) => {
+  if (e.target.id === 'helpListModal') closeHelpListModal();
+});
 
 async function refresh() {
   ME = await api('/api/me');
@@ -431,20 +2354,73 @@ async function refresh() {
 
 function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
 function humanBytes(n) { if (n < 1024) return n + ' B'; if (n < 1048576) return (n/1024).toFixed(1)+' KB'; if (n < 1073741824) return (n/1048576).toFixed(1)+' MB'; return (n/1073741824).toFixed(2)+' GB'; }
+
+// Copy text to the clipboard with a fallback for non-secure-context pages
+// (navigator.clipboard requires HTTPS or localhost). Returns true on success.
+async function copyText(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    try { await navigator.clipboard.writeText(text); return true; } catch {}
+  }
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.cssText = 'position:fixed; top:-1000px; left:0; opacity:0;';
+    document.body.appendChild(ta);
+    ta.select();
+    ta.setSelectionRange(0, ta.value.length);
+    const ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    return ok;
+  } catch { return false; }
+}
 function timeAgo(ts) { const s = Math.floor((Date.now() - ts)/1000); if (s < 60) return s+'s ago'; if (s<3600) return Math.floor(s/60)+'m ago'; if (s<86400) return Math.floor(s/3600)+'h ago'; return Math.floor(s/86400)+'d ago'; }
 
 // ---- event handlers ----
-$('registerBtn').onclick = async () => {
-  $('registerBtn').disabled = true;
-  $('registerBtn').textContent = 'Generating…';
+function triggerKeyDownload(privateKey, filename) {
+  const blob = new Blob([privateKey], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename || 'airweb_key';
+  // Must be in DOM in some browsers for the click to trigger a download.
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  // Defer revoke so the browser has time to start the download.
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
+}
+
+$('openDisclaimerBtn').onclick = () => {
+  $('disclaimerAck').checked = false;
+  $('confirmDisclaimerBtn').disabled = true;
+  $('confirmDisclaimerBtn').textContent = 'Generate, download & sign in';
+  $('disclaimerModal').classList.add('open');
+};
+$('cancelDisclaimerBtn').onclick = () => $('disclaimerModal').classList.remove('open');
+$('disclaimerAck').onchange = (e) => {
+  $('confirmDisclaimerBtn').disabled = !e.target.checked;
+};
+
+// Single user gesture: register, download key, and finalise sign-in.
+// Download is triggered synchronously from inside the click handler so the
+// browser treats it as a user-initiated download.
+$('confirmDisclaimerBtn').onclick = async () => {
+  if (!$('disclaimerAck').checked) return;
+  const btn = $('confirmDisclaimerBtn');
+  btn.disabled = true;
+  btn.textContent = 'Generating…';
   try {
     const r = await api('/api/register', { method: 'POST' });
+    // Download first — if this throws, we don't proceed to authed UI.
+    triggerKeyDownload(r.privateKey, r.saveAs);
+    $('disclaimerModal').classList.remove('open');
     showKeyModal(r);
     await tryLoadMe();
   } catch (e) {
     alert('Registration failed: ' + e.message);
-    $('registerBtn').disabled = false;
-    $('registerBtn').textContent = 'Generate key & sign up →';
+    btn.disabled = false;
+    btn.textContent = 'Generate, download & sign in';
   }
 };
 
@@ -453,42 +2429,61 @@ function showKeyModal(r) {
   $('privKeyText').value = r.privateKey;
   $('firstSshCmd').textContent = `ssh -i ./airweb_key -p ${r.sshPort} -R 80:localhost:3000 mysub@${r.sshHost}`;
   $('keyModal').classList.add('open');
-  $('downloadKeyBtn').onclick = () => {
-    const blob = new Blob([r.privateKey], { type: 'text/plain' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = r.saveAs || 'airweb_key';
-    a.click();
-    URL.revokeObjectURL(a.href);
-  };
+  $('downloadKeyBtn').onclick = () => triggerKeyDownload(r.privateKey, r.saveAs);
   $('copyKeyBtn').onclick = async () => {
-    await navigator.clipboard.writeText(r.privateKey);
-    $('copyKeyBtn').textContent = 'copied!';
+    const ok = await copyText(r.privateKey);
+    $('copyKeyBtn').textContent = ok ? 'copied!' : 'copy failed';
     setTimeout(() => $('copyKeyBtn').textContent = 'Copy', 1500);
   };
 }
 $('dismissModalBtn').onclick = () => $('keyModal').classList.remove('open');
 
-$('createListingBtn').onclick = async () => {
-  const title = $('listingTitle').value.trim();
-  const description = $('listingDesc').value.trim();
-  const pricePerMinute = parseInt($('listingPrice').value, 10) || CONFIG.defaultLeasePricePerMinute;
-  if (!title) return alert('Please enter a title.');
-  try {
-    await api('/api/listings', { method: 'POST', body: JSON.stringify({ title, description, pricePerMinute }) });
-    $('listingTitle').value = ''; $('listingDesc').value = ''; $('listingPrice').value = '';
-    await refresh();
-  } catch (e) { alert('Could not create listing: ' + (e.body && e.body.error || e.message)); }
+// ---- Marketplace filter wiring ------------------------------------------
+const MF_PRICE_MAX = 10; // slider's upper bound = "All"
+function updateMfPriceLabel() {
+  const v = parseFloat($('mfMaxPrice').value);
+  const label = (isNaN(v) || v >= MF_PRICE_MAX)
+    ? (window.i18n ? window.i18n.t('All') : 'All')
+    : (v.toFixed(2));
+  $('mfMaxPriceVal').textContent = label;
+}
+if ($('mfMaxPrice')) {
+  $('mfMaxPrice').addEventListener('input', updateMfPriceLabel);
+  updateMfPriceLabel();
+}
+if ($('mfAdvToggle')) {
+  $('mfAdvToggle').addEventListener('click', () => {
+    const adv = $('mfAdv');
+    const btn = $('mfAdvToggle');
+    const open = adv.hasAttribute('hidden');
+    if (open) { adv.removeAttribute('hidden'); btn.setAttribute('aria-expanded','true'); btn.classList.add('active'); }
+    else { adv.setAttribute('hidden',''); btn.setAttribute('aria-expanded','false'); btn.classList.remove('active'); }
+  });
+}
+$('mfApply').onclick = () => refreshMarketplace().catch(e => alert('Filter failed: ' + e.message));
+// Live-apply on Enter in the search box.
+if ($('mfQ')) $('mfQ').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('mfApply').click(); });
+$('mfClear').onclick = () => {
+  ['mfQ','mfMinCores','mfMinRam','mfOs'].forEach(id => $(id).value = '');
+  $('mfCountry').value = '';
+  $('mfProto').value = '';
+  $('mfMaxPrice').value = MF_PRICE_MAX;
+  updateMfPriceLabel();
+  refreshMarketplace().catch(() => {});
 };
 
-$('buyHandleBtn').onclick = async () => {
-  const handle = $('handleInput').value.trim().toLowerCase();
-  if (!handle) return alert('Pick a handle name.');
-  try {
-    await api('/api/handles', { method: 'POST', body: JSON.stringify({ handle }) });
-    $('handleInput').value = '';
-    await refresh();
-  } catch (e) { alert('Could not claim handle: ' + (e.body && e.body.error || e.message)); }
+// ---- Transactions filter wiring -----------------------------------------
+const reapplyLedger = debounce(() => refreshLedger(true).catch(e => console.error(e)), 250);
+document.querySelectorAll('.col-filter').forEach(el => {
+  const col = el.dataset.col;
+  el.addEventListener('input',  () => { LEDGER_FILTERS[col === 'reason' ? 'reason' : col === 'ref' ? 'q' : col] = el.value; reapplyLedger(); });
+  el.addEventListener('change', () => { LEDGER_FILTERS[col === 'reason' ? 'reason' : col === 'ref' ? 'q' : col] = el.value; reapplyLedger(); });
+});
+$('txLoadMore').onclick = () => refreshLedger(false).catch(e => alert('Load failed: ' + e.message));
+$('txClearFilters').onclick = () => {
+  LEDGER_FILTERS = {};
+  document.querySelectorAll('.col-filter').forEach(el => { el.value = ''; });
+  refreshLedger(true).catch(() => {});
 };
 
 $('logoutBtn').onclick = async (e) => {
@@ -497,10 +2492,94 @@ $('logoutBtn').onclick = async (e) => {
   location.reload();
 };
 
+// ---- User menu (avatar dropdown) ----------------------------------------
+function toggleUserMenu(force) {
+  const panel = $('userMenuPanel');
+  const btn   = $('avatarBtn');
+  const open  = force !== undefined ? force : panel.hasAttribute('hidden');
+  if (open) {
+    panel.removeAttribute('hidden');
+    btn.setAttribute('aria-expanded', 'true');
+  } else {
+    panel.setAttribute('hidden', '');
+    btn.setAttribute('aria-expanded', 'false');
+  }
+}
+$('avatarBtn').addEventListener('click', (e) => { e.stopPropagation(); toggleUserMenu(); });
+document.addEventListener('click', (e) => {
+  const menu = $('userMenu');
+  if (!menu.contains(e.target)) toggleUserMenu(false);
+});
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') toggleUserMenu(false); });
+
+// Settings gear popover + theme switcher live in /header.js (shared across pages).
+
+$('menuAddrCopy').addEventListener('click', async (e) => {
+  e.stopPropagation();
+  const ok = await copyText(ME && ME.address ? ME.address : '');
+  const btn = $('menuAddrCopy');
+  btn.textContent = ok ? 'Copied!' : 'Failed';
+  setTimeout(() => { btn.textContent = 'Copy'; }, 1500);
+});
+
+// Account ID copy button in the hero header — also blocks the collapse toggle.
+$('addrCopyBtn').addEventListener('click', async (e) => {
+  e.stopPropagation();
+  const ok = await copyText(ME && ME.address ? ME.address : '');
+  $('addrCopyBtn').textContent = ok ? 'Copied!' : 'Failed';
+  setTimeout(() => { $('addrCopyBtn').textContent = 'Copy'; }, 1500);
+});
+
+
+// Re-render numeric displays whenever the user changes their local currency.
+if (window.currency && typeof window.currency.onChange === 'function') {
+  window.currency.onChange(() => {
+    if (ME) {
+      try { renderAuthed(); } catch (e) {}
+    }
+    if (typeof refreshLedger === 'function') {
+      try { refreshLedger(true); } catch (e) {}
+    }
+    if (typeof refreshMarketplace === 'function') {
+      const active = document.querySelector('#tabBar button.active')?.dataset.tab;
+      if (active === 'marketplace') { try { refreshMarketplace(); } catch (e) {} }
+    }
+  });
+}
+
 $('adminRefreshBtn').onclick = () => refreshAdmin().catch(e => alert('Refresh failed: ' + e.message));
 
 // Auto-refresh every 15s when authed
 setInterval(() => { if (ME) refresh().catch(() => {}); }, 15000);
+
+// ---- Collapsible cards (state persisted in localStorage) ---------------
+// Any non-stat .card with an <h2> (direct child, or inside its first child
+// div) becomes collapsible. The h2 is the toggle; clicking it flips
+// .collapsed on the card and writes to localStorage so the choice survives
+// reloads. Keyed by the h2's text (trimmed, lowercased).
+function initCollapsibleCards() {
+  // Regular cards with an h2 toggle (excludes stat cards and main sections)
+  document.querySelectorAll('.card:not(.stat)').forEach(card => {
+    const h2 = card.querySelector(':scope > h2, :scope > div:first-child > h2');
+    if (!h2) return;
+    bindCollapse(card, h2, h2.textContent.trim().toLowerCase().slice(0, 60));
+  });
+  // Overview hero: clicking the Account header row toggles
+  const hero = document.getElementById('overviewHero');
+  const heroHead = document.getElementById('heroHead');
+  if (hero && heroHead) bindCollapse(hero, heroHead, 'overview-hero');
+}
+function bindCollapse(el, handle, slug) {
+  const key = 'card-collapsed:' + slug;
+  el.dataset.collapsible = '1';
+  if (localStorage.getItem(key) === '1') el.classList.add('collapsed');
+  handle.addEventListener('click', () => {
+    const next = !el.classList.contains('collapsed');
+    el.classList.toggle('collapsed', next);
+    try { localStorage.setItem(key, next ? '1' : '0'); } catch {}
+  });
+}
+initCollapsibleCards();
 
 (async () => { await loadConfig(); await tryLoadMe(); })();
 </script>

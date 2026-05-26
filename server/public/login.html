@@ -5,36 +5,228 @@
 <title>AirWeb · Sign in</title>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <meta name="robots" content="noindex" />
+<meta name="theme-color" content="#1c1c1e" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231c1c1e'/%3E%3Crect x='8' y='8' width='22' height='22' rx='5' fill='%230a84ff'/%3E%3Crect x='34' y='8' width='22' height='22' rx='5' fill='%230a84ff'/%3E%3Crect x='8' y='34' width='22' height='22' rx='5' fill='%230a84ff'/%3E%3Crect x='34' y='34' width='22' height='22' rx='5' fill='%230a84ff'/%3E%3C/svg%3E" />
 <style>
-  :root { color-scheme: dark; }
-  * { box-sizing:border-box; }
-  body { margin:0; min-height:100vh; display:grid; place-items:center; padding:1.4rem;
-         background: radial-gradient(1000px 500px at 50% -10%, #1a2240 0%, #0f1115 60%) fixed;
-         color:#e7eaf0; font: 14px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
-  a { color:#9fcaff; }
-  .card { background:#161a25; border:1px solid #232734; border-radius:14px; padding:2rem 2.2rem; max-width:560px; width:100%; box-shadow: 0 10px 40px rgba(0,0,0,.3); }
-  h1 { margin:0 0 .4rem; font-size:1.3rem; }
-  p.lead { color:#8a93a6; margin:0 0 1.4rem; }
-  label { display:block; font-size:.8rem; color:#8a93a6; margin: 1rem 0 .3rem; }
-  textarea, input { background:#0b0d12; border:1px solid #232734; color:#e7eaf0; border-radius:7px; padding:.6rem .8rem; font: inherit; width:100%; }
-  textarea { font-family: ui-monospace, Menlo, monospace; font-size:.78rem; min-height:200px; resize:vertical; }
-  button { background:#3a6ed1; color:white; border:none; padding:.7rem 1.2rem; border-radius:7px; font-weight:600; cursor:pointer; font-size:.95rem; }
-  .row { display:flex; gap:.6rem; align-items:center; margin-top:1rem; }
-  .right { margin-left:auto; }
-  .err { color:#e36b6b; margin-top:.8rem; font-size:.85rem; }
-  .reason { color:#8a93a6; font-size:.85rem; }
+  /* macOS-inspired palette (matches dashboard + landing) */
+  :root {
+    color-scheme: dark;
+    --bg:#1c1c1e; --panel:#2c2c2e; --code:#161618;
+    --line:rgba(255,255,255,.09); --line2:rgba(255,255,255,.16);
+    --fg:#f5f5f7; --fg2:#e8e8ea; --mute:#98989d; --mute2:#8e8e93;
+    --accent:#0a84ff; --accent2:#409cff; --accent-fg:#ffffff;
+    --bad:#ff453a;
+    --hover: rgba(255,255,255,.05);
+    --hover2: rgba(255,255,255,.09);
+    --header-bg: rgba(28,28,30,.78);
+    --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+            "Segoe UI Variable Text", "Segoe UI", "Helvetica Neue",
+            system-ui, Arial, sans-serif;
+    --display: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+               "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", "Cascadia Code",
+            "Consolas", Menlo, monospace;
+    --radius: 10px; --radius-sm: 6px; --radius-lg: 14px;
+    --shadow-card: 0 1px 2px rgba(0,0,0,.30), 0 0 0 .5px rgba(255,255,255,.04);
+  }
+  html[data-theme="light"] {
+    color-scheme: light;
+    --bg:#f5f5f7; --panel:#ffffff; --code:#f0f0f3;
+    --line:rgba(0,0,0,.08); --line2:rgba(0,0,0,.16);
+    --fg:#1d1d1f; --fg2:#2f2f33; --mute:#6e6e73; --mute2:#86868b;
+    --accent:#007aff; --accent2:#339dff; --accent-fg:#ffffff;
+    --bad:#d70015;
+    --hover: rgba(0,0,0,.04);
+    --hover2: rgba(0,0,0,.07);
+    --header-bg: rgba(255,255,255,.78);
+    --shadow-card: 0 1px 2px rgba(0,0,0,.05), 0 0 0 .5px rgba(0,0,0,.04);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); }
+  html { scrollbar-gutter: stable; }
+  body {
+    background: var(--bg); color: var(--fg2);
+    font: 14px/1.5 var(--sans);
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; color: var(--accent2); }
+
+  /* Header — identical across pages */
+  header.site {
+    background: var(--header-bg);
+    border-bottom: 1px solid var(--line);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    position: sticky; top: 0; z-index: 20;
+  }
+  header.site .inner {
+    max-width: 1200px; margin: 0 auto;
+    min-height: 48px; box-sizing: border-box;
+    padding: .6rem 1.4rem;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  header.site .brand { display: flex; align-items: center; gap: .6rem; text-decoration: none; color: inherit; }
+  header.site .logo {
+    width: 28px; height: 28px;
+    display: grid; place-items: center;
+    background: linear-gradient(160deg, var(--accent2) 0%, var(--accent) 100%);
+    color: var(--accent-fg);
+    border-radius: var(--radius-sm);
+    font-family: var(--display); font-weight: 700; font-size: .95rem;
+  }
+  header.site strong {
+    font-family: var(--display); font-weight: 600;
+    color: var(--fg); font-size: 1rem;
+  }
+  header.site nav {
+    margin-left: auto; display: flex; gap: .25rem; align-items: center;
+    font-size: .9rem;
+  }
+  header.site nav a {
+    color: var(--fg2);
+    padding: .35rem .75rem; border-radius: var(--radius-sm);
+    transition: background .12s;
+  }
+  header.site nav a:hover { background: var(--hover); color: var(--fg); text-decoration: none; }
+  header.site nav button.ghost {
+    font-family: inherit;
+    background: transparent;
+    color: var(--fg2);
+    border: 1px solid transparent;
+    padding: .35rem .75rem;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: .9rem;
+    line-height: 1.2;
+    display: inline-flex; align-items: center;
+    transition: background .12s, color .12s, border-color .12s;
+  }
+  header.site nav button.ghost:hover { background: var(--hover); color: var(--fg); }
+
+  /* Settings menu (gear dropdown) — see /header.css */
+
+  main {
+    max-width: 1200px; margin: 0 auto;
+    padding: 2.5rem 1.4rem 4rem;
+    display: grid; place-items: start center;
+  }
+
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 1.8rem 2rem;
+    max-width: 560px; width: 100%;
+    box-shadow: var(--shadow-card);
+  }
+  h1 {
+    margin: 0 0 .4rem;
+    font: 600 1.4rem/1.2 var(--display);
+    color: var(--fg);
+    letter-spacing: -.01em;
+  }
+  p.lead { color: var(--mute); margin: 0 0 1.4rem; font-size: .95rem; }
+  label {
+    display: block; font-size: .85rem; color: var(--fg2);
+    margin: 1rem 0 .3rem; font-weight: 500;
+  }
+  textarea, input {
+    background: var(--hover);
+    border: 1px solid var(--line2);
+    color: var(--fg);
+    border-radius: var(--radius-sm);
+    padding: .5rem .7rem;
+    font: inherit; width: 100%;
+    transition: border-color .12s, background .12s, box-shadow .12s;
+  }
+  textarea::placeholder, input::placeholder { color: var(--mute2); }
+  textarea:hover, input:hover { background: var(--hover2); }
+  textarea:focus, input:focus {
+    outline: none;
+    background: var(--panel);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent);
+  }
+  textarea { font-family: var(--mono); font-size: .82rem; min-height: 200px; resize: vertical; white-space: pre; }
+  input[type="file"] { padding: .35rem .5rem; background: var(--hover); }
+  button {
+    background: var(--accent); color: var(--accent-fg);
+    border: 1px solid transparent;
+    padding: .55rem 1.2rem;
+    border-radius: var(--radius-sm);
+    font: 600 .95rem/1.3 var(--sans);
+    cursor: pointer;
+    transition: background .12s, filter .12s;
+  }
+  button:hover { background: var(--accent2); }
+  button:active { filter: brightness(.95); }
+  button:disabled { background: var(--hover2); color: var(--mute2); cursor: not-allowed; }
+  .row { display: flex; gap: .6rem; align-items: center; margin-top: 1.2rem; }
+  .right { margin-left: auto; }
+  .err {
+    color: var(--bad); margin-top: .8rem; font-size: .9rem;
+    padding: .5rem .7rem; border-radius: var(--radius-sm);
+    background: color-mix(in srgb, var(--bad) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--bad) 30%, transparent);
+    min-height: 1px;
+  }
+  .err:empty { display: none; }
+  .reason { color: var(--mute); font-size: .9rem; }
+  code { background: var(--code); border: 1px solid var(--line); padding: 1px .4rem; border-radius: var(--radius-sm); font-family: var(--mono); font-size: .88em; color: var(--accent); }
 </style>
+<link rel="stylesheet" href="/header.css">
+<script src="/i18n.js" defer></script>
+<script src="/currency.js" defer></script>
+<script src="/header.js" defer></script>
 </head>
 <body>
+
+<header class="site">
+  <div class="inner">
+    <a href="/" class="brand">
+      <span class="logo">A</span>
+      <strong>AirWeb</strong>
+    </a>
+    <nav>
+      <span id="settingsMenu" class="settings-menu">
+        <button type="button" id="settingsBtn" class="ghost settings-trigger" title="Settings" aria-label="Settings" aria-haspopup="menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </button>
+        <div id="settingsPanel" class="settings-panel" role="menu" hidden>
+          <div class="settings-section">
+            <div class="label">Theme</div>
+            <div class="theme-row" id="themeRow">
+              <button type="button" data-theme="dark">Dark</button>
+              <button type="button" data-theme="light">Light</button>
+            </div>
+          </div>
+          <div class="settings-sep"></div>
+          <div class="settings-row">
+            <div class="label">Language</div>
+            <span id="i18nPickerSlotMenu" data-no-i18n="1"></span>
+          </div>
+          <div class="settings-row">
+            <div class="label">Currency</div>
+            <span id="currencyPickerSlotMenu" data-no-i18n="1"></span>
+          </div>
+        </div>
+      </span>
+    </nav>
+  </div>
+</header>
+
+<main>
 <div class="card">
   <h1>Sign in with your AirWeb key</h1>
-  <p class="lead">Paste your <code>airweb_key</code> file (the OpenSSH private key you downloaded at registration). We re-derive your address from it locally on the server and start a session — the key is not stored.</p>
+  <p class="lead">Paste your <code>airweb_key</code> file (the OpenSSH private key you downloaded at registration). We re-derive your account ID from it locally on the server and start a session — the key is not stored.</p>
 
   <label for="keyText">Private key (OpenSSH format)</label>
   <textarea id="keyText" placeholder="-----BEGIN OPENSSH PRIVATE KEY-----&#10;…&#10;-----END OPENSSH PRIVATE KEY-----"></textarea>
 
   <label for="keyFile" style="margin-top:.6rem">…or upload it</label>
-  <input id="keyFile" type="file" accept=".key,.pem,.txt,.,*" />
+  <input id="keyFile" type="file" />
 
   <label for="passphrase">Passphrase (if your key has one)</label>
   <input id="passphrase" type="password" autocomplete="off" />
@@ -46,8 +238,10 @@
     <button class="right" id="loginBtn">Sign in</button>
   </div>
 </div>
+</main>
 
 <script>
+// Settings gear + theme bootstrap live in /header.js (shared across pages).
 const $ = (id) => document.getElementById(id);
 
 $('keyFile').onchange = async () => {
@@ -80,7 +274,7 @@ $('loginBtn').onclick = async () => {
 
 function errorText(code, body) {
   if (code === 'invalid_private_key') return 'That doesn\u2019t look like a valid OpenSSH private key.';
-  if (code === 'account_not_found') return 'No AirWeb account exists for that key (address ' + (body.address || '?') + '). If this is a new key, register first.';
+  if (code === 'account_not_found') return 'No AirWeb account exists for that key (account ID ' + (body.address || '?') + '). If this is a new key, register first.';
   return code || 'Sign in failed.';
 }
 </script>

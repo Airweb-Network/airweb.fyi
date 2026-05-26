@@ -9,6 +9,7 @@
   },
   "scripts": {
     "start": "node server/index.js",
+    "start:prod": "node --max-old-space-size=4096 --max-semi-space-size=128 server/index.js",
     "client": "node client/airweb.js"
   },
   "dependencies": {

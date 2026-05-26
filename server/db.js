@@ -13,7 +13,15 @@ fs.mkdirSync(dataDir, { recursive: true });
 const dbPath = path.join(dataDir, (config.data && config.data.dbFile) || 'airweb.sqlite');
 
 const db = new Database(dbPath);
+// Performance pragmas — single-writer SQLite, tuned for high read concurrency
+// and rare batched writes (see credits.js tick()). Tradeoff: synchronous=NORMAL
+// can lose the last few committed transactions on hard power loss; for a
+// metering database that's an acceptable tradeoff for ~5× write throughput.
 db.pragma('journal_mode = WAL');
+db.pragma('synchronous = NORMAL');
+db.pragma('temp_store = MEMORY');
+db.pragma('mmap_size = 268435456');      // 256 MB memory-mapped read cache
+db.pragma('cache_size = -65536');        // 64 MB page cache
 db.pragma('foreign_keys = ON');
 
 db.exec(`
@@ -87,6 +95,49 @@ function hasColumn(table, column) {
 if (!hasColumn('accounts', 'is_admin')) {
   db.exec(`ALTER TABLE accounts ADD COLUMN is_admin INTEGER NOT NULL DEFAULT 0`);
 }
+
+// Listings: hardware / network metadata + validation state.
+const LISTING_ADDS = [
+  ['tunnel_id',          'INTEGER'],
+  ['cpu_model',          'TEXT'],
+  ['cpu_cores',          'INTEGER'],
+  ['ram_gb',             'INTEGER'],
+  ['disk_gb',            'INTEGER'],
+  ['bandwidth_mbps',     'INTEGER'],
+  ['os',                 'TEXT'],
+  ['country_code',       'TEXT'],
+  ['ip_address',         'TEXT'],
+  ['sudo_user',          'TEXT'],
+  ['validated',          'INTEGER NOT NULL DEFAULT 0'],
+  ['validated_at',       'INTEGER'],
+  ['protocol',           "TEXT NOT NULL DEFAULT 'tcp'"],
+  ['subdomain',          'TEXT'],
+  ['lease_term_minutes', 'INTEGER NOT NULL DEFAULT 60'],
+];
+for (const [name, ddl] of LISTING_ADDS) {
+  if (!hasColumn('listings', name)) {
+    db.exec(`ALTER TABLE listings ADD COLUMN ${name} ${ddl}`);
+  }
+}
+db.exec(`CREATE INDEX IF NOT EXISTS idx_listings_country ON listings(country_code);`);
+db.exec(`CREATE INDEX IF NOT EXISTS idx_listings_cores   ON listings(cpu_cores);`);
+db.exec(`CREATE INDEX IF NOT EXISTS idx_listings_ram     ON listings(ram_gb);`);
+db.exec(`CREATE INDEX IF NOT EXISTS idx_listings_price   ON listings(price_per_minute);`);
+db.exec(`CREATE INDEX IF NOT EXISTS idx_listings_protocol ON listings(protocol);`);
+db.exec(`CREATE INDEX IF NOT EXISTS idx_listings_subdomain ON listings(subdomain);`);
+
+// Leases: per-lease passcode + expiry for HTTP/HTTPS gated access.
+const LEASE_ADDS = [
+  ['passcode',      'TEXT'],
+  ['expires_at',    'INTEGER'],
+  ['term_minutes',  'INTEGER'],
+];
+for (const [name, ddl] of LEASE_ADDS) {
+  if (!hasColumn('leases', name)) {
+    db.exec(`ALTER TABLE leases ADD COLUMN ${name} ${ddl}`);
+  }
+}
+db.exec(`CREATE INDEX IF NOT EXISTS idx_leases_expires ON leases(expires_at);`);
 
 console.log(`[db] sqlite at ${dbPath}`);
 

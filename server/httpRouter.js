@@ -15,6 +15,11 @@ const net = require('net');
 const config = require('./config');
 const registry = require('./registry');
 const apiRouter = require('./apiRouter');
+const marketplace = require('./marketplace');
+
+const PASSCODE_COOKIE = 'aw_pass';
+const PASSCODE_COOKIE_RE = /(?:^|;\s*)aw_pass=([A-Z0-9]+)/i;
+const PASSCODE_QUERY_RE = /[?&]aw_pass=([A-Z0-9]+)/i;
 
 const MAX_HEADER_PEEK = 16 * 1024;     // bail if headers don't end within 16KB
 const PEEK_TIMEOUT_MS = 15 * 1000;     // close sockets that send nothing
@@ -58,11 +63,12 @@ function renderLandingHtml() {
   const host          = publicHost();
   const siteUrl       = `${scheme}://${publicDomain}`;
   const sshPort       = config.ssh.port;
+  const keyFile       = `${host.replace(/[^a-z0-9.-]+/gi, '_')}_key.txt`;
   const tunnels       = registry.list().filter(t => t.type === 'http');
   const tunnelCount   = tunnels.length;
-  const description   = `Self-hosted reverse SSH tunneling on ${host}. ` +
-    `Expose any local port to the internet over an encrypted SSH tunnel — ` +
-    `no client install, no signups, no extra software.`;
+  const description   = `AirWeb on ${host}: a people-powered cloud built from spare devices. ` +
+    `Demo apps in seconds, reach your home computer from anywhere, lease micro-servers by the minute, ` +
+    `and earn credits by hosting on hardware you already own. Pay only for the traffic you use.`;
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -80,193 +86,630 @@ function renderLandingHtml() {
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>AirWeb — Expose localhost over SSH in one command</title>
+<title>AirWeb — A people-powered cloud from the devices you already own</title>
 <meta name="description" content="${escapeHtml(description)}" />
 <meta name="robots" content="index, follow" />
-<meta name="theme-color" content="#0b0d12" />
+<meta name="theme-color" content="#1c1c1e" />
 <link rel="canonical" href="${escapeHtml(siteUrl)}" />
 
 <meta property="og:type" content="website" />
-<meta property="og:title" content="AirWeb — Expose localhost over SSH" />
+<meta property="og:title" content="AirWeb — A people-powered cloud from spare devices" />
 <meta property="og:description" content="${escapeHtml(description)}" />
 <meta property="og:url" content="${escapeHtml(siteUrl)}" />
 <meta property="og:site_name" content="AirWeb" />
 
 <meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="AirWeb — Expose localhost over SSH" />
+<meta name="twitter:title" content="AirWeb — A people-powered cloud from spare devices" />
 <meta name="twitter:description" content="${escapeHtml(description)}" />
 
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%233a6ed1'/%3E%3Ctext x='50%25' y='58%25' font-family='system-ui' font-size='38' text-anchor='middle' fill='white' font-weight='700'%3EA%3C/text%3E%3C/svg%3E" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231c1c1e'/%3E%3Crect x='8' y='8' width='22' height='22' rx='5' fill='%230a84ff'/%3E%3Crect x='34' y='8' width='22' height='22' rx='5' fill='%230a84ff'/%3E%3Crect x='8' y='34' width='22' height='22' rx='5' fill='%230a84ff'/%3E%3Crect x='34' y='34' width='22' height='22' rx='5' fill='%230a84ff'/%3E%3C/svg%3E" />
 
 <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
 
 <style>
-  :root { color-scheme: light dark; --bg:#0f1115; --panel:#161a25; --line:#232734; --fg:#e7eaf0; --mute:#8a93a6; --accent:#9fcaff; --accent2:#3a6ed1; --code:#0b0d12; }
+  /* macOS-inspired palette (matches dashboard + login) */
+  :root {
+    color-scheme: dark;
+    --bg:#1c1c1e; --panel:#2c2c2e; --panel2:#3a3a3c; --code:#161618;
+    --line:rgba(255,255,255,.09); --line2:rgba(255,255,255,.16);
+    --fg:#f5f5f7; --fg2:#e8e8ea; --mute:#98989d; --mute2:#8e8e93;
+    --accent:#0a84ff; --accent2:#409cff; --accent-fg:#ffffff;
+    --good:#30d158; --warn:#ffd60a; --bad:#ff453a;
+    --hover: rgba(255,255,255,.05);
+    --hover2: rgba(255,255,255,.09);
+    --header-bg: rgba(28,28,30,.78);
+    --footer-bg: rgba(0,0,0,.18);
+    --selection-bg: rgba(10,132,255,.35);
+    --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+            "Segoe UI Variable Text", "Segoe UI", "Helvetica Neue",
+            system-ui, Arial, sans-serif;
+    --display: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+               "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", "Cascadia Code",
+            "Consolas", Menlo, monospace;
+    --radius: 10px; --radius-sm: 6px; --radius-lg: 14px;
+    --shadow-card: 0 1px 2px rgba(0,0,0,.30), 0 0 0 .5px rgba(255,255,255,.04);
+    --shadow-pop:  0 10px 30px rgba(0,0,0,.45), 0 0 0 .5px rgba(255,255,255,.08);
+  }
+  html[data-theme="light"] {
+    color-scheme: light;
+    --bg:#f5f5f7; --panel:#ffffff; --panel2:#fbfbfd; --code:#f0f0f3;
+    --line:rgba(0,0,0,.08); --line2:rgba(0,0,0,.16);
+    --fg:#1d1d1f; --fg2:#2f2f33; --mute:#6e6e73; --mute2:#86868b;
+    --accent:#007aff; --accent2:#339dff; --accent-fg:#ffffff;
+    --good:#28a745; --warn:#b25e09; --bad:#d70015;
+    --hover: rgba(0,0,0,.04);
+    --hover2: rgba(0,0,0,.07);
+    --header-bg: rgba(255,255,255,.78);
+    --footer-bg: rgba(0,0,0,.025);
+    --selection-bg: rgba(0,122,255,.25);
+    --shadow-card: 0 1px 2px rgba(0,0,0,.05), 0 0 0 .5px rgba(0,0,0,.04);
+    --shadow-pop:  0 14px 40px rgba(0,0,0,.18), 0 0 0 .5px rgba(0,0,0,.06);
+  }
   * { box-sizing: border-box; }
-  html, body { margin:0; padding:0; }
-  body { font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, Inter, sans-serif;
-         background: radial-gradient(1200px 600px at 50% -10%, #1a2240 0%, var(--bg) 60%) fixed; color: var(--fg); }
+  html, body { margin: 0; padding: 0; background: var(--bg); }
+  html { scrollbar-gutter: stable; }
+  body {
+    background: var(--bg); color: var(--fg2);
+    font: 14px/1.5 var(--sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: var(--selection-bg); color: var(--fg); }
   a { color: var(--accent); text-decoration: none; }
-  a:hover { text-decoration: underline; }
-  header.site { padding: 1rem 1.2rem; border-bottom: 1px solid var(--line); display:flex; align-items:center; gap:.8rem; max-width: 980px; margin: 0 auto; }
-  header.site .logo { width:30px; height:30px; border-radius:8px; background: var(--accent2); display:grid; place-items:center; font-weight:800; color:#fff; }
-  header.site nav { margin-left:auto; display:flex; gap:1.2rem; font-size:.9rem; color: var(--mute); }
-  header.site nav a { color: var(--mute); }
-  main { max-width: 880px; margin: 0 auto; padding: 3rem 1.2rem 5rem; }
-  .hero { text-align:center; margin-bottom: 3rem; }
-  .hero h1 { font-size: clamp(2rem, 4vw, 3rem); line-height: 1.15; margin: 0 0 1rem; letter-spacing: -.01em; }
-  .hero h1 .accent { background: linear-gradient(90deg,#9fcaff,#7ee0c1); -webkit-background-clip:text; background-clip:text; color: transparent; }
-  .hero p.lead { font-size: 1.15rem; color: var(--mute); max-width: 620px; margin: 0 auto 1.4rem; }
-  .badges { display:flex; flex-wrap:wrap; gap:.5rem; justify-content:center; margin-top: 1rem; }
-  .badge { display:inline-flex; align-items:center; gap:.4rem; font-size:.75rem; padding: 4px 10px; border:1px solid var(--line); border-radius:999px; color:var(--mute); background: rgba(255,255,255,.02); }
-  .badge .dot { width:6px; height:6px; border-radius:50%; background:#3acf6d; }
-  section.card { background: var(--panel); border:1px solid var(--line); border-radius:14px; padding: 1.8rem 2rem; margin: 1.4rem 0; box-shadow: 0 8px 30px rgba(0,0,0,.25); }
-  section.card h2 { margin: 0 0 1rem; font-size: 1.25rem; }
-  section.card h3 { margin: 1.4rem 0 .4rem; font-size: 1rem; color: var(--fg); }
-  ol.steps { counter-reset: step; list-style:none; padding:0; margin:0; }
-  ol.steps li { counter-increment: step; padding: 1rem 0 1rem 3rem; position: relative; border-top: 1px solid var(--line); }
-  ol.steps li:first-child { border-top: none; padding-top: 0; }
-  ol.steps li:first-child::before { top: -.2rem; }
-  ol.steps li::before { content: counter(step); position: absolute; left: 0; top: .85rem; width: 2rem; height: 2rem; border-radius: 50%; background: var(--accent2); color: white; display:grid; place-items:center; font-weight: 700; font-size:.85rem; }
-  ol.steps li h3 { margin: 0 0 .3rem; }
-  pre { background: var(--code); border:1px solid var(--line); border-radius: 8px; padding: .9rem 1rem; overflow:auto; font: .85rem/1.5 ui-monospace, "SF Mono", Menlo, Consolas, monospace; color: #d8e0ee; position: relative; }
-  pre .c { color:#5b6478; }
-  code.inline { background: var(--code); border:1px solid var(--line); border-radius: 5px; padding: 1px 6px; font: .85rem/1 ui-monospace, Menlo, monospace; }
-  .grid2 { display:grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
-  .feature { padding: 1rem 1.1rem; background: rgba(255,255,255,.02); border:1px solid var(--line); border-radius: 10px; }
-  .feature h4 { margin: 0 0 .3rem; font-size: .95rem; }
-  .feature p { margin: 0; font-size: .85rem; color: var(--mute); }
-  .faq details { border-top: 1px solid var(--line); padding: .9rem 0; }
+  a:hover { text-decoration: underline; color: var(--accent2); }
+
+  *::-webkit-scrollbar { width: 12px; height: 12px; }
+  *::-webkit-scrollbar-track { background: transparent; }
+  *::-webkit-scrollbar-thumb {
+    background: var(--line2); border-radius: 6px;
+    border: 3px solid transparent; background-clip: padding-box;
+  }
+  *::-webkit-scrollbar-thumb:hover { background: var(--mute); border: 3px solid transparent; background-clip: padding-box; }
+
+  /* Site header — shared with dashboard */
+  header.site {
+    background: var(--header-bg);
+    border-bottom: 1px solid var(--line);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    position: sticky; top: 0; z-index: 20;
+  }
+  header.site .inner {
+    max-width: 1200px; margin: 0 auto;
+    min-height: 48px; box-sizing: border-box;
+    padding: .6rem 1.4rem;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  header.site .brand {
+    display: flex; align-items: center; gap: .6rem;
+    text-decoration: none; color: inherit;
+  }
+  header.site .logo {
+    width: 28px; height: 28px;
+    display: grid; place-items: center;
+    background: linear-gradient(160deg, var(--accent2) 0%, var(--accent) 100%);
+    color: var(--accent-fg);
+    border-radius: var(--radius-sm);
+    font-family: var(--display); font-weight: 700; font-size: .95rem;
+  }
+  header.site strong {
+    font-family: var(--display); font-weight: 600;
+    color: var(--fg); font-size: 1rem;
+  }
+  header.site nav {
+    margin-left: auto; display: flex; gap: .25rem;
+    font-size: .9rem;
+  }
+  header.site nav a,
+  header.site .navlink {
+    color: var(--fg2); text-decoration: none;
+    padding: .35rem .75rem; border-radius: var(--radius-sm);
+    transition: background .12s;
+    font-size: .9rem;
+  }
+  header.site nav a:hover,
+  header.site .navlink:hover { background: var(--hover); color: var(--fg); text-decoration: none; }
+
+  main { max-width: 1200px; margin: 0 auto; padding: 1.8rem 1.4rem 3rem; }
+
+  /* Hero / banner */
+  .banner {
+    position: relative; overflow: hidden;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 1.8rem 2rem;
+    margin-bottom: 1.4rem;
+    box-shadow: var(--shadow-card);
+  }
+  .banner::before {
+    content: ""; position: absolute; pointer-events: none;
+    width: 520px; height: 520px; top: -180px; right: -160px;
+    background: radial-gradient(circle at center,
+      color-mix(in srgb, var(--accent) 28%, transparent) 0%,
+      transparent 60%);
+    filter: blur(20px); opacity: .8; z-index: 0;
+  }
+  .banner::after {
+    content: ""; position: absolute; pointer-events: none;
+    width: 380px; height: 380px; bottom: -140px; left: -120px;
+    background: radial-gradient(circle at center,
+      color-mix(in srgb, var(--good) 20%, transparent) 0%,
+      transparent 60%);
+    filter: blur(20px); opacity: .6; z-index: 0;
+  }
+  .banner > * { position: relative; z-index: 1; }
+  .banner-ascii { display: none; }
+  .banner h1 {
+    font: 600 1.9rem/1.2 var(--display);
+    margin: 0 0 .8rem;
+    color: var(--fg);
+    letter-spacing: -.015em;
+  }
+  .banner h1 .accent { color: var(--accent); }
+  .banner p.lead {
+    color: var(--mute); margin: 0 0 1rem;
+    max-width: 64ch; font-size: 1.05rem;
+  }
+  .banner .cta-row {
+    display: flex; flex-wrap: wrap; gap: .6rem; align-items: center;
+    margin-top: 1.2rem;
+  }
+  .cta {
+    display: inline-block;
+    background: var(--accent); color: var(--accent-fg); text-decoration: none;
+    border: 1px solid transparent;
+    padding: .5rem 1.15rem;
+    border-radius: var(--radius-sm);
+    font-family: var(--sans); font-weight: 600; font-size: .95rem;
+    transition: background .12s;
+  }
+  .cta:hover { background: var(--accent2); color: var(--accent-fg); text-decoration: none; }
+  .cta-alt {
+    color: var(--fg); text-decoration: none;
+    background: var(--hover);
+    border: 1px solid var(--line2);
+    padding: .5rem 1.15rem;
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+    transition: background .12s, border-color .12s;
+  }
+  .cta-alt:hover { background: var(--hover2); text-decoration: none; border-color: var(--mute2); }
+
+  .badges {
+    display: flex; flex-wrap: wrap; gap: .5rem;
+    margin-top: 1.2rem;
+  }
+  .badge {
+    display: inline-flex; align-items: center; gap: .4rem;
+    padding: 2px .65rem;
+    border: 1px solid var(--line2);
+    color: var(--fg2); background: var(--hover);
+    border-radius: 999px;
+    font-size: .85rem;
+  }
+  .badge .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--good);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--good) 22%, transparent);
+  }
+
+  /* Sections */
+  section.block {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1.4rem 1.6rem;
+    margin: 1rem 0;
+    box-shadow: var(--shadow-card);
+  }
+  section.block h2 {
+    margin: 0 0 .9rem;
+    font: 600 1.3rem/1.25 var(--display);
+    color: var(--fg);
+    border-bottom: 1px solid var(--line);
+    padding-bottom: .55rem;
+    letter-spacing: -.005em;
+    display: flex; align-items: center; gap: .55rem;
+  }
+  section.block h2 .icon {
+    width: 22px; height: 22px; flex: 0 0 22px;
+    color: var(--accent);
+  }
+  section.block h2 .icon svg { width: 100%; height: 100%; display: block; }
+  section.block h3 {
+    margin: 1rem 0 .35rem;
+    font: 600 1.02rem/1.3 var(--display);
+    color: var(--fg);
+  }
+  section.block p { margin: .4rem 0 .6rem; color: var(--fg2); }
+
+  /* Steps */
+  ol.steps {
+    counter-reset: step; list-style: none;
+    padding: 0; margin: .5rem 0 0;
+  }
+  ol.steps > li {
+    counter-increment: step;
+    padding: 1rem 0 1rem 3.2rem;
+    position: relative;
+    border-top: 1px solid var(--line);
+  }
+  ol.steps > li:first-child { border-top: none; padding-top: .3rem; }
+  ol.steps > li::before {
+    content: counter(step);
+    position: absolute; left: 0; top: 1rem;
+    width: 2.2rem; height: 2.2rem; border-radius: 50%;
+    background: var(--accent); color: var(--accent-fg);
+    display: grid; place-items: center;
+    font-family: var(--display); font-weight: 700; font-size: 1rem;
+  }
+  ol.steps > li:first-child::before { top: .3rem; }
+  ol.steps li h3 { margin: 0 0 .3rem; color: var(--fg); }
+
+  /* Code */
+  pre {
+    background: var(--code);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: .75rem .9rem;
+    overflow: auto;
+    font: .9rem/1.5 var(--mono);
+    color: var(--fg2);
+    position: relative;
+    white-space: pre;
+  }
+  pre.cmd::before { content: "PS> "; color: var(--accent); font-weight: 600; }
+  pre.url::before { content: "→ "; color: var(--mute); }
+  pre .c { color: var(--mute); }
+  code.inline {
+    background: var(--code); border: 1px solid var(--line);
+    padding: 1px .4rem; font: .9em var(--mono); color: var(--accent);
+    border-radius: var(--radius-sm);
+  }
+
+  .copy-btn {
+    position: absolute; top: .4rem; right: .4rem;
+    background: var(--hover);
+    color: var(--fg);
+    border: 1px solid var(--line2);
+    padding: 2px .65rem;
+    font: .8rem/1.3 var(--sans); font-weight: 500;
+    cursor: pointer; border-radius: var(--radius-sm);
+    transition: background .12s, color .12s, border-color .12s;
+  }
+  .copy-btn:hover { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+
+  /* Feature grid */
+  .grid2 {
+    display: grid; gap: .8rem;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  }
+  .feature {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1rem 1.1rem;
+    background: var(--hover);
+    transition: background .12s, border-color .12s, transform .12s;
+  }
+  .feature:hover { background: var(--hover2); border-color: var(--line2); transform: translateY(-1px); }
+  .feature .feat-icon {
+    width: 28px; height: 28px;
+    display: grid; place-items: center;
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    color: var(--accent);
+    border-radius: 8px; margin-bottom: .55rem;
+  }
+  .feature .feat-icon svg { width: 16px; height: 16px; display: block; }
+  .feature h4 {
+    margin: 0 0 .35rem;
+    font: 600 1rem/1.3 var(--display);
+    color: var(--fg);
+  }
+  .feature p { margin: 0; font-size: .92rem; color: var(--mute); line-height: 1.5; }
+
+  /* FAQ */
+  .faq details {
+    border-top: 1px solid var(--line);
+    padding: .8rem 0;
+  }
   .faq details:first-of-type { border-top: none; }
-  .faq summary { cursor: pointer; font-weight: 600; }
-  .faq p { color: var(--mute); margin: .4rem 0 0; }
-  footer.site { text-align: center; color: var(--mute); font-size: .8rem; padding: 2rem 1rem 3rem; }
-  footer.site a { color: var(--mute); }
-  .copy-btn { position:absolute; top:.5rem; right:.5rem; background:#222837; color:#cfd6e4; border:1px solid #2c3344; padding: 3px 8px; border-radius:5px; font-size:.7rem; cursor:pointer; }
-  .copy-btn:hover { background:#2a3146; }
+  .faq summary {
+    cursor: pointer; font-weight: 600; color: var(--fg);
+    list-style: none; outline: none;
+    font-family: var(--display);
+    display: flex; align-items: center; gap: .6rem;
+    padding: .25rem .45rem;
+    border-radius: var(--radius-sm);
+    transition: background .12s;
+  }
+  .faq summary:hover { background: var(--hover); }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::before {
+    content: "▸"; color: var(--accent);
+    transition: transform .15s; display: inline-block;
+  }
+  .faq details[open] summary::before { transform: rotate(90deg); }
+  .faq p {
+    color: var(--mute); margin: .55rem 0 .2rem 1.6rem;
+    font-size: .95rem;
+  }
+
+  footer.site {
+    text-align: center; color: var(--mute);
+    font-size: .9rem;
+    padding: 1.6rem 1rem 2.2rem;
+    border-top: 1px solid var(--line);
+    margin-top: 2rem;
+    background: var(--footer-bg);
+  }
+  footer.site a { color: var(--accent); }
+
+  .footnote {
+    text-align: center; color: var(--mute);
+    font-size: .9rem; margin-top: 1.4rem;
+  }
+
+  /* Readability floor */
+  p, li, summary, dd, dt, td, th, .badge { font-size: max(.92rem, 14px); }
+  .feature p { font-size: .92rem; }
+  code.inline { font-size: .9em; }
+
+  @media (max-width: 560px) {
+    .banner h1 { font-size: 1.45rem; }
+    main { padding: 1.2rem .9rem 2rem; }
+    section.block, .banner { padding: 1.1rem 1.1rem; }
+  }
+
+  /* Header controls — settings gear aligned with Sign in */
+  header.site nav { align-items: center; }
+  header.site nav button.ghost {
+    font-family: inherit;
+    background: transparent;
+    color: var(--fg2);
+    border: 1px solid var(--line2, transparent);
+    padding: .35rem .75rem;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: .9rem;
+    line-height: 1.2;
+    display: inline-flex; align-items: center;
+    transition: background .12s, color .12s, border-color .12s;
+  }
+  header.site nav button.ghost:hover {
+    background: var(--hover); color: var(--fg);
+    border-color: var(--line2, transparent);
+  }
+
+  /* Settings menu (gear dropdown) — see /header.css */
 </style>
+<link rel="stylesheet" href="/header.css">
+<script src="/i18n.js" defer></script>
+<script src="/currency.js" defer></script>
+<script src="/header.js" defer></script>
+<script>
+  // Apply persisted theme before paint to avoid FOUC.
+  (function(){
+    try {
+      var t = localStorage.getItem('airweb-theme');
+      if (!t) {
+        var sysDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        t = sysDark ? 'dark' : 'light';
+      }
+      document.documentElement.setAttribute('data-theme', t);
+    } catch(e) {}
+  })();
+</script>
 </head>
 <body>
 
 <header class="site">
-  <span class="logo">A</span>
-  <strong>AirWeb</strong>
-  <nav>
-    <a href="#quickstart">Quick start</a>
-    <a href="#how-it-works">How it works</a>
-    <a href="#faq">FAQ</a>
-    <a href="/dashboard">Dashboard</a>
-  </nav>
+  <div class="inner">
+    <a href="/" class="brand" title="AirWeb home">
+      <span class="logo">A</span>
+      <strong>AirWeb</strong>
+    </a>
+    <a href="/marketplace" class="navlink" style="margin-left:.5rem">Marketplace</a>
+    <nav>
+      <a href="/login">Sign in</a>
+      <span id="settingsMenu" class="settings-menu">
+        <button type="button" id="settingsBtn" class="ghost settings-trigger" title="Settings" aria-label="Settings" aria-haspopup="menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </button>
+        <div id="settingsPanel" class="settings-panel" role="menu" hidden>
+          <div class="settings-section">
+            <div class="label">Theme</div>
+            <div class="theme-row" id="themeRow">
+              <button type="button" data-theme="dark">Dark</button>
+              <button type="button" data-theme="light">Light</button>
+            </div>
+          </div>
+          <div class="settings-sep"></div>
+          <div class="settings-row">
+            <div class="label">Language</div>
+            <span id="i18nPickerSlotMenu" data-no-i18n="1"></span>
+          </div>
+          <div class="settings-row">
+            <div class="label">Currency</div>
+            <span id="currencyPickerSlotMenu" data-no-i18n="1"></span>
+          </div>
+        </div>
+      </span>
+    </nav>
+  </div>
 </header>
 
 <main>
-  <section class="hero">
-    <h1>Expose <span class="accent">localhost</span> to the internet —<br/>and <span class="accent">earn credits</span> while you do.</h1>
-    <p class="lead">${escapeHtml(description)} Register once to download a wallet-style SSH key, share your unused uptime with the marketplace, or lease someone else's tunnel with the credits you earn.</p>
-    <p style="margin-top:1.6rem">
-      <a href="/dashboard" class="cta" style="display:inline-block;background:var(--accent2);color:white;padding:.8rem 1.4rem;border-radius:8px;font-weight:600;text-decoration:none">Get your key →</a>
-      <a href="/login" style="margin-left:.6rem;color:var(--mute)">or restore from existing key</a>
-    </p>
+  <div class="banner">
+    <h1>A people-powered cloud, built from the <span class="accent">devices you already own</span>.</h1>
+    <p class="lead">AirWeb turns spare laptops, old phones, and idle home servers into tiny public endpoints. Demo an app in seconds, reach your home computer from anywhere, or lease a micro-server by the minute — and earn credits while your own devices help carry the load.</p>
+
+    <div class="cta-row">
+      <a href="/dashboard" class="cta">get your key &rarr;</a>
+      <a href="/login" class="cta-alt">or restore from existing key</a>
+    </div>
+
     <div class="badges">
-      <span class="badge"><span class="dot"></span>${tunnelCount} active tunnel${tunnelCount === 1 ? '' : 's'}</span>
-      <span class="badge">Wallet-style identity (0x…)</span>
-      <span class="badge">Encrypted by SSH</span>
-      <span class="badge">Earn / spend credits</span>
+      <span class="badge"><span class="dot"></span>${tunnelCount} active tunnel${tunnelCount === 1 ? '' : 's'} right now</span>
+      <span class="badge">pay only for traffic</span>
+      <span class="badge">no install · just ssh</span>
+      <span class="badge">open source · greener by default</span>
     </div>
-  </section>
+  </div>
 
-  <section class="card" id="quickstart">
-    <h2>Quick start</h2>
-    <p>You only need the <code class="inline">ssh</code> command (built into macOS, Linux, and modern Windows).</p>
-
-    <ol class="steps">
-      <li>
-        <h3>Register &amp; download your key</h3>
-        <p>Open the <a href="/dashboard">dashboard</a> — it generates an Ed25519 SSH key, derives your wallet-style address (<code class="inline">0x…</code>), and downloads the private key file <code class="inline">airweb_key</code>. You also get a signup bonus of ${config.credits.signupBonus} credits.</p>
-        <pre>chmod 600 ./airweb_key   <span class="c"># macOS/Linux only</span></pre>
-      </li>
-      <li>
-        <h3>Start a local server</h3>
-        <pre>npx serve -l 3000        <span class="c"># or: python -m http.server 3000</span></pre>
-      </li>
-      <li>
-        <h3>Open a tunnel with your key</h3>
-        <pre id="cmd-http">ssh -i ./airweb_key -p ${sshPort} -R 80:localhost:3000 mysub@${host}</pre>
-        <p>Your SSH username becomes your public subdomain — pick any free name, or buy a permanent <em>handle</em> in the dashboard so nobody else can claim it.</p>
-      </li>
-      <li>
-        <h3>Share your URL — and earn credits while it's up</h3>
-        <pre>${escapeHtml(scheme)}://mysub.${escapeHtml(publicDomain)}</pre>
-        <p>You earn <strong>${config.credits.uptimePerMinute} credit / minute</strong> for every minute your tunnel stays online. Spend them on others' VPS tunnels in the marketplace, or buy yourself a handle.</p>
-      </li>
-    </ol>
-  </section>
-
-  <section class="card">
-    <h2>Forward a raw TCP port</h2>
-    <p>For databases, SSH, game servers, or anything that isn't HTTP. The server picks a public port from its TCP range and returns it on connect.</p>
-    <pre>ssh -i ./airweb_key -p ${sshPort} -R 0:localhost:5432 mysub@${host}
-<span class="c"># server prints something like:  tcp://${host}:14732</span></pre>
-    <p>Connect with <code class="inline">psql -h ${host} -p 14732 …</code> (or whatever client matches your protocol).</p>
-  </section>
-
-  <section class="card" id="how-it-works">
-    <h2>How it works</h2>
+  <section class="block" id="use-cases">
+    <h2><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg></span>What you can do today</h2>
     <div class="grid2">
-      <div class="feature"><h4>1. Wallet-style identity</h4><p>Click "Get your key" → AirWeb generates an Ed25519 keypair, hashes the public key into a <code class="inline">0x…</code> address that becomes your account, and hands you the private key once. We never store it.</p></div>
-      <div class="feature"><h4>2. SSH reverse forward</h4><p>You SSH in with <code class="inline">-i ./airweb_key -R</code>. AirWeb reads the <code class="inline">Host</code> header on every request and pipes raw bytes back through your encrypted tunnel — WebSocket, streaming, keep-alive all just work.</p></div>
-      <div class="feature"><h4>3. Credits while connected</h4><p>Every minute your tunnel is up, you earn ${config.credits.uptimePerMinute} credit. List your tunnel in the marketplace to earn ${config.credits.defaultLeasePricePerMinute}+ credits / min when someone leases it.</p></div>
-      <div class="feature"><h4>4. Lease handles &amp; tunnels</h4><p>Spend credits to claim a permanent <code class="inline">&lt;handle&gt;.${publicDomain}</code> (only you can publish under it — perfect for home-machine remote access), or to rent someone else's tunnel by the minute.</p></div>
+      <div class="feature">
+        <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><line x1="8" y1="20" x2="16" y2="20"/><line x1="12" y1="16" x2="12" y2="20"/></svg></div>
+        <h4>Make spare devices useful</h4>
+        <p>That old MacBook in a drawer or the Raspberry Pi on your shelf can quietly serve real traffic. Plug it in, run one <code class="inline">ssh</code> command, and it joins the network as a working node.</p>
+      </div>
+      <div class="feature">
+        <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 4 20 12 6 20 6 4"/></svg></div>
+        <h4>Demo your app in 30 seconds</h4>
+        <p>Spin up a local server, open a tunnel, paste the public URL into a meeting chat. No deploys, no Dockerfiles, no CI — just the code you already have running on <code class="inline">localhost</code>.</p>
+      </div>
+      <div class="feature">
+        <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 12 4l9 7"/><path d="M5 10v9h14v-9"/><path d="M10 19v-5h4v5"/></svg></div>
+        <h4>Reach your home computer anywhere</h4>
+        <p>Claim a permanent <code class="inline">&lt;handle&gt;.${publicDomain}</code> for your home box. Files, dashboards, game servers, SSH-into-your-desktop — all reachable from a phone on the other side of the world.</p>
+      </div>
+      <div class="feature">
+        <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg></div>
+        <h4>Lease a micro-server by the minute</h4>
+        <p>Need a public endpoint for a webhook test, a workshop, or a weekend project? Rent someone else's tunnel for a few minutes with the credits you earned hosting yours. No monthly bills.</p>
+      </div>
     </div>
   </section>
 
-  <section class="card faq" id="faq">
-    <h2>FAQ</h2>
+  <section class="block" id="quickstart">
+    <h2><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></span>Quick start</h2>
+    <p>Grab your key from the <a href="/dashboard">dashboard</a> and run one command — your local port is public.</p>
+    <pre class="cmd" id="cmd-http">ssh -i ./${keyFile} -p ${sshPort} -R 80:localhost:3000 tunnel@${host}</pre>
+    <p style="color:var(--mute); font-size:.85rem; margin:.4rem 0 0">Change <code class="inline">3000</code> to whatever port your app listens on. For raw TCP (databases, SSH, game servers), use <code class="inline">-R 0:localhost:&lt;port&gt;</code>.</p>
+  </section>
+
+  <section class="block" id="billing">
+    <h2><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15 9.5c-.7-.9-1.9-1.5-3-1.5-1.7 0-3 1-3 2.3 0 1.3 1.2 2 3 2.5s3 1.2 3 2.5c0 1.3-1.3 2.3-3 2.3-1.4 0-2.6-.6-3.2-1.5"/><line x1="12" y1="6" x2="12" y2="8"/><line x1="12" y1="16" x2="12" y2="18"/></svg></span>Pay only for the traffic you use</h2>
+    <p>No subscriptions. No "free tier" cliffs. Opening a tunnel is free — you're billed in credits only for the bytes that actually flow through it, and credits are refunded the moment you disconnect anything you didn't use.</p>
+    <div class="grid2">
+      <div class="feature">
+        <h4>Metered by the byte</h4>
+        <p>Idle tunnels cost nothing. A quick demo with a few page loads costs a few credits. A heavy workload pays in proportion to the bandwidth it actually consumes.</p>
+      </div>
+      <div class="feature">
+        <h4>Earn while you host</h4>
+        <p>Every minute your own device serves traffic, you earn <strong>${config.credits.uptimePerMinute} credit / min</strong> in uptime rewards, plus <strong>${config.credits.defaultLeasePricePerMinute}+ credits / min</strong> when someone leases your tunnel from the marketplace.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="community">
+    <h2><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Earn, learn, and build with the community</h2>
+    <p>AirWeb is built around a simple loop: plug in a spare device, share its uptime, earn credits, spend them on things you need. Along the way you pick up real networking, SSH, and distributed-systems skills — and you do it next to other people doing the same.</p>
+    <div class="grid2">
+      <div class="feature">
+        <h4>Open marketplace</h4>
+        <p>List your spare-device tunnel, set a price per minute, and watch the leases come in. Browse what others are offering and rent the right region or hardware for the job.</p>
+      </div>
+      <div class="feature">
+        <h4>Learn by hosting</h4>
+        <p>Real reverse SSH, real TCP, real metering. The repo is open source — read it, fork it, and use AirWeb to teach yourself the bits of infrastructure that schools rarely cover.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="vision">
+    <h2><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/></svg></span>The long view: a micro-server socio-economy</h2>
+    <p>The world is full of perfectly good hardware sitting idle — a billion phones, a hundred million laptops, racks of "obsolete" servers. They have CPU, memory, and bandwidth that today goes to waste. AirWeb is the first step toward letting all of that quietly become useful, owned by the people who already paid for it, traded in a transparent, peer-to-peer way.</p>
+    <div class="grid2">
+      <div class="feature">
+        <h4>Open-source cloud provider</h4>
+        <p>Hyperscaler-class capabilities don't have to live behind three logos and a credit-card form. Our long-term goal is an open, federated cloud where the "data center" is a coalition of homes, offices, and community spaces.</p>
+      </div>
+      <div class="feature">
+        <h4>A micro-server economy</h4>
+        <p>Credits earned by contributing capacity buy capacity from others. Over time, that loop becomes a real economy — one where small operators, students, and hobbyists are first-class participants, not just customers.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="esg">
+    <h2><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3c0 9-7 16-16 16C5 10 12 3 21 3z"/><path d="M5 19c5-3 9-7 11-12"/></svg></span>Greener by default</h2>
+    <p>The most sustainable server is one that already exists. By giving a second life to devices that would otherwise be sitting idle — or worse, in a landfill — AirWeb reduces the need to spin up new fleets of always-on hardware just to serve a few requests per minute. Smaller fleet, less embodied carbon, less e-waste, less drain on the grid.</p>
+    <ul style="margin:.4rem 0 0; padding-left:1.2rem; color:var(--mute);">
+      <li>Reuses hardware you already own instead of provisioning new servers.</li>
+      <li>Idle tunnels consume effectively nothing — they just sit on an SSH socket.</li>
+      <li>No always-on overhead farms: capacity appears when devices are plugged in and disappears when they're not.</li>
+    </ul>
+  </section>
+
+  <section class="block faq" id="faq">
+    <h2><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.5-2.5 2-2.5 3.5"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg></span>FAQ</h2>
+    <details>
+      <summary>What kind of "spare device" actually works?</summary>
+      <p>Anything that can run an <code class="inline">ssh</code> client and stay online: an old laptop, a desktop you barely use, a Raspberry Pi, a NAS, a mini-PC, even some routers. If it can hold an SSH session open, it can be an AirWeb node.</p>
+    </details>
     <details>
       <summary>Do I need to install anything?</summary>
-      <p>No. Any standard <code class="inline">ssh</code> client works once you've downloaded <code class="inline">airweb_key</code>. There is an optional Node CLI in the repo (<code class="inline">client/airweb.js</code>) that wraps <code class="inline">ssh -R</code> with friendlier flags.</p>
+      <p>No. Any standard <code class="inline">ssh</code> client works once you've downloaded <code class="inline">${keyFile}</code>. There is an optional Node CLI (<code class="inline">client/airweb.js</code>) that wraps <code class="inline">ssh -R</code> with friendlier flags if you want one.</p>
     </details>
     <details>
-      <summary>How do I sign in?</summary>
-      <p>Open the <a href="/dashboard">dashboard</a> and click "Get your key" — it creates an account, derives your <code class="inline">0x…</code> address from your new SSH public key, and downloads <code class="inline">airweb_key</code>. To sign in from a different browser, go to <a href="/login">/login</a> and paste your private key. We never store private keys server-side.</p>
+      <summary>How exactly am I charged?</summary>
+      <p>You're metered by the bytes of public traffic that actually flow through your leased tunnels. Idle endpoints cost nothing. The dashboard shows live earnings and charges in both credits and an estimated USD value.</p>
     </details>
     <details>
-      <summary>What are credits for?</summary>
-      <p>Credits buy two things: (1) a permanent <strong>handle</strong> — a reserved <code class="inline">&lt;handle&gt;.${publicDomain}</code> only you can publish under, which is great for accessing your home machine remotely; and (2) <strong>leases</strong> on other people's tunnels (think rented VPS endpoints). You earn credits passively for every minute your own tunnel stays online.</p>
+      <summary>How do I sign in from another device?</summary>
+      <p>Open <a href="/login">/login</a> and paste your private key. We never store private keys server-side — your <code class="inline">aw_…</code> account id is derived deterministically from the public key.</p>
     </details>
     <details>
       <summary>Is the traffic encrypted?</summary>
-      <p>The leg between your machine and AirWeb is encrypted by SSH. The public leg uses whatever the front door speaks — plain HTTP if you hit port 8080, HTTPS if a TLS reverse proxy (Caddy, nginx) sits in front. For end-to-end TLS, terminate it inside your local app and use a raw TCP tunnel.</p>
+      <p>The leg between your device and AirWeb is encrypted by SSH. The public leg uses whatever the front door speaks (HTTP on the bare port, HTTPS behind a TLS reverse proxy). For end-to-end TLS, terminate inside your local app and use a raw TCP tunnel.</p>
     </details>
     <details>
       <summary>Can I pick my own subdomain?</summary>
-      <p>Yes — the SSH username you connect with becomes your subdomain (e.g. <code class="inline">mysub@${host}</code> → <code class="inline">mysub.${publicDomain}</code>). If someone else already owns it on this server, pick another.</p>
+      <p>Yes — the SSH username you connect with becomes your subdomain (<code class="inline">mysub@${host}</code> → <code class="inline">mysub.${publicDomain}</code>). Spend credits in the dashboard to claim a permanent handle nobody else can take.</p>
     </details>
     <details>
       <summary>How do I stop a tunnel?</summary>
-      <p>Press <code class="inline">Ctrl+C</code> in the SSH session, or just close the terminal. The tunnel disappears from the active list immediately.</p>
+      <p>Press <code class="inline">Ctrl+C</code> in the SSH session or close the terminal. The tunnel disappears from the active list immediately and you stop accruing any charges.</p>
     </details>
   </section>
 
-  <p style="text-align:center;color:var(--mute);font-size:.85rem;margin-top:2rem">
-    ${tunnelCount} HTTP tunnel${tunnelCount === 1 ? '' : 's'} currently active on this host.
+  <p class="footnote">
+    <span style="color:var(--good)">●</span> ${tunnelCount} HTTP tunnel${tunnelCount === 1 ? '' : 's'} currently active on this host — running on devices people already owned.
   </p>
 </main>
 
 <footer class="site">
-  AirWeb · self‑hosted reverse SSH tunneling ·
+  airweb · self-hosted reverse ssh tunneling ·
   <a href="https://github.com" rel="noopener">source</a>
 </footer>
 
 <script>
-  // One‑click copy for code blocks
+  // Theme + settings gear are wired by /header.js (shared across pages).
+
+  // One-click copy for code blocks
   document.querySelectorAll('pre').forEach(pre => {
     const btn = document.createElement('button');
     btn.className = 'copy-btn'; btn.textContent = 'copy';
     btn.onclick = async () => {
       const text = pre.innerText.replace(/^\\s*#.*$/gm, '').trim();
-      try { await navigator.clipboard.writeText(text); btn.textContent = 'copied!'; setTimeout(() => btn.textContent = 'copy', 1200); }
-      catch { btn.textContent = 'failed'; }
+      try {
+        await navigator.clipboard.writeText(text);
+        btn.textContent = 'ok';
+        setTimeout(() => btn.textContent = 'copy', 1200);
+      } catch {
+        // Fallback for non-secure contexts
+        const ta = document.createElement('textarea');
+        ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); btn.textContent = 'ok'; }
+        catch { btn.textContent = 'fail'; }
+        document.body.removeChild(ta);
+        setTimeout(() => btn.textContent = 'copy', 1200);
+      }
     };
     pre.appendChild(btn);
   });
@@ -362,7 +805,61 @@ function placeholderHtml(tunnel, err) {
 // ---------------------------------------------------------------------------
 // Proxy: pipe raw bytes between the public socket and the SSH-forwarded channel
 // ---------------------------------------------------------------------------
+
+// Served when the owner (or an admin) has paused public access. The SSH
+// session stays connected; flip the switch back and traffic resumes.
+function serveDisabled(socket, tunnel) {
+  if (socket.destroyed) return;
+  const url = escapeHtml((tunnel && tunnel.publicUrl) || '');
+  const body = `<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8" />
+<title>AirWeb \u00b7 tunnel paused</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<style>
+  body { margin:0; min-height:100vh; display:grid; place-items:center;
+         font: 15px/1.5 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+         background: linear-gradient(135deg,#0f1115 0%,#1f1a24 100%); color:#e7eaf0; padding:2rem; }
+  .card { max-width: 520px; width:100%; background:#161a25; border:1px solid #232734;
+          border-radius:14px; padding:2rem 2.2rem; box-shadow: 0 12px 40px rgba(0,0,0,.35); }
+  .badge { display:inline-block; font-size:.7rem; font-weight:700; letter-spacing:1px;
+           text-transform:uppercase; padding:3px 8px; border-radius:5px;
+           background:#3a2f1d; color:#ffd9a0; border:1px solid #5a4624; }
+  h1 { margin:.8rem 0 .4rem; font-size:1.3rem; }
+  p  { color:#a9b1c2; margin:.4rem 0; }
+  code { background:#0b0d12; border:1px solid #232734; padding:1px 6px; border-radius:4px;
+         font-family: ui-monospace, Menlo, monospace; font-size:.85rem; }
+  footer { margin-top:1.2rem; color:#5b6478; font-size:.75rem; text-align:right; }
+</style></head><body>
+  <main class="card">
+    <span class="badge">503 \u00b7 paused by owner</span>
+    <h1>This tunnel is temporarily not accepting public traffic.</h1>
+    <p>The owner has paused public access to <code>${url}</code>. It will resume once they re-enable it from their dashboard.</p>
+    <footer>AirWeb \u00b7 reverse SSH tunneling</footer>
+  </main>
+</body></html>`;
+  try {
+    socket.write(
+      'HTTP/1.1 503 Service Unavailable\r\n' +
+      'Content-Type: text/html; charset=utf-8\r\n' +
+      'Content-Length: ' + Buffer.byteLength(body) + '\r\n' +
+      'Cache-Control: no-store\r\n' +
+      'Retry-After: 30\r\n' +
+      'Connection: close\r\n\r\n' +
+      body
+    );
+  } catch {}
+  try { socket.end(); } catch {}
+}
+
 function proxyToTunnel(socket, tunnel, headBuf) {
+  // Public access can be toggled off by the owner or an admin without tearing
+  // the SSH session down. Respond with a 503 page so the requester gets
+  // something more useful than a TCP reset.
+  if (tunnel.disabled) {
+    return serveDisabled(socket, tunnel);
+  }
+
   const srcIp   = socket.remoteAddress || '0.0.0.0';
   const srcPort = socket.remotePort || 0;
 
@@ -398,6 +895,153 @@ function proxyToTunnel(socket, tunnel, headBuf) {
       socket.on('close', () => { try { ch.end(); } catch {} });
     })
     .catch((err) => servePlaceholder(socket, tunnel, err));
+}
+
+// ---------------------------------------------------------------------------
+// Passcode gating for HTTP/HTTPS leased tunnels
+// ---------------------------------------------------------------------------
+function parseRequestLineAndHeaders(buf) {
+  const headEnd = buf.indexOf('\r\n\r\n');
+  const limit = headEnd === -1 ? buf.length : headEnd;
+  const text = buf.slice(0, limit).toString('utf8');
+  const firstLineEnd = text.indexOf('\r\n');
+  if (firstLineEnd < 0) return { method: '', path: '/', headers: '' };
+  const line = text.slice(0, firstLineEnd);
+  const headers = text.slice(firstLineEnd + 2);
+  const lm = /^([A-Z]+)\s+([^\s]+)\s+HTTP\/1\.[01]/.exec(line);
+  return {
+    method: lm ? lm[1] : '',
+    path:   lm ? lm[2] : '/',
+    headers,
+  };
+}
+
+function extractPasscodeFromCookie(headerText) {
+  const m = /\r\nCookie:[ \t]*([^\r\n]+)/i.exec('\r\n' + headerText);
+  if (!m) return null;
+  const cm = PASSCODE_COOKIE_RE.exec(m[1]);
+  return cm ? cm[1].toUpperCase() : null;
+}
+
+function extractPasscodeFromPath(path) {
+  const m = PASSCODE_QUERY_RE.exec(path || '');
+  return m ? m[1].toUpperCase() : null;
+}
+
+function isRequestAuthorized(buf, gate) {
+  const { headers } = parseRequestLineAndHeaders(buf);
+  const cookiePass = extractPasscodeFromCookie(headers);
+  return !!(cookiePass && gate.passcodes.has(cookiePass));
+}
+
+function stripPasscodeParam(path) {
+  if (!path) return '/';
+  const q = path.indexOf('?');
+  if (q < 0) return path;
+  const base = path.slice(0, q);
+  const params = path.slice(q + 1).split('&').filter(p => p && !/^aw_pass=/i.test(p));
+  return params.length ? `${base}?${params.join('&')}` : base;
+}
+
+function passcodeFormHtml({ cleanPath, error, expiresAt }) {
+  const expiresLabel = expiresAt > 0
+    ? new Date(expiresAt).toUTCString()
+    : '—';
+  const errBlock = error
+    ? `<p class="err">${escapeHtml(error)}</p>`
+    : '';
+  return `<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Private — AirWeb</title>
+<style>
+  :root { color-scheme: dark light; }
+  html,body { height:100%; margin:0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  body { display:grid; place-items:center; background:#0e0e10; color:#f5f5f7; padding:1rem; }
+  .card { width:100%; max-width:380px; background:#1c1c1e; border:1px solid #2c2c2e; border-radius:14px; padding:1.6rem; box-shadow:0 12px 32px rgba(0,0,0,.4); }
+  h1 { font-size:1.15rem; margin:0 0 .5rem; }
+  p  { color:#a1a1a6; font-size:.85rem; margin:.4rem 0 1rem; line-height:1.4; }
+  .err { color:#ff6b6b; font-size:.8rem; margin:0 0 .8rem; }
+  input[type=text] { width:100%; box-sizing:border-box; font-family:inherit; font-size:1rem; padding:.7rem .9rem; border-radius:10px; border:1px solid #3a3a3c; background:#0e0e10; color:#f5f5f7; letter-spacing:.12em; text-transform:uppercase; }
+  button { margin-top:.8rem; width:100%; padding:.7rem 1rem; border-radius:10px; border:0; background:#0a84ff; color:#fff; font-weight:600; font-size:.95rem; cursor:pointer; }
+  button:hover { background:#0070dd; }
+  .meta { color:#6e6e73; font-size:.7rem; margin-top:1rem; text-align:center; }
+</style>
+</head><body>
+  <form class="card" method="GET" action="${escapeHtml(cleanPath)}">
+    <h1>Private leased service</h1>
+    <p>Enter the passcode from your lease to access this site. The passcode expires when the lease ends.</p>
+    ${errBlock}
+    <input type="text" name="aw_pass" autofocus autocomplete="off" maxlength="16" required pattern="[A-Za-z0-9]+" placeholder="PASSCODE">
+    <button type="submit">Unlock</button>
+    <p class="meta">Access expires: ${escapeHtml(expiresLabel)}</p>
+  </form>
+</body></html>`;
+}
+
+function writeHttpResponse(socket, { status, statusText, headers = {}, body = '' }) {
+  const bodyBuf = Buffer.isBuffer(body) ? body : Buffer.from(body, 'utf8');
+  const lines = [`HTTP/1.1 ${status} ${statusText}`];
+  const h = Object.assign({
+    'Content-Length': String(bodyBuf.length),
+    'Connection':     'close',
+    'Cache-Control':  'no-store',
+    'X-Robots-Tag':   'noindex, nofollow',
+  }, headers);
+  for (const [k, v] of Object.entries(h)) {
+    if (Array.isArray(v)) for (const vv of v) lines.push(`${k}: ${vv}`);
+    else lines.push(`${k}: ${v}`);
+  }
+  lines.push('', '');
+  try {
+    socket.write(lines.join('\r\n'));
+    socket.end(bodyBuf);
+  } catch {
+    try { socket.destroy(); } catch {}
+  }
+}
+
+function handleGatedRequest(socket, buf, gate, sub) {
+  const { method, path, headers } = parseRequestLineAndHeaders(buf);
+  const cleanPath = stripPasscodeParam(path) || '/';
+  const queryPass = extractPasscodeFromPath(path);
+
+  // Empty passcodes set = listing exists but no active lease — always blocked.
+  if (gate.passcodes.size === 0) {
+    return writeHttpResponse(socket, {
+      status: 423, statusText: 'Locked',
+      headers: { 'Content-Type': 'text/html; charset=utf-8' },
+      body: passcodeFormHtml({ cleanPath, error: 'This service is listed for lease but has no active lease yet.', expiresAt: 0 }),
+    });
+  }
+
+  if (queryPass && gate.passcodes.has(queryPass)) {
+    // Valid passcode in query string — set cookie, redirect to clean URL.
+    const maxAge = Math.max(60, Math.floor((gate.expiresAt - Date.now()) / 1000));
+    const cookie = `${PASSCODE_COOKIE}=${queryPass}; Path=/; Max-Age=${maxAge}; HttpOnly; SameSite=Lax`;
+    return writeHttpResponse(socket, {
+      status: 302, statusText: 'Found',
+      headers: {
+        'Location':   cleanPath,
+        'Set-Cookie': cookie,
+        'Content-Type': 'text/plain; charset=utf-8',
+      },
+      body: 'Redirecting…',
+    });
+  }
+
+  // No cookie (or wrong cookie) and no query passcode (or wrong one): show form.
+  const cookiePass = extractPasscodeFromCookie(headers);
+  const error = (queryPass || cookiePass) ? 'Invalid or expired passcode.' : null;
+  return writeHttpResponse(socket, {
+    status: error ? 401 : 401, statusText: 'Unauthorized',
+    headers: {
+      'Content-Type': 'text/html; charset=utf-8',
+      'WWW-Authenticate': `Bearer realm="${sub}.${publicHost()}"`,
+    },
+    body: passcodeFormHtml({ cleanPath, error, expiresAt: gate.expiresAt }),
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -440,6 +1084,11 @@ function handleConnection(socket, httpServer) {
     const tunnel = sub && registry.lookupSubdomain(sub);
 
     if (tunnel) {
+      const gate = marketplace.gateForSubdomain(sub);
+      if (gate && !isRequestAuthorized(buf, gate)) {
+        handleGatedRequest(socket, buf, gate, sub);
+        return;
+      }
       proxyToTunnel(socket, tunnel, buf);
     } else {
       // Apex host, unknown sub, or no Host header -> let http.Server handle it
@@ -491,6 +1140,11 @@ function start() {
   });
 
   const netServer = net.createServer((socket) => {
+    // Tier-0 perf knobs on every public-facing socket. Cheap, big wins:
+    //  • setNoDelay     → ditches Nagle's 200 ms delay on small writes
+    //  • setKeepAlive   → kernel reaps dead peers so we don't have to
+    socket.setNoDelay(true);
+    socket.setKeepAlive(true, 30_000);
     handleConnection(socket, httpServer);
   });
 

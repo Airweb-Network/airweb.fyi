@@ -7,3 +7,7 @@ config.json
 data/
 config.json
 airweb_key*
+*_key
+*_key.pem
+.env
+.env.local

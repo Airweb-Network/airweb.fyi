@@ -25,11 +25,14 @@ function uniqueSubdomain(preferred) {
 function register(tunnel) {
   tunnel.id = ++counter;
   tunnel.createdAt = Date.now();
+  tunnel.disabled = !!tunnel.disabled;
   tunnel.metrics = tunnel.metrics || {
     connections: 0,
     activeConnections: 0,
     bytesIn: 0,    // bytes from public  -> client
     bytesOut: 0,   // bytes from client  -> public
+    chargedBytes: 0,    // total bytes already accounted for in chargedCredits
+    chargedCredits: 0,  // cumulative bandwidth credits charged (float)
     lastActivityAt: Date.now(),
   };
   // Wrap openChannel to instrument bytes + connection counts.
@@ -92,13 +95,27 @@ function summarize(t) {
     bindAddr: t.bindAddr || null,
     bindPort: t.bindPort,
     createdAt: t.createdAt,
+    disabled: !!t.disabled,
+    disabledReason: t.disabledReason || null,
     metrics: { ...t.metrics },
   };
 }
 
 function listSummaries() { return list().map(summarize); }
 
+// Toggle public access for a tunnel. The owner's SSH connection stays up;
+// only the public-facing accept path checks this flag, so the tunnel can be
+// turned back on without the client reconnecting.
+function setDisabled(id, disabled) {
+  const t = tunnels.get(Number(id));
+  if (!t) return null;
+  t.disabled = !!disabled;
+  if (!t.disabled) t.disabledReason = null;
+  events.emit('update', summarize(t));
+  return t;
+}
+
 module.exports = {
   register, unregister, lookupSubdomain, lookupId, list,
-  listSummaries, summarize, uniqueSubdomain, events,
+  listSummaries, summarize, uniqueSubdomain, setDisabled, events,
 };

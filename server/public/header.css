@@ -1,0 +1,77 @@
+/* Shared header styles for AirWeb — used by landing, login, and dashboard.
+   The settings (gear) dropdown markup must be identical on every page.
+
+   Required markup:
+     <span id="settingsMenu" class="settings-menu">
+       <button id="settingsBtn" class="ghost settings-trigger" …>…svg…</button>
+       <div id="settingsPanel" class="settings-panel" hidden>
+         <div class="settings-section">
+           <div class="label">Theme</div>
+           <div class="theme-row" id="themeRow">
+             <button data-theme="dark">Dark</button>
+             <button data-theme="light">Light</button>
+           </div>
+         </div>
+         <div class="settings-sep"></div>
+         <div class="settings-row"><div class="label">Language</div><span id="i18nPickerSlotMenu" data-no-i18n="1"></span></div>
+         <div class="settings-row"><div class="label">Currency</div><span id="currencyPickerSlotMenu" data-no-i18n="1"></span></div>
+       </div>
+     </span>
+*/
+
+.settings-menu { position: relative; display: inline-flex; align-items: center; }
+.settings-trigger {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; padding: 0 !important;
+  border-radius: 50% !important; font-size: 1.05rem; line-height: 1;
+}
+.settings-trigger svg { width: 18px; height: 18px; display: block; }
+.settings-panel {
+  position: absolute; top: calc(100% + .5rem); right: 0;
+  min-width: 240px; max-width: 300px;
+  background: var(--modal-bg, var(--panel));
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-pop, 0 10px 30px rgba(0,0,0,.45));
+  padding: .5rem;
+  z-index: 50;
+  backdrop-filter: saturate(180%) blur(24px);
+  -webkit-backdrop-filter: saturate(180%) blur(24px);
+}
+.settings-panel[hidden] { display: none; }
+.settings-section { padding: .45rem .6rem .35rem; }
+.settings-section .label {
+  color: var(--mute); font-size: .68rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .06em;
+}
+.settings-sep { height: 1px; background: var(--line); margin: .25rem .35rem; }
+.theme-row { display: flex; gap: .25rem; margin-top: .4rem; padding: .2rem; background: var(--hover); border-radius: var(--radius-sm); }
+.theme-row button {
+  flex: 1; padding: .38rem .4rem; font-size: .78rem; max-width: none;
+  background: transparent; color: var(--fg2); border: none; font-weight: 500;
+  border-radius: calc(var(--radius-sm) - 2px); cursor: pointer; font-family: inherit;
+}
+.theme-row button:hover { background: var(--hover2, var(--hover)); color: var(--fg); }
+.theme-row button.active {
+  background: var(--panel); color: var(--fg);
+  box-shadow: 0 1px 2px rgba(0,0,0,.15), 0 0 0 .5px var(--line2);
+}
+.theme-row button.active:hover { background: var(--panel); }
+.settings-row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: .6rem; padding: .35rem .6rem;
+}
+.settings-row .label {
+  color: var(--mute); font-size: .75rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .04em;
+}
+.settings-row .i18n-picker,
+.settings-row .cur-picker { display: inline-flex; }
+.settings-row .i18n-picker-trigger,
+.settings-row .cur-picker-trigger {
+  background: transparent; border: 1px solid var(--line);
+  padding: .32rem .55rem !important; border-radius: var(--radius-sm);
+  color: var(--fg); font-size: .82rem; cursor: pointer;
+}
+.settings-row .i18n-picker-trigger:hover,
+.settings-row .cur-picker-trigger:hover { background: var(--hover); }

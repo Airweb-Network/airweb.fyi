@@ -1,7 +1,7 @@
 // Accounts, sessions, credit ledger.
 //
-// An account is identified by a wallet-style address derived from the user's
-// SSH public key (sha256(pubkey)[0:20] hex, 0x-prefixed). The private key is
+// An account is identified by a short address derived from the user's
+// SSH public key (`aw_` + base32 of sha256(pubkey)[0:10]). The private key is
 // generated server-side once, returned to the user for download, and never
 // persisted.
 //
@@ -52,9 +52,27 @@ const stmts = {
 // ---------------------------------------------------------------------------
 // Address derivation
 // ---------------------------------------------------------------------------
+// Base32 alphabet (Crockford-ish, lowercase, no padding). Avoids 0x-hex so
+// the address is visibly distinct from an Ethereum wallet.
+const B32_ALPHABET = 'abcdefghijkmnpqrstuvwxyz23456789';
+function base32Encode(buf) {
+  let bits = 0, value = 0, out = '';
+  for (let i = 0; i < buf.length; i++) {
+    value = (value << 8) | buf[i];
+    bits += 8;
+    while (bits >= 5) {
+      bits -= 5;
+      out += B32_ALPHABET[(value >>> bits) & 31];
+    }
+  }
+  if (bits > 0) out += B32_ALPHABET[(value << (5 - bits)) & 31];
+  return out;
+}
+
 function deriveAddress(sshPubData /* Buffer */) {
   const h = crypto.createHash('sha256').update(sshPubData).digest();
-  return '0x' + h.slice(0, 20).toString('hex');
+  // 10 bytes => 16 base32 chars; prefix gives total length 19.
+  return 'aw_' + base32Encode(h.slice(0, 10));
 }
 
 function fingerprintOf(sshPubData) {
@@ -227,6 +245,39 @@ function recentLedger(address, limit = 25) {
   return stmts.recentLedger.all(address, limit);
 }
 
+/**
+ * Paginated + filterable ledger for the Transactions tab.
+ * Filters (all optional): reason (exact), q (substring in reason/ref),
+ *                         sign ('pos'|'neg'), since (ms), until (ms).
+ * Returns { items, total, offset, limit }.
+ */
+function queryLedger(address, opts = {}) {
+  const where = ['address = ?'];
+  const params = [address];
+  if (opts.reason) { where.push('reason = ?'); params.push(String(opts.reason)); }
+  if (opts.q) {
+    where.push("(LOWER(reason) LIKE ? OR LOWER(IFNULL(ref, '')) LIKE ?)");
+    const like = '%' + String(opts.q).toLowerCase() + '%';
+    params.push(like, like);
+  }
+  if (opts.sign === 'pos') where.push('delta > 0');
+  if (opts.sign === 'neg') where.push('delta < 0');
+  if (opts.since) { where.push('created_at >= ?'); params.push(Number(opts.since)); }
+  if (opts.until) { where.push('created_at <= ?'); params.push(Number(opts.until)); }
+
+  const limit  = Math.min(200, Math.max(1, Number(opts.limit) || 20));
+  const offset = Math.max(0, Number(opts.offset) || 0);
+  const whereSql = where.join(' AND ');
+  const total = db.prepare(
+    `SELECT COUNT(*) AS n FROM ledger WHERE ${whereSql}`
+  ).get(...params).n;
+  const items = db.prepare(
+    `SELECT id, delta, reason, ref, created_at FROM ledger
+     WHERE ${whereSql} ORDER BY created_at DESC LIMIT ? OFFSET ?`
+  ).all(...params, limit, offset);
+  return { items, total, offset, limit };
+}
+
 // ---------------------------------------------------------------------------
 // Admin helpers
 // ---------------------------------------------------------------------------
@@ -252,6 +303,7 @@ module.exports = {
   credit,
   debit,
   recentLedger,
+  queryLedger,
   isAdmin,
   setAdmin,
   listAccounts,

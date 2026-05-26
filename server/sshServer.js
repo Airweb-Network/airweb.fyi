@@ -27,6 +27,10 @@ const HTTP_BIND_PORT = 80;
 
 const AUTH_METHODS = ['publickey'];
 
+// Per-connection chatter is a real CPU cost at thousands of tunnels; gate it.
+const VERBOSE = process.env.AIRWEB_VERBOSE === '1';
+const vlog = VERBOSE ? console.log : () => {};
+
 function checkPubkey(ctx) {
   const acct = accounts.verifySshAuth(ctx);
   if (acct) return { ok: true, address: acct.address };
@@ -49,6 +53,13 @@ function start() {
   const server = new ssh2.Server({
     hostKeys: [hostKey],
     banner: 'AirWeb — reverse SSH tunneling service\r\n',
+    // Keepalive: probe idle clients so dead tunnels are reaped quickly and
+    // their channels/FDs released. 30s probe × 4 misses ≈ 2 minutes to detect.
+    keepaliveInterval: 30_000,
+    keepaliveCountMax: 4,
+    // High-water marks: keep per-channel buffers small so 10k idle tunnels
+    // don't pin tens of MB each.
+    highWaterMark: 32 * 1024,
   }, (client, info) => {
     const remoteAddr = `${info.ip}:${info.port}`;
     let username = null;
@@ -69,7 +80,7 @@ function start() {
     });
 
     client.on('ready', () => {
-      console.log(`[ssh] ${remoteAddr} authed user="${username}" account=${ownerAddress || '(none)'}`);
+      vlog(`[ssh] ${remoteAddr} authed user="${username}" account=${ownerAddress || '(none)'}`);
 
       client.on('request', (accept, reject, name, info) => {
         if (name !== 'tcpip-forward') {
@@ -82,12 +93,32 @@ function start() {
       client.on('session', (acceptSess) => {
         const session = acceptSess();
         session.on('pty', (a) => a && a());
+        // OpenSSH forwards Ctrl+C as an SSH 'signal' request when a shell is
+        // active. Honour it (and friends) by tearing down the whole client.
+        session.on('signal', (a, info) => {
+          if (a) a();
+          if (info && /^(INT|TERM|QUIT|HUP)$/.test(info.name || '')) {
+            try { client.end(); } catch {}
+          }
+        });
         session.on('shell', (a) => {
           const stream = a && a();
           if (!stream) return;
           stream.write('AirWeb server — interactive shell is disabled.\r\n');
           stream.write('Your tunnels are active as long as this SSH connection stays open.\r\n');
+          stream.write('Press Ctrl+C to disconnect.\r\n');
           if (ownerAddress) stream.write(`Account: ${ownerAddress}\r\n`);
+          // Raw-mode terminals deliver Ctrl+C as 0x03 and Ctrl+D as 0x04 directly
+          // over the channel; treat either as "please disconnect".
+          stream.on('data', (chunk) => {
+            for (const b of chunk) {
+              if (b === 0x03 || b === 0x04) {
+                try { stream.write('\r\nDisconnecting.\r\n'); } catch {}
+                try { client.end(); } catch {}
+                return;
+              }
+            }
+          });
         });
         session.on('exec', (a, _r, info) => {
           const stream = a && a();
@@ -101,7 +132,7 @@ function start() {
 
     client.on('close', () => {
       for (const t of ownedTunnels) {
-        console.log(`[ssh] closing tunnel ${t.publicUrl || t.subdomain || t.bindPort}`);
+        vlog(`[ssh] closing tunnel ${t.publicUrl || t.subdomain || t.bindPort}`);
         try { t.close && t.close(); } catch {}
         registry.unregister(t);
       }
@@ -144,9 +175,13 @@ function handleForwardRequest(client, username, ownerAddress, remoteAddr, info, 
     }
 
     // Owner-owned handle gets exact subdomain; everyone else gets unique-ified.
-    const subdomain = handleOwner === ownerAddress && ownerAddress
+    // When `allowCustomSubdomains` is disabled, non-owners get a fully random
+    // subdomain regardless of what they passed as the SSH username.
+    const allowCustom = config.limits.allowCustomSubdomains !== false;
+    const isHandleOwner = handleOwner && handleOwner === ownerAddress;
+    const subdomain = isHandleOwner
       ? username
-      : registry.uniqueSubdomain(username);
+      : registry.uniqueSubdomain(allowCustom ? username : '');
     const scheme = config.http.publicScheme || 'http';
     const publicUrl = `${scheme}://${subdomain}.${config.http.publicDomain}`;
     const tunnel = registry.register({
@@ -159,11 +194,15 @@ function handleForwardRequest(client, username, ownerAddress, remoteAddr, info, 
       bindPort,
       publicUrl,
       openChannel,
+      // Safer default: a new tunnel is paused until the owner explicitly
+      // enables it from the dashboard. Prevents accidental exposure of a
+      // local service before the owner has had a chance to confirm.
+      disabled: true,
       close: () => {},
       disconnect: () => { try { client.end(); } catch {} },
     });
     ownedTunnels.add(tunnel);
-    console.log(`[tunnel] HTTP  ${tunnel.publicUrl}  -> client ${remoteAddr} (account ${ownerAddress || '(none)'})`);
+    vlog(`[tunnel] HTTP  ${tunnel.publicUrl}  -> client ${remoteAddr} (account ${ownerAddress || '(none)'})`);
     accept(bindPort);
     return;
   }
@@ -179,7 +218,17 @@ function handleForwardRequest(client, username, ownerAddress, remoteAddr, info, 
     return reject && reject();
   }
 
+  let registeredTunnel = null;
   const listener = net.createServer((socket) => {
+    // Owner/admin can pause public access without killing the SSH session.
+    if (registeredTunnel && registeredTunnel.disabled) {
+      try { socket.destroy(); } catch {}
+      return;
+    }
+    // Tunneled TCP: disable Nagle (interactive protocols hate the 200ms delay)
+    // and enable kernel keepalive so dead peers are reaped without polling.
+    socket.setNoDelay(true);
+    socket.setKeepAlive(true, 30_000);
     const srcIp = socket.remoteAddress || '0.0.0.0';
     const srcPort = socket.remotePort || 0;
     openChannel(srcIp, srcPort)
@@ -208,11 +257,14 @@ function handleForwardRequest(client, username, ownerAddress, remoteAddr, info, 
       bindPort: actualPort,
       publicUrl,
       openChannel,
+      // Safer default: paused on connect; owner enables from the dashboard.
+      disabled: true,
       close: () => listener.close(),
       disconnect: () => { try { listener.close(); } catch {}; try { client.end(); } catch {} },
     });
+    registeredTunnel = tunnel;
     ownedTunnels.add(tunnel);
-    console.log(`[tunnel] TCP   ${tunnel.publicUrl}  -> client ${remoteAddr}`);
+    vlog(`[tunnel] TCP   ${tunnel.publicUrl}  -> client ${remoteAddr}`);
     accept(actualPort);
   });
 }

@@ -6,18 +6,19 @@
   },
   "http": {
     "host": "0.0.0.0",
-    "port": 8080,
-    "publicDomain": "airweb.fyi",
-    "publicScheme": "https"
+    "port": 8080
   },
   "limits": {
     "reservedPorts": [22, 2222, 8080],
     "tcpPortRange": [10000, 20000],
-    "reservedSubdomains": ["www", "api", "admin", "dashboard", "app", "docs", "blog", "status", "mail", "smtp", "imap", "pop", "ftp", "ssh"]
+    "reservedSubdomains": ["www", "api", "admin", "dashboard", "app", "docs", "blog", "status", "mail", "smtp", "imap", "pop", "ftp", "ssh"],
+    "allowCustomSubdomains": false
   },
   "credits": {
     "signupBonus": 100,
     "uptimePerMinute": 1,
+    "bandwidthChargePerMb": 0.01,
+    "usdPerCredit": 0.01,
     "defaultLeasePricePerMinute": 2,
     "handleBaseCost": 50,
     "handleMinLength": 3,
