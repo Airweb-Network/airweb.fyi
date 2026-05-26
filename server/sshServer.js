@@ -256,7 +256,11 @@ function handleForwardRequest(client, username, ownerAddress, remoteAddr, info, 
     socket.setKeepAlive(true, 30_000);
     const srcIp = socket.remoteAddress || '0.0.0.0';
     const srcPort = socket.remotePort || 0;
-    openChannel(srcIp, srcPort)
+    // Use the registry-wrapped openChannel so bytes get instrumented for
+    // bandwidth accounting. The local `openChannel` closure variable is the
+    // raw, uninstrumented version captured before register() wrapped it.
+    const open = (registeredTunnel && registeredTunnel.openChannel) || openChannel;
+    open(srcIp, srcPort)
       .then((ch) => {
         socket.pipe(ch).pipe(socket);
         socket.on('error', () => ch.end());
