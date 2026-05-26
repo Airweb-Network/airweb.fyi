@@ -36,15 +36,15 @@ function localizedPageField(page, field, locale) {
 // ---------------------------------------------------------------------------
 
 function apexBase() {
+  // Canonical apex URL for the AirWeb site, already correct for dev
+  // (e.g. http://lvh.me:8080) and prod (e.g. https://airweb.fyi). Do NOT
+  // re-append config.http.port here — in production the Node port (8080)
+  // sits behind a reverse proxy and must not leak into client-facing
+  // URLs (CSS/JS would 404 / hang).
+  if (config.http && config.http.publicBaseUrl) return config.http.publicBaseUrl;
   const scheme = (config.http && config.http.publicScheme) || 'http';
   const domain = (config.http && config.http.publicDomain) || 'localhost';
-  const port   = Number(config.http && config.http.port);
-  const isDefault = (scheme === 'http' && port === 80) ||
-                    (scheme === 'https' && port === 443);
-  const hostPart  = (!port || isDefault || /:\d+$/.test(domain))
-    ? domain
-    : `${domain}:${port}`;
-  return `${scheme}://${hostPart}`;
+  return `${scheme}://${domain}`;
 }
 
 function docsBase(req) {
