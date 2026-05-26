@@ -160,8 +160,14 @@ function start() {
 function handleForwardRequest(client, username, ownerAddress, remoteAddr, info, ownedTunnels, accept, reject) {
   const { bindAddr, bindPort } = info;
 
-  const openChannel = (srcIp, srcPort) => new Promise((resolve, reject2) => {
-    client.forwardOut(bindAddr, info.boundPort || bindPort, srcIp, srcPort, (err, ch) => {
+  // Build a forward-channel opener bound to a specific *public* port. Per RFC
+  // 4254 §7.2, the forwarded-tcpip channel must carry the address/port the
+  // server actually bound — i.e. whatever we returned from `accept(actualPort)`.
+  // Sending the client's *requested* port (e.g. 0, or 3389 we silently reassigned)
+  // makes the OpenSSH client reject the channel because it has no forward table
+  // entry for that port, which manifested as every public connection hanging up.
+  const makeOpenChannel = (publicPort) => (srcIp, srcPort) => new Promise((resolve, reject2) => {
+    client.forwardOut(bindAddr, publicPort, srcIp, srcPort, (err, ch) => {
       if (err) return reject2(err);
       resolve(ch);
     });
@@ -199,7 +205,7 @@ function handleForwardRequest(client, username, ownerAddress, remoteAddr, info, 
       bindAddr,
       bindPort,
       publicUrl,
-      openChannel,
+      openChannel: makeOpenChannel(bindPort),
       // Safer default: a new tunnel is paused until the owner explicitly
       // enables it from the dashboard. Prevents accidental exposure of a
       // local service before the owner has had a chance to confirm.
@@ -244,6 +250,8 @@ function handleForwardRequest(client, username, ownerAddress, remoteAddr, info, 
 
   let registeredTunnel = null;
   const releasePort = () => { if (port) usedTcpPorts.delete(port); };
+  // Filled in once the listener is bound and we know the actual public port.
+  let openChannel = null;
   const listener = net.createServer((socket) => {
     // Owner/admin can pause public access without killing the SSH session.
     if (registeredTunnel && registeredTunnel.disabled) {
@@ -260,6 +268,7 @@ function handleForwardRequest(client, username, ownerAddress, remoteAddr, info, 
     // bandwidth accounting. The local `openChannel` closure variable is the
     // raw, uninstrumented version captured before register() wrapped it.
     const open = (registeredTunnel && registeredTunnel.openChannel) || openChannel;
+    if (!open) { try { socket.destroy(); } catch {} return; }
     open(srcIp, srcPort)
       .then((ch) => {
         socket.pipe(ch).pipe(socket);
@@ -284,20 +293,22 @@ function handleForwardRequest(client, username, ownerAddress, remoteAddr, info, 
   // still preserved in the tunnel record for diagnostics.
   listener.listen(port, '0.0.0.0', () => {
     const actualPort = listener.address().port;
+    // Bind the channel opener to the *actual* port now that we know it. This
+    // is the port we return to the SSH client via accept(actualPort); the
+    // client's forward table is keyed on it.
+    openChannel = makeOpenChannel(actualPort);
     const publicHost = config.http.publicDomain.split(':')[0];
-    // Raw TCP is routed purely by port, but exposing a stable subdomain in
-    // the URL gives the user something memorable to point their RDP / DB /
-    // SSH client at (DNS for *.publicDomain resolves to this same server).
-    // We don't claim the subdomain in the bySubdomain map — that map is only
-    // consulted for HTTP routing — so HTTP tunnels can still use the name.
-    const allowCustom = config.limits.allowCustomSubdomains !== false;
-    const displaySub = (allowCustom && username && /^[a-z0-9][a-z0-9-]{0,38}[a-z0-9]?$/.test(username))
-      ? username
-      : `t${actualPort}`;
-    const publicUrl = `tcp://${displaySub}.${publicHost}:${actualPort}`;
+    // Raw TCP is routed purely by port \u2014 the server has no Host header to
+    // demux on, so the subdomain part of a hostname is meaningless here. Show
+    // the bare apex host:port so users don't paste a misleading sub.host:port
+    // into their RDP / DB client and wonder why the subdomain "matters".
+    const publicUrl = `tcp://${publicHost}:${actualPort}`;
     const tunnel = registry.register({
       type: 'tcp',
-      subdomain: displaySub,
+      // Keep the SSH username around as a label (used as the tunnel card title
+      // on the dashboard) but mark it display-only so it never gets reserved
+      // in the HTTP subdomain map.
+      subdomain: username || `t${actualPort}`,
       _displayOnlySubdomain: true,   // hint to registry: don't reserve in bySubdomain map
       username,
       ownerAddress,

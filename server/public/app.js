@@ -681,61 +681,67 @@ const PROTO_DEFS = {
     needsLocalPort: true,
     endpoint: (sub, host, scheme, port) => buildHttpUrl(sub, host, scheme, port, true),
   },
+  // Raw-TCP protocols: request remote port 0 so the AirWeb server allocates a
+  // free public port from its configured tcpPortRange. Hardcoding well-known
+  // ports (22, 3389, 3306, ...) is pointless — they sit outside the range and
+  // the server silently reassigns them anyway, leaving the displayed endpoint
+  // wrong. Using 0 makes the assignment explicit and avoids collisions when
+  // multiple users tunnel the same service.
   ssh: {
     label: 'SSH',
-    desc:  'Expose your local SSH server (port 22) as a raw TCP tunnel. Required for marketplace listings — buyers SSH straight into the box.',
+    desc:  'Expose your local SSH server (port 22) as a raw TCP tunnel. The public port is assigned by the server on connect. Required for marketplace listings — buyers SSH straight into the box.',
     defaultLocalPort: 22,
-    remoteForward: '22',
+    remoteForward: '0',
     needsLocalPort: false,
-    endpoint: (sub, host) => `ssh user@${sub}.${host}`,
+    endpoint: (sub, host) => `ssh -p <assigned> user@${host}`,
   },
   rdp: {
     label: 'RDP',
-    desc:  'Expose Windows Remote Desktop (port 3389) as a raw TCP tunnel. Point your RDP client at the public endpoint.',
+    desc:  'Expose Windows Remote Desktop (port 3389) as a raw TCP tunnel. The public port is assigned by the server on connect — see the tunnel card once connected.',
     defaultLocalPort: 3389,
-    remoteForward: '3389',
+    remoteForward: '0',
     needsLocalPort: false,
-    endpoint: (sub, host) => `${sub}.${host}:3389`,
+    endpoint: (sub, host) => `${host}:<assigned>`,
   },
   mysql: {
     label: 'MySQL',
-    desc:  'Expose a local MySQL/MariaDB server (port 3306) as a raw TCP tunnel.',
+    desc:  'Expose a local MySQL/MariaDB server (port 3306) as a raw TCP tunnel. The public port is assigned by the server on connect.',
     defaultLocalPort: 3306,
-    remoteForward: '3306',
+    remoteForward: '0',
     needsLocalPort: false,
-    endpoint: (sub, host) => `${sub}.${host}:3306`,
+    endpoint: (sub, host) => `${host}:<assigned>`,
   },
   postgres: {
     label: 'PostgreSQL',
-    desc:  'Expose a local PostgreSQL server (port 5432) as a raw TCP tunnel.',
+    desc:  'Expose a local PostgreSQL server (port 5432) as a raw TCP tunnel. The public port is assigned by the server on connect.',
     defaultLocalPort: 5432,
-    remoteForward: '5432',
+    remoteForward: '0',
     needsLocalPort: false,
-    endpoint: (sub, host) => `${sub}.${host}:5432`,
+    endpoint: (sub, host) => `${host}:<assigned>`,
   },
   mongodb: {
     label: 'MongoDB',
-    desc:  'Expose a local MongoDB server (port 27017) as a raw TCP tunnel.',
+    desc:  'Expose a local MongoDB server (port 27017) as a raw TCP tunnel. The public port is assigned by the server on connect.',
     defaultLocalPort: 27017,
-    remoteForward: '27017',
+    remoteForward: '0',
     needsLocalPort: false,
-    endpoint: (sub, host) => `${sub}.${host}:27017`,
+    endpoint: (sub, host) => `${host}:<assigned>`,
   },
   redis: {
     label: 'Redis',
-    desc:  'Expose a local Redis server (port 6379) as a raw TCP tunnel.',
+    desc:  'Expose a local Redis server (port 6379) as a raw TCP tunnel. The public port is assigned by the server on connect.',
     defaultLocalPort: 6379,
-    remoteForward: '6379',
+    remoteForward: '0',
     needsLocalPort: false,
-    endpoint: (sub, host) => `${sub}.${host}:6379`,
+    endpoint: (sub, host) => `${host}:<assigned>`,
   },
   vnc: {
     label: 'VNC',
-    desc:  'Expose a local VNC server (port 5900) as a raw TCP tunnel.',
+    desc:  'Expose a local VNC server (port 5900) as a raw TCP tunnel. The public port is assigned by the server on connect.',
     defaultLocalPort: 5900,
-    remoteForward: '5900',
+    remoteForward: '0',
     needsLocalPort: false,
-    endpoint: (sub, host) => `${sub}.${host}:5900`,
+    endpoint: (sub, host) => `${host}:<assigned>`,
   },
 };
 
@@ -1352,7 +1358,9 @@ function openHelpListModal() {
       ? 'Reconnect using the command below. Pick any free <code class="mono">mysub</code> name (or use one of your handles):'
       : 'Reconnect using the command below. The server will assign a random subdomain — the SSH username below is just a placeholder.';
   }
-  const cmd = `ssh -i ./${keyFileName()} -p ${sshPort} -R 22:localhost:22 ${user}@${sshHost}`;
+  // Use remote port 0 so the AirWeb server allocates a free public port from
+  // its tcpPortRange. Hardcoding `22` would be rejected (it's in reservedPorts).
+  const cmd = `ssh -i ./${keyFileName()} -p ${sshPort} -R 0:localhost:22 ${user}@${sshHost}`;
   const pre = $('helpListCmd');
   pre.textContent = cmd;
   // Inject a small copy button in the top-right corner of the <pre>.
