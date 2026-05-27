@@ -8,6 +8,121 @@
 // Sections group pages in the sidebar. The first page of the first section
 // is treated as the docs landing page (served at `/`).
 
+const INTRO_HOME_HTML = `
+<div class="docs-home-hero">
+  <div class="docs-home-hero-grid">
+    <div>
+      <h1>AirWeb docs: pick a path, publish something, then go deeper.</h1>
+      <p class="lead">This landing page is the map, not the pitch. Use it to decide whether you need a first tunnel, a stable handle, raw TCP, billing details, or the API surface.</p>
+      <div class="docs-home-badges">
+        <span class="docs-home-badge"><span class="docs-home-badge-dot"></span>start with one SSH command</span>
+        <span class="docs-home-badge">branch into HTTP or TCP</span>
+        <span class="docs-home-badge">learn pricing where pricing belongs</span>
+        <span class="docs-home-badge">reference pages stay reference-first</span>
+      </div>
+    </div>
+    <div class="docs-home-visual-art" aria-hidden="true">
+      <svg viewBox="0 0 460 360" xmlns="http://www.w3.org/2000/svg" role="img">
+        <defs>
+          <linearGradient id="docMapRail" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="var(--accent)" stop-opacity=".15"/>
+            <stop offset="100%" stop-color="var(--accent)" stop-opacity=".55"/>
+          </linearGradient>
+        </defs>
+        <rect x="44" y="40" width="372" height="280" rx="26" fill="var(--panel)" stroke="var(--line2)"/>
+        <rect x="70" y="68" width="320" height="44" rx="14" fill="var(--hover)"/>
+        <text x="96" y="96" font-family="system-ui, sans-serif" font-size="16" font-weight="700" fill="var(--fg)">docs map</text>
+        <g font-family="ui-monospace, Menlo, monospace" font-size="11" font-weight="600">
+          <rect x="88" y="140" width="112" height="34" rx="10" fill="var(--panel)" stroke="var(--line2)"/>
+          <text x="144" y="161" text-anchor="middle" fill="var(--accent)">quick-start</text>
+          <rect x="258" y="140" width="112" height="34" rx="10" fill="var(--panel)" stroke="var(--line2)"/>
+          <text x="314" y="161" text-anchor="middle" fill="var(--accent)">installation</text>
+          <rect x="88" y="214" width="112" height="34" rx="10" fill="var(--panel)" stroke="var(--line2)"/>
+          <text x="144" y="235" text-anchor="middle" fill="var(--accent)">http-tunnels</text>
+          <rect x="258" y="214" width="112" height="34" rx="10" fill="var(--panel)" stroke="var(--line2)"/>
+          <text x="314" y="235" text-anchor="middle" fill="var(--accent)">tcp-tunnels</text>
+        </g>
+        <path d="M200 157 H 258" stroke="url(#docMapRail)" stroke-width="8" stroke-linecap="round" fill="none"/>
+        <path d="M144 174 V 214" stroke="url(#docMapRail)" stroke-width="8" stroke-linecap="round" fill="none"/>
+        <path d="M314 174 V 214" stroke="url(#docMapRail)" stroke-width="8" stroke-linecap="round" fill="none"/>
+        <path d="M200 231 H 258" stroke="url(#docMapRail)" stroke-width="8" stroke-linecap="round" fill="none"/>
+        <g>
+          <rect x="116" y="284" width="228" height="20" rx="10" fill="var(--hover)"/>
+          <text x="230" y="298" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="var(--mute)">learn the system in the order you actually need it</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<h2>Choose the page that matches your job</h2>
+<div class="docs-home-feature-grid">
+  <div class="docs-home-feature">
+    <h3>Get online fast</h3>
+    <p>Start with <a href="/quick-start">Quick start</a> if you already have something running on <code>localhost</code> and just need a public URL in under a minute.</p>
+  </div>
+  <div class="docs-home-feature">
+    <h3>Check your local setup</h3>
+    <p>Use <a href="/installation">Installation</a> if you are still sorting out OpenSSH, keys, Windows setup, or the optional wrapper CLI.</p>
+  </div>
+  <div class="docs-home-feature">
+    <h3>Choose the right tunnel type</h3>
+    <p>Read <a href="/http-tunnels">HTTP tunnels</a> for subdomain-based web apps and <a href="/tcp-tunnels">TCP tunnels</a> for databases, SSH, game servers, and other raw TCP protocols.</p>
+  </div>
+  <div class="docs-home-feature">
+    <h3>Understand the economics later</h3>
+    <p>Pricing, credits, handles, and the marketplace are all documented on their own pages so the docs home can stay focused on orientation instead of repeating the marketing site.</p>
+  </div>
+</div>
+
+<h2>The shortest useful mental model</h2>
+<ol class="docs-home-steps">
+  <li>
+    <h3>Your account is an SSH key</h3>
+    <p>Create one in the <a href="{{APEX}}/dashboard">dashboard</a> and keep the downloaded key file. AirWeb authenticates with that key, not with a password.</p>
+  </li>
+  <li>
+    <h3>Your SSH username becomes a routing hint</h3>
+    <p>For web traffic it becomes the public subdomain. For raw TCP it still identifies the account that owns the forward while the server assigns a listener.</p>
+  </li>
+  <li>
+    <h3>Your actual app stays on localhost</h3>
+    <p>AirWeb does not deploy your code. It forwards public traffic through the SSH session to the process you are already running locally.</p>
+  </li>
+</ol>
+
+<h2>How the docs are organized</h2>
+<div class="docs-home-compare-grid">
+  <div class="docs-home-compare-card bad">
+    <span class="docs-home-tag">start here</span>
+    <h3>Getting started</h3>
+    <p>Use these pages when you are still trying to publish your first service and need concrete commands more than concepts.</p>
+    <ul>
+      <li>Quick start for the shortest path to a working URL</li>
+      <li>Installation for SSH and key setup details</li>
+      <li>Handles when you need a stable published name</li>
+    </ul>
+    <div class="docs-home-big">first tunnel</div>
+  </div>
+  <div class="docs-home-compare-arrow" aria-hidden="true">→</div>
+  <div class="docs-home-compare-card good">
+    <span class="docs-home-tag">then branch out</span>
+    <h3>Platform and reference</h3>
+    <p>Move here once the tunnel works and you want to reason about pricing, telemetry, API integration, or operational edge cases.</p>
+    <ul>
+      <li>Credits, dashboard, connections, and marketplace pages</li>
+      <li>CLI and HTTP API reference</li>
+      <li>Security, FAQ, troubleshooting, and changelog</li>
+    </ul>
+    <div class="docs-home-big">operate it</div>
+  </div>
+</div>
+
+<div class="doc-callout">
+  <strong>Suggested route:</strong> if you do not know where to start, go to <a href="/quick-start">Quick start</a>. If you already have a public demo need, jump straight to <a href="/http-tunnels">HTTP tunnels</a>. If you are exposing a database or game server, skip to <a href="/tcp-tunnels">TCP tunnels</a>.
+</div>
+`;
+
 const SECTIONS = [
   {
     id: 'getting-started',
@@ -17,51 +132,14 @@ const SECTIONS = [
         slug: 'introduction',
         title: 'Introduction to AirWeb',
         description:
-          'AirWeb turns a single SSH command into a public HTTPS URL. ' +
-          'Learn what AirWeb is, how reverse SSH tunneling works, and why ' +
-          'it is a fast way to share a localhost service with the world.',
+          'A docs-first overview of AirWeb. Start here to choose between ' +
+          'quick start, installation, HTTP tunnels, TCP tunnels, pricing, ' +
+          'dashboard, API reference, and troubleshooting.',
         keywords:
-          'AirWeb, reverse SSH tunnel, ssh -R, expose localhost, public ' +
-          'URL for local server, ngrok alternative, self-hosted tunneling',
-        html: `
-<h1>What is AirWeb?</h1>
-<p class="lead">AirWeb is a reverse-tunneling service that exposes any
-service running on your laptop or a private network to the public internet
-using nothing but the <code>ssh</code> command. There is no agent to
-install — if you have OpenSSH (every modern macOS, Linux and Windows ships
-it), you already have everything you need.</p>
-
-<h2>How it works</h2>
-<p>When you run <code>ssh&nbsp;-R</code> against AirWeb, the SSH server
-accepts a <em>reverse port forward</em> request from your client and binds
-a public listener for you. Incoming traffic to that listener is sent
-back over the existing SSH connection to a port on your machine.</p>
-<ul>
-  <li>For HTTP, the public listener is the shared port 80/443 reverse
-      proxy on <code>{{PUBLIC_DOMAIN}}</code>, routed by subdomain.</li>
-  <li>For raw TCP, the server picks (or you pick) a dedicated port and
-      forwards bytes verbatim.</li>
-</ul>
-
-<h2>Why people use AirWeb</h2>
-<ul>
-  <li><strong>Zero install.</strong> No client binary, no kernel module,
-      no browser extension. Just OpenSSH and a key file.</li>
-  <li><strong>Real public URLs.</strong> You get
-      <code>https://&lt;name&gt;.{{PUBLIC_DOMAIN}}</code> — useful for
-      webhooks, mobile testing, OAuth callbacks, demos and IoT.</li>
-  <li><strong>Permanent handles.</strong> Lease a name on the
-      <a href="{{APEX}}/marketplace">marketplace</a> so nobody else can
-      claim it.</li>
-  <li><strong>Self-hostable.</strong> Every line of code that runs the
-      service is in the same repo you can deploy yourself.</li>
-</ul>
-
-<h2>Next steps</h2>
-<p>The fastest way to feel how AirWeb works is to publish a local web app
-right now. Head to the <a href="/quick-start">Quick start</a> guide —
-you will have a live URL in under two minutes.</p>
-`,
+          'AirWeb documentation overview, docs landing page, reverse SSH ' +
+          'guide map, AirWeb quick start, HTTP tunnels, TCP tunnels, ' +
+          'dashboard docs, API reference',
+        html: INTRO_HOME_HTML,
       },
       {
         slug: 'quick-start',
@@ -243,6 +321,16 @@ to match the public hostname. Most frameworks accept this; if yours
 generates absolute URLs from a hard-coded host, set the framework's
 "trusted host" or "external URL" setting to
 <code>myapp.{{PUBLIC_DOMAIN}}</code>.</p>
+
+<h2>Common web protocols people publish</h2>
+<p>HTTP is the routing mode, but the app behind it can be almost
+anything that speaks web primitives once traffic reaches localhost.</p>
+<div class="protocol-strip">
+  <div class="protocol-tile"><div class="pico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="8" cy="8" r="6"/><path d="M2 8h12M8 2c2 1.8 2 10.2 0 12M8 2c-2 1.8-2 10.2 0 12"/></svg></div><span class="pname">HTTP(S)</span><span class="pport">80 / 443</span></div>
+  <div class="protocol-tile"><div class="pico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="3" width="13" height="10" rx="1.4"/><path d="M4 6.5l2 1.5-2 1.5M7.5 10h4"/></svg></div><span class="pname">Web IDE</span><span class="pport">3000+</span></div>
+  <div class="protocol-tile"><div class="pico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"><rect x="1.5" y="2.5" width="13" height="9" rx="1.2"/><circle cx="8" cy="7" r="1.6"/><path d="M5 14h6"/></svg></div><span class="pname">WebSocket</span><span class="pport">upgrade</span></div>
+  <div class="protocol-tile"><div class="pico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><ellipse cx="8" cy="3.5" rx="5.5" ry="1.8"/><path d="M2.5 3.5v9c0 1 2.5 1.8 5.5 1.8s5.5-.8 5.5-1.8v-9M2.5 8c0 1 2.5 1.8 5.5 1.8s5.5-.8 5.5-1.8"/></svg></div><span class="pname">SSE</span><span class="pport">stream</span></div>
+</div>
 `,
       },
       {
@@ -386,6 +474,78 @@ credit back to cash.</p>
 can inspect at any time:</p>
 <pre><code>GET {{APEX}}/api/ledger</code></pre>
 <p>The dashboard renders the same data with friendlier labels.</p>
+
+<h2>How earning and charging interact</h2>
+<p>Credits are easier to reason about once you separate the steady
+uptime stipend from the traffic-based charge.</p>
+<div class="docs-home-visual-grid">
+  <div class="docs-home-visual-art" aria-hidden="true">
+    <svg viewBox="0 0 360 260" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="docEarnCredits" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="var(--good)" stop-opacity="0"/>
+          <stop offset="50%" stop-color="var(--good)" stop-opacity=".7"/>
+          <stop offset="100%" stop-color="var(--good)" stop-opacity="0"/>
+        </linearGradient>
+        <linearGradient id="docChargeCredits" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="var(--bad, #ff453a)" stop-opacity="0"/>
+          <stop offset="50%" stop-color="var(--bad, #ff453a)" stop-opacity=".6"/>
+          <stop offset="100%" stop-color="var(--bad, #ff453a)" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <g stroke="currentColor" stroke-width="1.6" fill="var(--panel)" stroke-linejoin="round" transform="translate(28 84)">
+        <rect x="0" y="0" width="92" height="62" rx="6"/>
+        <rect x="6" y="6" width="80" height="46" rx="3" fill="var(--hover)"/>
+        <path d="M-6 68 H 98 L 92 76 H 0 Z"/>
+      </g>
+      <text x="74" y="180" text-anchor="middle" font-family="system-ui" font-size="11" fill="var(--mute)">your device</text>
+      <g stroke="currentColor" stroke-width="1.6" fill="var(--panel)" stroke-linejoin="round" transform="translate(240 76)">
+        <path d="M22 36 a16 16 0 0 1 16 -16 a20 20 0 0 1 38 6 a14 14 0 0 1 4 28 H 22 a14 14 0 0 1 0 -18 z" fill="var(--hover)"/>
+      </g>
+      <text x="284" y="180" text-anchor="middle" font-family="system-ui" font-size="11" fill="var(--mute)">public traffic</text>
+      <path d="M122 100 L 238 100" stroke="url(#docEarnCredits)" stroke-width="14" fill="none" stroke-linecap="round"/>
+      <g fill="var(--good)" stroke="none">
+        <circle cx="140" cy="100" r="3"/>
+        <circle cx="170" cy="100" r="3"/>
+        <circle cx="200" cy="100" r="3"/>
+        <circle cx="230" cy="100" r="3"/>
+      </g>
+      <text x="180" y="84" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="11" font-weight="600" fill="var(--good)">+{{CREDITS_UPTIME_PER_MINUTE}} AWC / min</text>
+      <path d="M238 132 L 122 132" stroke="url(#docChargeCredits)" stroke-width="14" fill="none" stroke-linecap="round"/>
+      <g fill="var(--bad, #ff453a)" stroke="none">
+        <rect x="146" y="129" width="4" height="6" rx="1"/>
+        <rect x="180" y="129" width="4" height="6" rx="1"/>
+        <rect x="214" y="129" width="4" height="6" rx="1"/>
+      </g>
+      <text x="180" y="156" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="11" font-weight="600" fill="var(--bad, #ff453a)">- bytes x {{CREDITS_BANDWIDTH_PER_MB}} AWC/MB</text>
+      <g transform="translate(110 200)">
+        <rect x="0" y="0" width="140" height="34" rx="17" fill="var(--panel)" stroke="var(--line2)"/>
+        <text x="70" y="22" text-anchor="middle" font-family="system-ui" font-size="13" fill="var(--fg)">net = earn - charge</text>
+      </g>
+    </svg>
+  </div>
+  <div class="docs-home-copy-stack">
+    <div class="docs-home-stat-row">
+      <div class="docs-home-stat-tile good">
+        <div class="docs-home-stat-val">+{{CREDITS_UPTIME_PER_MINUTE}} <small>AWC / min</small></div>
+        <div class="docs-home-stat-label">Earned automatically while your tunnel stays online</div>
+      </div>
+      <div class="docs-home-stat-tile good">
+        <div class="docs-home-stat-val">{{CREDITS_DEFAULT_LEASE_PRICE}}+ <small>AWC / min</small></div>
+        <div class="docs-home-stat-label">Possible extra income when someone leases your capacity</div>
+      </div>
+      <div class="docs-home-stat-tile neg">
+        <div class="docs-home-stat-val">-{{CREDITS_BANDWIDTH_PER_MB}} <small>AWC / MB</small></div>
+        <div class="docs-home-stat-label">Only charged for bytes that really pass through</div>
+      </div>
+      <div class="docs-home-stat-tile">
+        <div class="docs-home-stat-val">{{CREDITS_SIGNUP_BONUS}} <small>AWC welcome</small></div>
+        <div class="docs-home-stat-label">Starter balance for a brand-new account</div>
+      </div>
+    </div>
+    <p class="docs-home-note">Idle tunnels cost nothing. The important distinction is that uptime pays on a timer while bandwidth charges only happen when users actually move data through the tunnel.</p>
+  </div>
+</div>
 `,
       },
       {
@@ -498,6 +658,73 @@ buy, you own it.</p>
 <pre><code>GET  {{APEX}}/api/listings
 POST {{APEX}}/api/listings   (auth required)</code></pre>
 <p>See the <a href="/api">API reference</a> for full schemas.</p>
+
+<h2>What the marketplace loop looks like</h2>
+<p>The marketplace is where spare capacity and spare names turn back
+into usable credit for somebody else.</p>
+<div class="docs-home-visual-grid flip">
+  <div class="docs-home-visual-art" aria-hidden="true">
+    <svg viewBox="0 0 360 260" xmlns="http://www.w3.org/2000/svg">
+      <g transform="translate(150 100)">
+        <rect x="0" y="0" width="60" height="60" rx="12" fill="var(--accent)" stroke="none"/>
+        <g stroke="var(--accent-fg)" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 24 H 46 M14 30 H 46 M14 36 H 38"/>
+          <circle cx="30" cy="14" r="4" fill="var(--accent-fg)" stroke="none"/>
+        </g>
+        <text x="30" y="82" text-anchor="middle" font-family="system-ui" font-size="11" font-weight="600" fill="var(--fg)">marketplace</text>
+      </g>
+      <g stroke="currentColor" stroke-width="1.6" fill="var(--panel)">
+        <circle cx="60" cy="60" r="20"/>
+        <circle cx="300" cy="60" r="20"/>
+        <circle cx="60" cy="200" r="20"/>
+        <circle cx="300" cy="200" r="20"/>
+        <circle cx="40" cy="130" r="16"/>
+        <circle cx="320" cy="130" r="16"/>
+      </g>
+      <g fill="var(--accent)" stroke="none">
+        <circle cx="60" cy="60" r="6"/>
+        <circle cx="300" cy="60" r="6"/>
+        <circle cx="60" cy="200" r="6"/>
+        <circle cx="300" cy="200" r="6"/>
+        <circle cx="40" cy="130" r="4"/>
+        <circle cx="320" cy="130" r="4"/>
+      </g>
+      <g stroke="var(--accent)" stroke-width="1.6" fill="none" stroke-dasharray="3 5" opacity=".8">
+        <path d="M80 60 L 150 110"/>
+        <path d="M280 60 L 210 110"/>
+        <path d="M80 200 L 150 150"/>
+        <path d="M280 200 L 210 150"/>
+        <path d="M56 130 L 150 130"/>
+        <path d="M304 130 L 210 130"/>
+      </g>
+      <g font-family="system-ui" font-size="10.5" fill="var(--mute)">
+        <text x="12" y="246">peers earn and spend credits</text>
+        <line x1="206" y1="242" x2="228" y2="242" stroke="var(--accent)" stroke-width="1.6" stroke-dasharray="3 5"/>
+        <text x="236" y="246">credit flow</text>
+      </g>
+    </svg>
+  </div>
+  <div class="docs-home-copy-stack">
+    <div class="docs-home-feature-grid" style="margin-top:0">
+      <div class="docs-home-feature">
+        <h3>Sell what you no longer need</h3>
+        <p>A short memorable handle or a lease you are no longer using can turn back into credits for the next thing you want to publish.</p>
+      </div>
+      <div class="docs-home-feature">
+        <h3>Buy a better public name</h3>
+        <p>Instead of fighting over temporary names, you can just buy the stable one that already matches your use case.</p>
+      </div>
+      <div class="docs-home-feature">
+        <h3>Discover where capacity lives</h3>
+        <p>The marketplace doubles as a map of what other people are willing to host, lease, and keep online.</p>
+      </div>
+      <div class="docs-home-feature">
+        <h3>Use one wallet for both roles</h3>
+        <p>Hosts and buyers use the same credits balance, so the platform stays one loop instead of splitting billing from participation.</p>
+      </div>
+    </div>
+  </div>
+</div>
 `,
       },
     ],

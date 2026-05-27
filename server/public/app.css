@@ -88,6 +88,13 @@
     font: 14px/1.5 var(--sans);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    -webkit-user-select: text;
+    user-select: text;
+  }
+  p, li, h1, h2, h3, h4, h5, h6, a, button, label, summary, dt, dd, td, th,
+  span, strong, em, small, code, pre, blockquote, figcaption {
+    -webkit-user-select: text;
+    user-select: text;
   }
   a { color: var(--accent); text-decoration: none; }
   a:hover { text-decoration: underline; color: var(--accent2); }
@@ -277,7 +284,7 @@
   /* Collapsible cards */
   .card[data-collapsible] > h2,
   .card[data-collapsible] > div:first-child > h2 {
-    cursor: pointer; user-select: none;
+    cursor: pointer;
     display: inline-flex; align-items: center; gap: .45rem;
   }
   .card[data-collapsible] > h2::after,
@@ -309,7 +316,7 @@
     padding: .15rem .3rem .65rem; margin: 0 0 .8rem;
     border-bottom: 1px solid var(--line);
     border-radius: var(--radius-sm);
-    cursor: pointer; user-select: none; text-align: left;
+    cursor: pointer; text-align: left;
     font: inherit;
     transition: background .12s, color .12s;
   }

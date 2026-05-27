@@ -3,12 +3,6 @@
 // Architecture: we accept raw TCP connections, peek at the first few bytes to
 // read the Host header, and then decide:
 //   * known subdomain  -> pipe the raw socket through the SSH tunnel's channel
-//   * everything else  -> hand the socket to an internal http.Server which
-//                         serves the landing page (or 404 for unknown subs).
-//
-// Hijacking at the TCP layer (instead of in `server.on('request', ...)`) avoids
-// fighting Node's HTTP parser, which otherwise keeps consuming socket bytes
-// even after listeners are removed and causes proxied requests to hang.
 
 const http = require('http');
 const net = require('net');
@@ -50,7 +44,6 @@ function escapeHtml(s) {
 // ---------------------------------------------------------------------------
 function landingPage(res) {
   const html = renderLandingHtml();
-  res.statusCode = 200;
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.setHeader('Cache-Control', 'public, max-age=300');
   res.setHeader('X-Robots-Tag', 'index, follow');
@@ -60,8 +53,8 @@ function landingPage(res) {
 function renderLandingHtml() {
   const scheme        = config.http.publicScheme || 'http';
   const publicDomain  = config.http.publicDomain;
-  const host          = publicHost();
   const siteUrl       = `${scheme}://${publicDomain}`;
+  const host          = publicHost();
   const sshPort       = config.ssh.port;
   const keyFile       = `${host.replace(/[^a-z0-9.-]+/gi, '_')}_<your account id>_key.txt`;
   // Count every public tunnel — HTTP and raw TCP both — but skip internal
@@ -121,42 +114,64 @@ function renderLandingHtml() {
     background: var(--panel);
     border: 1px solid var(--line);
     border-radius: var(--radius-lg);
-    padding: 1.8rem 2rem;
-    margin-bottom: 1.4rem;
+    padding: 2.6rem 2.4rem;
+    margin-bottom: 2rem;
     box-shadow: var(--shadow-card);
   }
   .banner::before {
     content: ""; position: absolute; pointer-events: none;
-    width: 520px; height: 520px; top: -180px; right: -160px;
+    width: 620px; height: 620px; top: -220px; right: -200px;
     background: radial-gradient(circle at center,
       color-mix(in srgb, var(--accent) 28%, transparent) 0%,
       transparent 60%);
-    filter: blur(20px); opacity: .8; z-index: 0;
+    filter: blur(24px); opacity: .8; z-index: 0;
   }
   .banner::after {
     content: ""; position: absolute; pointer-events: none;
-    width: 380px; height: 380px; bottom: -140px; left: -120px;
+    width: 460px; height: 460px; bottom: -160px; left: -140px;
     background: radial-gradient(circle at center,
-      color-mix(in srgb, var(--good) 20%, transparent) 0%,
+      color-mix(in srgb, var(--good) 22%, transparent) 0%,
       transparent 60%);
-    filter: blur(20px); opacity: .6; z-index: 0;
+    filter: blur(24px); opacity: .6; z-index: 0;
   }
   .banner > * { position: relative; z-index: 1; }
   .banner-ascii { display: none; }
+
+  /* Two-column hero: copy on the left, device illustration on the right.
+     Collapses to a single column under 880px so phones get the full copy
+     first and the illustration slides underneath. */
+  .hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: 2.4rem;
+    align-items: center;
+  }
+  @media (max-width: 880px) {
+    .hero-grid { grid-template-columns: 1fr; gap: 1.6rem; }
+    .hero-illustration { order: -1; max-width: 420px; margin: 0 auto; }
+  }
+  .hero-illustration {
+    position: relative;
+    width: 100%;
+  }
+  .hero-illustration svg {
+    width: 100%; height: auto; display: block;
+    filter: drop-shadow(0 18px 40px color-mix(in srgb, var(--accent) 18%, transparent));
+  }
   .banner h1 {
-    font: 600 1.9rem/1.2 var(--display);
-    margin: 0 0 .8rem;
+    font: 600 2.35rem/1.12 var(--display);
+    margin: 0 0 1rem;
     color: var(--fg);
-    letter-spacing: -.015em;
+    letter-spacing: -.02em;
   }
   .banner h1 .accent { color: var(--accent); }
   .banner p.lead {
     color: var(--mute); margin: 0 0 1rem;
-    max-width: 64ch; font-size: 1.05rem;
+    max-width: 56ch; font-size: 1.1rem; line-height: 1.55;
   }
   .banner .cta-row {
-    display: flex; flex-wrap: wrap; gap: .6rem; align-items: center;
-    margin-top: 1.2rem;
+    display: flex; flex-wrap: wrap; gap: .7rem; align-items: center;
+    margin-top: 1.5rem;
   }
   .cta {
     display: inline-block;
@@ -202,53 +217,97 @@ function renderLandingHtml() {
     background: var(--panel);
     border: 1px solid var(--line);
     border-radius: var(--radius);
-    padding: 1.4rem 1.6rem;
-    margin: 1rem 0;
+      padding: 1.7rem 1.5rem;
+    margin: 1.6rem 0;
     box-shadow: var(--shadow-card);
   }
   section.block h2 {
-    margin: 0 0 .9rem;
-    font: 600 1.3rem/1.25 var(--display);
+    margin: 0 0 1.3rem;
+    font: 600 1.55rem/1.2 var(--display);
     color: var(--fg);
     border-bottom: 1px solid var(--line);
-    padding-bottom: .55rem;
-    letter-spacing: -.005em;
-    display: flex; align-items: center; gap: .55rem;
+    padding-bottom: .75rem;
+    letter-spacing: -.012em;
+    display: flex; align-items: center; gap: .65rem;
   }
   section.block h2 .icon {
-    width: 22px; height: 22px; flex: 0 0 22px;
+    width: 26px; height: 26px; flex: 0 0 26px;
     color: var(--accent);
   }
   section.block h2 .icon svg { width: 100%; height: 100%; display: block; }
+  section.block h2 .eyebrow {
+    margin-left: auto; font: 500 .8rem/1 var(--sans);
+    color: var(--mute); letter-spacing: .04em; text-transform: uppercase;
+  }
   section.block h3 {
-    margin: 1rem 0 .35rem;
-    font: 600 1.02rem/1.3 var(--display);
+    margin: 1.2rem 0 .45rem;
+    font: 600 1.05rem/1.3 var(--display);
     color: var(--fg);
   }
-  section.block p { margin: .4rem 0 .6rem; color: var(--fg2); }
+  section.block p { margin: .5rem 0 .75rem; color: var(--fg2); line-height: 1.6; }
+  section.block > p:first-of-type { font-size: 1.02rem; color: var(--fg2); }
+
+  /* Protocol strip: row of icon tiles showing every protocol the server can
+     forward, so visitors immediately grasp "anything I run locally can go". */
+  .protocol-strip {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: .6rem;
+    margin-top: .4rem;
+  }
+  @media (max-width: 900px) {
+    .protocol-strip { grid-template-columns: repeat(4, 1fr); }
+  }
+  @media (max-width: 520px) {
+    .protocol-strip { grid-template-columns: repeat(2, 1fr); }
+  }
+  .protocol-tile {
+    display: flex; flex-direction: column; align-items: center;
+    gap: .5rem;
+    padding: 1rem .6rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--hover);
+    transition: background .12s, border-color .12s, transform .12s;
+    text-align: center;
+  }
+  .protocol-tile:hover { background: var(--hover2); border-color: var(--line2); transform: translateY(-1px); }
+  .protocol-tile .pico {
+    width: 36px; height: 36px;
+    display: grid; place-items: center;
+    color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    border-radius: 10px;
+  }
+  .protocol-tile .pico svg { width: 22px; height: 22px; display: block; }
+  .protocol-tile .pname { font: 600 .9rem/1 var(--display); color: var(--fg); }
+  .protocol-tile .pport { font: .75rem/1 var(--mono); color: var(--mute); }
 
   /* Steps */
   ol.steps {
     counter-reset: step; list-style: none;
-    padding: 0; margin: .5rem 0 0;
+    padding: 0; margin: .8rem 0 0;
   }
   ol.steps > li {
     counter-increment: step;
-    padding: 1rem 0 1rem 3.2rem;
+    padding: 1.3rem 0 1.3rem 3.6rem;
     position: relative;
     border-top: 1px solid var(--line);
   }
   ol.steps > li:first-child { border-top: none; padding-top: .3rem; }
   ol.steps > li::before {
     content: counter(step);
-    position: absolute; left: 0; top: 1rem;
-    width: 2.2rem; height: 2.2rem; border-radius: 50%;
+    position: absolute; left: 0; top: 1.3rem;
+    width: 2.4rem; height: 2.4rem; border-radius: 50%;
     background: var(--accent); color: var(--accent-fg);
     display: grid; place-items: center;
-    font-family: var(--display); font-weight: 700; font-size: 1rem;
+    font-family: var(--display); font-weight: 700; font-size: 1.05rem;
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent);
   }
   ol.steps > li:first-child::before { top: .3rem; }
-  ol.steps li h3 { margin: 0 0 .3rem; color: var(--fg); }
+  ol.steps li h3 { margin: 0 0 .4rem; color: var(--fg); font-size: 1.1rem; }
+  ol.steps li p { margin: .25rem 0; }
+  ol.steps li pre { margin-top: .7rem; }
 
   /* Code */
   pre {
@@ -285,31 +344,164 @@ function renderLandingHtml() {
 
   /* Feature grid */
   .grid2 {
-    display: grid; gap: .8rem;
-    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    display: grid; gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   }
   .feature {
     border: 1px solid var(--line);
     border-radius: var(--radius);
-    padding: 1rem 1.1rem;
+    padding: 1.25rem 1.3rem;
     background: var(--hover);
     transition: background .12s, border-color .12s, transform .12s;
   }
   .feature:hover { background: var(--hover2); border-color: var(--line2); transform: translateY(-1px); }
   .feature .feat-icon {
-    width: 28px; height: 28px;
+    width: 34px; height: 34px;
     display: grid; place-items: center;
     background: color-mix(in srgb, var(--accent) 14%, transparent);
     color: var(--accent);
-    border-radius: 8px; margin-bottom: .55rem;
+    border-radius: 10px; margin-bottom: .7rem;
   }
-  .feature .feat-icon svg { width: 16px; height: 16px; display: block; }
+  .feature .feat-icon svg { width: 18px; height: 18px; display: block; }
   .feature h4 {
-    margin: 0 0 .35rem;
-    font: 600 1rem/1.3 var(--display);
+    margin: 0 0 .4rem;
+    font: 600 1.05rem/1.3 var(--display);
     color: var(--fg);
   }
-  .feature p { margin: 0; font-size: .92rem; color: var(--mute); line-height: 1.5; }
+  .feature p { margin: 0; font-size: .95rem; color: var(--mute); line-height: 1.55; }
+
+  /* Visuals shared across the lower marketing sections.
+     - .visual-grid   : illustration on one side, copy on the other (collapses on mobile)
+     - .stat-row      : row of large-number stat tiles
+     - .compare-grid  : "today vs tomorrow" / "old vs new" two-column compare
+     - .mesh / .leaf  : decorative SVG containers */
+  .visual-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    gap: 1.85rem;
+    align-items: start;
+    margin-top: .6rem;
+  }
+  .visual-grid.flip { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
+  .visual-grid.flip .visual-art { order: 2; }
+  @media (max-width: 760px) {
+    .visual-grid, .visual-grid.flip { grid-template-columns: 1fr; }
+    .visual-grid .visual-art, .visual-grid.flip .visual-art { order: -1; }
+  }
+  .visual-grid > div:last-child { min-width: 0; }
+  .visual-art {
+    background: var(--hover);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1.35rem 1.35rem 1.5rem;
+    display: grid; place-items: center;
+    min-height: 100%;
+  }
+  .visual-art svg {
+    width: 100%; height: auto; max-width: 392px; display: block;
+    color: var(--fg);
+    overflow: visible;
+  }
+  .visual-copy-stack {
+    display: grid;
+    gap: .95rem;
+    align-content: start;
+  }
+  .visual-copy-stack > * { min-width: 0; }
+  .visual-note {
+    margin: 0;
+    color: var(--mute);
+    font-size: .93rem;
+    line-height: 1.58;
+  }
+  .visual-meta-list {
+    margin: .15rem 0 0;
+    padding-left: 1.15rem;
+    color: var(--mute);
+    line-height: 1.62;
+    display: grid;
+    gap: .38rem;
+  }
+
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: .8rem; margin: 1rem 0 .4rem;
+  }
+  .stat-tile {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--hover);
+    padding: 1rem 1.1rem;
+  }
+  .stat-tile .stat-val {
+    font: 700 1.45rem/1.1 var(--display);
+    color: var(--accent);
+    letter-spacing: -.01em;
+    display: flex; align-items: baseline; gap: .35rem;
+  }
+  .stat-tile .stat-val small {
+    font: 500 .8rem/1 var(--sans); color: var(--mute);
+    letter-spacing: 0;
+  }
+  .stat-tile .stat-label {
+    font: 500 .85rem/1.3 var(--sans);
+    color: var(--mute);
+    margin-top: .35rem;
+  }
+  .stat-tile.neg .stat-val { color: var(--bad, #ff453a); }
+  .stat-tile.good .stat-val { color: var(--good); }
+
+  .compare-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 74px minmax(0, 1fr);
+    gap: 1.2rem; align-items: center;
+    margin-top: 1rem;
+  }
+  @media (max-width: 720px) {
+    .compare-grid { grid-template-columns: 1fr; }
+    .compare-grid .arrow { display: none; }
+  }
+  .compare-card {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--hover);
+    padding: 1.2rem 1.25rem;
+    display: flex; flex-direction: column;
+    min-height: 100%;
+  }
+  .compare-card.bad  { border-color: color-mix(in srgb, var(--bad, #ff453a) 35%, var(--line)); }
+  .compare-card.good { border-color: color-mix(in srgb, var(--good) 38%, var(--line)); }
+  .compare-card .tag {
+    align-self: flex-start;
+    font: 600 .72rem/1 var(--sans); letter-spacing: .08em; text-transform: uppercase;
+    padding: 4px 8px; border-radius: 999px;
+    background: var(--panel); color: var(--mute);
+    margin-bottom: .6rem;
+  }
+  .compare-card.bad  .tag { color: var(--bad, #ff453a); }
+  .compare-card.good .tag { color: var(--good); }
+  .compare-card h4 { margin: 0 0 .35rem; font: 600 1.05rem/1.3 var(--display); color: var(--fg); }
+  .compare-card p { margin: .2rem 0 .4rem; color: var(--mute); font-size: .93rem; line-height: 1.55; }
+  .compare-card ul { margin: .3rem 0 0; padding-left: 1.1rem; color: var(--mute); font-size: .9rem; line-height: 1.6; display: grid; gap: .35rem; }
+  .compare-card .big {
+    margin-top: auto; padding-top: .6rem;
+    font: 700 1.3rem/1.1 var(--display); color: var(--fg);
+  }
+  .compare-card.bad  .big { color: var(--bad, #ff453a); }
+  .compare-card.good .big { color: var(--good); }
+  .compare-grid .arrow {
+    align-self: center;
+    justify-self: center;
+    width: 74px; height: 74px;
+    display: grid; place-items: center;
+    border-radius: 999px;
+    color: var(--accent);
+    font: 700 1.5rem/1 var(--sans);
+    background: color-mix(in srgb, var(--accent) 10%, var(--panel));
+    border: 1px solid color-mix(in srgb, var(--accent) 28%, var(--line));
+    box-shadow: inset 0 1px 0 color-mix(in srgb, var(--accent) 12%, transparent);
+  }
 
   /* FAQ */
   .faq details {
@@ -359,9 +551,12 @@ function renderLandingHtml() {
   code.inline { font-size: .9em; }
 
   @media (max-width: 560px) {
-    .banner h1 { font-size: 1.45rem; }
+    .banner { padding: 1.6rem 1.2rem; }
+    .banner h1 { font-size: 1.7rem; }
+    .banner p.lead { font-size: 1rem; }
     main { padding: 1.2rem .9rem 2rem; }
-    section.block, .banner { padding: 1.1rem 1.1rem; }
+    section.block { padding: 1.4rem 1.2rem; }
+    section.block h2 { font-size: 1.3rem; }
   }
 </style>
 <link rel="stylesheet" href="/header.css">
@@ -389,24 +584,153 @@ function renderLandingHtml() {
 
 <main>
   <div class="banner">
-    <h1>A people-powered cloud, built from the <span class="accent">devices you already own</span>.</h1>
-    <p class="lead">AirWeb turns spare laptops, old phones, and idle home servers into tiny public endpoints. Demo an app in seconds, reach your home computer from anywhere, or lease a micro-server by the minute — and earn credits while your own devices help carry the load.</p>
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <h1>A people-powered cloud, built from the <span class="accent">devices you already own</span>.</h1>
+        <p class="lead">AirWeb turns spare laptops, old phones, and idle home servers into tiny public endpoints. Demo an app, reach your home computer from anywhere, or lease a micro-server by the minute — and earn credits while your own devices help carry the load.</p>
 
-    <div class="cta-row">
-      <a href="/dashboard" class="cta">get your key &rarr;</a>
-      <a href="/login" class="cta-alt">or restore from existing key</a>
-    </div>
+        <div class="cta-row">
+          <a href="/dashboard" class="cta">get your key &rarr;</a>
+          <a href="/login" class="cta-alt">restore from existing key</a>
+        </div>
 
-    <div class="badges">
-      <span class="badge"><span class="dot"></span>${tunnelCount} active tunnel${tunnelCount === 1 ? '' : 's'} right now</span>
-      <span class="badge">pay only for traffic</span>
-      <span class="badge">no install · just ssh</span>
-      <span class="badge">open source · greener by default</span>
+        <div class="badges">
+          <span class="badge"><span class="dot"></span>${tunnelCount} active tunnel${tunnelCount === 1 ? '' : 's'} right now</span>
+          <span class="badge">pay only for traffic</span>
+          <span class="badge">no install · just ssh</span>
+          <span class="badge">open source</span>
+        </div>
+      </div>
+
+      <div class="hero-illustration" aria-hidden="true">
+        <!-- Devices on the left flow over an SSH tunnel into a public cloud
+             on the right. Pure inline SVG (no external images), uses theme
+             colors via currentColor so it adapts to light/dark. -->
+        <svg viewBox="0 0 460 360" xmlns="http://www.w3.org/2000/svg" role="img">
+          <defs>
+            <linearGradient id="awTunnel" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%"  stop-color="var(--accent)"  stop-opacity=".15"/>
+              <stop offset="50%" stop-color="var(--accent)"  stop-opacity=".55"/>
+              <stop offset="100%" stop-color="var(--accent)" stop-opacity=".15"/>
+            </linearGradient>
+            <radialGradient id="awCloud" cx="50%" cy="40%" r="60%">
+              <stop offset="0%"   stop-color="var(--accent)" stop-opacity=".22"/>
+              <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+
+          <!-- soft glow behind the cloud -->
+          <circle cx="360" cy="180" r="120" fill="url(#awCloud)"/>
+
+          <!-- tunnel pipeline from devices to cloud -->
+          <path d="M150 180 C 220 110, 290 250, 360 180" stroke="url(#awTunnel)" stroke-width="22" fill="none" stroke-linecap="round"/>
+          <path d="M150 180 C 220 110, 290 250, 360 180" stroke="var(--accent)" stroke-width="2" fill="none" stroke-linecap="round" stroke-dasharray="4 8" opacity=".7"/>
+
+          <g stroke="var(--fg)" stroke-width="1.6" fill="var(--panel)" stroke-linejoin="round">
+            <!-- Laptop -->
+            <g transform="translate(20 60)">
+              <rect x="0" y="0" width="92" height="58" rx="6"/>
+              <rect x="6" y="6" width="80" height="42" rx="3" fill="var(--hover)"/>
+              <path d="M-6 64 H 98 L 92 72 H 0 Z" fill="var(--panel)"/>
+              <circle cx="46" cy="3" r="1.2" fill="var(--mute)" stroke="none"/>
+            </g>
+
+            <!-- Phone -->
+            <g transform="translate(20 158)">
+              <rect x="0" y="0" width="42" height="74" rx="7"/>
+              <rect x="4" y="9" width="34" height="56" rx="2" fill="var(--hover)"/>
+              <circle cx="21" cy="4.5" r="1.4" fill="var(--mute)" stroke="none"/>
+              <rect x="14" y="68" width="14" height="2" rx="1" fill="var(--mute)" stroke="none"/>
+            </g>
+
+            <!-- Desktop monitor -->
+            <g transform="translate(76 158)">
+              <rect x="0" y="0" width="76" height="52" rx="4"/>
+              <rect x="4" y="4" width="68" height="38" rx="2" fill="var(--hover)"/>
+              <rect x="30" y="52" width="16" height="8" fill="var(--panel)"/>
+              <rect x="20" y="60" width="36" height="4" rx="1" fill="var(--panel)"/>
+            </g>
+
+            <!-- Database / server stack -->
+            <g transform="translate(40 252)">
+              <ellipse cx="36" cy="6" rx="32" ry="6" fill="var(--hover)"/>
+              <path d="M4 6 V 30 C 4 33.3, 18.3 36, 36 36 C 53.7 36, 68 33.3, 68 30 V 6"/>
+              <path d="M4 18 C 4 21.3, 18.3 24, 36 24 C 53.7 24, 68 21.3, 68 18" fill="none"/>
+              <path d="M4 30 C 4 33.3, 18.3 36, 36 36 C 53.7 36, 68 33.3, 68 30" fill="none"/>
+            </g>
+          </g>
+
+          <!-- Cloud / globe destination -->
+          <g transform="translate(310 120)" stroke="var(--fg)" stroke-width="1.6" fill="var(--panel)" stroke-linejoin="round">
+            <circle cx="50" cy="60" r="46" fill="var(--panel)"/>
+            <ellipse cx="50" cy="60" rx="46" ry="18" fill="none"/>
+            <path d="M4 60 H 96 M50 14 C 30 30, 30 90, 50 106 M50 14 C 70 30, 70 90, 50 106" fill="none"/>
+            <!-- little user pins around the globe -->
+            <g fill="var(--accent)" stroke="none">
+              <circle cx="6"  cy="40" r="3"/>
+              <circle cx="92" cy="40" r="3"/>
+              <circle cx="20" cy="90" r="3"/>
+              <circle cx="80" cy="92" r="3"/>
+            </g>
+          </g>
+
+          <!-- "ssh -R" label floating over the tunnel -->
+          <g transform="translate(212 96)">
+            <rect x="0" y="0" width="86" height="26" rx="13" fill="var(--panel)" stroke="var(--line2)" stroke-width="1"/>
+            <text x="43" y="17" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" fill="var(--accent)" font-weight="600">ssh -R</text>
+          </g>
+
+          <!-- "your devices" / "the public" tiny labels -->
+          <g font-family="system-ui, sans-serif" font-size="11" fill="var(--mute)">
+            <text x="90"  y="346" text-anchor="middle">your devices</text>
+            <text x="360" y="290" text-anchor="middle">the public internet</text>
+          </g>
+        </svg>
+      </div>
     </div>
   </div>
 
+  <section class="block" id="protocols">
+    <h2>
+      <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg></span>
+      Any local service becomes a public endpoint
+      <span class="eyebrow">supported protocols</span>
+    </h2>
+    <p>If it speaks TCP on <code class="inline">localhost</code>, AirWeb can expose it. HTTP and HTTPS get a shareable subdomain; raw-TCP services get a public <code class="inline">host:port</code> assigned by the server.</p>
+    <div class="protocol-strip">
+      <div class="protocol-tile"><div class="pico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="8" cy="8" r="6"/><path d="M2 8h12M8 2c2 1.8 2 10.2 0 12M8 2c-2 1.8-2 10.2 0 12"/></svg></div><span class="pname">HTTP(S)</span><span class="pport">80 / 443</span></div>
+      <div class="protocol-tile"><div class="pico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="3" width="13" height="10" rx="1.4"/><path d="M4 6.5l2 1.5-2 1.5M7.5 10h4"/></svg></div><span class="pname">SSH</span><span class="pport">port 22</span></div>
+      <div class="protocol-tile"><div class="pico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"><rect x="1.5" y="2.5" width="13" height="9" rx="1.2"/><path d="M5 14h6M8 11.5v2.5"/></svg></div><span class="pname">RDP</span><span class="pport">port 3389</span></div>
+      <div class="protocol-tile"><div class="pico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><ellipse cx="8" cy="3.5" rx="5.5" ry="1.8"/><path d="M2.5 3.5v9c0 1 2.5 1.8 5.5 1.8s5.5-.8 5.5-1.8v-9M2.5 8c0 1 2.5 1.8 5.5 1.8s5.5-.8 5.5-1.8"/></svg></div><span class="pname">MySQL</span><span class="pport">port 3306</span></div>
+      <div class="protocol-tile"><div class="pico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><ellipse cx="8" cy="3.5" rx="5.5" ry="1.8"/><path d="M2.5 3.5v9c0 1 2.5 1.8 5.5 1.8s5.5-.8 5.5-1.8v-9M2.5 8c0 1 2.5 1.8 5.5 1.8s5.5-.8 5.5-1.8"/></svg></div><span class="pname">PostgreSQL</span><span class="pport">port 5432</span></div>
+      <div class="protocol-tile"><div class="pico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M8 1c-1 4-3 7-3 9.5C5 13 6.5 14 8 14s3-1 3-3.5C11 8 9 5 8 1Z"/><path d="M8 14v1.5"/></svg></div><span class="pname">MongoDB</span><span class="pport">port 27017</span></div>
+      <div class="protocol-tile"><div class="pico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2 4c0 1.1 2.7 2 6 2s6-.9 6-2-2.7-2-6-2-6 .9-6 2Zm0 4c0 1.1 2.7 2 6 2s6-.9 6-2M2 12c0 1.1 2.7 2 6 2s6-.9 6-2M2 4v8m12-8v8"/></svg></div><span class="pname">Redis</span><span class="pport">port 6379</span></div>
+      <div class="protocol-tile"><div class="pico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"><rect x="1.5" y="2.5" width="13" height="9" rx="1.2"/><circle cx="8" cy="7" r="1.6"/><path d="M5 14h6"/></svg></div><span class="pname">VNC</span><span class="pport">port 5900</span></div>
+    </div>
+  </section>
+
+  <section class="block" id="how">
+    <h2><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></span>Get a local app online in three steps</h2>
+    <ol class="steps">
+      <li>
+        <h3>Get your key</h3>
+        <p>Open the <a href="/dashboard">dashboard</a>, click <em>Create account</em>, and save the downloaded <code class="inline">${keyFile}</code>. Your Ed25519 key <em>is</em> your account — no password, no email.</p>
+      </li>
+      <li>
+        <h3>Run one SSH command</h3>
+        <p>Point an <code class="inline">ssh -R</code> at AirWeb. The local port is whatever your app already listens on; the public side is the AirWeb host.</p>
+        <pre class="cmd" id="cmd-http">ssh -i ./${keyFile} -p ${sshPort} -R 80:localhost:3000 tunnel@${host}</pre>
+        <p style="color:var(--mute); font-size:.88rem; margin:.4rem 0 0">For raw TCP (databases, SSH, game servers, RDP, …) use <code class="inline">-R 0:localhost:&lt;port&gt;</code> — the server picks a free public port and prints it.</p>
+      </li>
+      <li>
+        <h3>Share the URL — and earn while it runs</h3>
+        <p>HTTP tunnels get a <code class="inline">&lt;sub&gt;.${publicDomain}</code> URL; raw TCP tunnels get <code class="inline">${publicDomain}:&lt;assigned&gt;</code>. Every minute it stays up, you earn <strong>${config.credits.uptimePerMinute} credit / min</strong>. List it on the marketplace to earn lease income on top.</p>
+      </li>
+    </ol>
+  </section>
+
   <section class="block" id="use-cases">
-    <h2><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg></span>What you can do today</h2>
+    <h2><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg></span>What you can do with it</h2>
     <div class="grid2">
       <div class="feature">
         <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><line x1="8" y1="20" x2="16" y2="20"/><line x1="12" y1="16" x2="12" y2="20"/></svg></div>
@@ -431,66 +755,301 @@ function renderLandingHtml() {
     </div>
   </section>
 
-  <section class="block" id="quickstart">
-    <h2><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></span>Quick start</h2>
-    <p>Grab your key from the <a href="/dashboard">dashboard</a> and run one command — your local port is public.</p>
-    <pre class="cmd" id="cmd-http">ssh -i ./${keyFile} -p ${sshPort} -R 80:localhost:3000 tunnel@${host}</pre>
-    <p style="color:var(--mute); font-size:.85rem; margin:.4rem 0 0">Change <code class="inline">3000</code> to whatever port your app listens on. For raw TCP (databases, SSH, game servers), use <code class="inline">-R 0:localhost:&lt;port&gt;</code>.</p>
-  </section>
-
   <section class="block" id="billing">
     <h2><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15 9.5c-.7-.9-1.9-1.5-3-1.5-1.7 0-3 1-3 2.3 0 1.3 1.2 2 3 2.5s3 1.2 3 2.5c0 1.3-1.3 2.3-3 2.3-1.4 0-2.6-.6-3.2-1.5"/><line x1="12" y1="6" x2="12" y2="8"/><line x1="12" y1="16" x2="12" y2="18"/></svg></span>Pay only for the traffic you use</h2>
-    <p>No subscriptions. No "free tier" cliffs. Opening a tunnel is free — you're billed in credits only for the bytes that actually flow through it, and credits are refunded the moment you disconnect anything you didn't use.</p>
-    <div class="grid2">
-      <div class="feature">
-        <h4>Metered by the byte</h4>
-        <p>Idle tunnels cost nothing. A quick demo with a few page loads costs a few credits. A heavy workload pays in proportion to the bandwidth it actually consumes.</p>
+    <p>No subscriptions. No "free tier" cliffs. Opening a tunnel is free — you're billed in credits only for the bytes that actually flow through it, and you earn credits every minute your own devices are serving traffic.</p>
+
+    <div class="visual-grid">
+      <!-- Earnings vs charge visual: device on the left earning a steady stream
+           of green credits while bytes flow back from the cloud, with charges
+           proportional to bandwidth. -->
+      <div class="visual-art" aria-hidden="true">
+        <svg viewBox="0 0 360 260" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="awEarn" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%"   stop-color="var(--good)" stop-opacity="0"/>
+              <stop offset="50%"  stop-color="var(--good)" stop-opacity=".7"/>
+              <stop offset="100%" stop-color="var(--good)" stop-opacity="0"/>
+            </linearGradient>
+            <linearGradient id="awCharge" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%"   stop-color="var(--bad, #ff453a)" stop-opacity="0"/>
+              <stop offset="50%"  stop-color="var(--bad, #ff453a)" stop-opacity=".6"/>
+              <stop offset="100%" stop-color="var(--bad, #ff453a)" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+
+          <!-- device (laptop) -->
+          <g stroke="currentColor" stroke-width="1.6" fill="var(--panel)" stroke-linejoin="round" transform="translate(28 84)">
+            <rect x="0" y="0" width="92" height="62" rx="6"/>
+            <rect x="6" y="6" width="80" height="46" rx="3" fill="var(--hover)"/>
+            <path d="M-6 68 H 98 L 92 76 H 0 Z"/>
+          </g>
+          <text x="74" y="180" text-anchor="middle" font-family="system-ui" font-size="11" fill="var(--mute)">your device</text>
+
+          <!-- cloud -->
+          <g stroke="currentColor" stroke-width="1.6" fill="var(--panel)" stroke-linejoin="round" transform="translate(240 76)">
+            <path d="M22 36 a16 16 0 0 1 16 -16 a20 20 0 0 1 38 6 a14 14 0 0 1 4 28 H 22 a14 14 0 0 1 0 -18 z" fill="var(--hover)"/>
+          </g>
+          <text x="284" y="180" text-anchor="middle" font-family="system-ui" font-size="11" fill="var(--mute)">public traffic</text>
+
+          <!-- top channel: uptime credits earned (green, steady) -->
+          <path d="M122 100 L 238 100" stroke="url(#awEarn)" stroke-width="14" fill="none" stroke-linecap="round"/>
+          <g fill="var(--good)" stroke="none">
+            <circle cx="140" cy="100" r="3"/>
+            <circle cx="170" cy="100" r="3"/>
+            <circle cx="200" cy="100" r="3"/>
+            <circle cx="230" cy="100" r="3"/>
+          </g>
+          <text x="180" y="84" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="11" font-weight="600" fill="var(--good)">+${config.credits.uptimePerMinute} AWC / min</text>
+
+          <!-- bottom channel: bandwidth charges (red, only when bytes flow) -->
+          <path d="M238 132 L 122 132" stroke="url(#awCharge)" stroke-width="14" fill="none" stroke-linecap="round"/>
+          <g fill="var(--bad, #ff453a)" stroke="none">
+            <rect x="146" y="129" width="4" height="6" rx="1"/>
+            <rect x="180" y="129" width="4" height="6" rx="1"/>
+            <rect x="214" y="129" width="4" height="6" rx="1"/>
+          </g>
+          <text x="180" y="156" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="11" font-weight="600" fill="var(--bad, #ff453a)">\u2212 bytes \u00d7 ${config.credits.bandwidthChargePerMb} AWC/MB</text>
+
+          <!-- net summary chip -->
+          <g transform="translate(110 200)">
+            <rect x="0" y="0" width="140" height="34" rx="17" fill="var(--panel)" stroke="var(--line2)"/>
+            <text x="70" y="22" text-anchor="middle" font-family="system-ui" font-size="13" fill="var(--fg)">net = earn \u2212 charge</text>
+          </g>
+        </svg>
       </div>
-      <div class="feature">
-        <h4>Earn while you host</h4>
-        <p>Every minute your own device serves traffic, you earn <strong>${config.credits.uptimePerMinute} credit / min</strong> in uptime rewards, plus <strong>${config.credits.defaultLeasePricePerMinute}+ credits / min</strong> when someone leases your tunnel from the marketplace.</p>
+
+      <div class="visual-copy-stack">
+        <div class="stat-row">
+          <div class="stat-tile good">
+            <div class="stat-val">+${config.credits.uptimePerMinute} <small>AWC / min</small></div>
+            <div class="stat-label">Earned automatically while your tunnel stays online</div>
+          </div>
+          <div class="stat-tile good">
+            <div class="stat-val">${config.credits.defaultLeasePricePerMinute}+ <small>AWC / min</small></div>
+            <div class="stat-label">Extra lease income when someone rents your tunnel</div>
+          </div>
+          <div class="stat-tile neg">
+            <div class="stat-val">\u2212${config.credits.bandwidthChargePerMb} <small>AWC / MB</small></div>
+            <div class="stat-label">Only charged for bytes that really pass through</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-val">${config.credits.signupBonus} <small>AWC welcome</small></div>
+            <div class="stat-label">Free credits the moment you create an account</div>
+          </div>
+        </div>
+        <p class="visual-note">Idle tunnels cost nothing. The dashboard shows a live earn-vs-charge meter and a 24-hour ledger so the math is never a mystery.</p>
       </div>
     </div>
   </section>
 
   <section class="block" id="community">
-    <h2><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Earn, learn, and build with the community</h2>
-    <p>AirWeb is built around a simple loop: plug in a spare device, share its uptime, earn credits, spend them on things you need. Along the way you pick up real networking, SSH, and distributed-systems skills — and you do it next to other people doing the same.</p>
-    <div class="grid2">
-      <div class="feature">
-        <h4>Open marketplace</h4>
-        <p>List your spare-device tunnel, set a price per minute, and watch the leases come in. Browse what others are offering and rent the right region or hardware for the job.</p>
+    <h2><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>A marketplace, not a billing portal</h2>
+    <p>AirWeb is built around a simple loop: plug in a spare device, share its uptime, earn credits, spend them on capacity from other people. Every node is also a customer.</p>
+
+    <div class="visual-grid flip">
+      <!-- Mesh of peer nodes trading credits over a central marketplace hub -->
+      <div class="visual-art" aria-hidden="true">
+        <svg viewBox="0 0 360 260" xmlns="http://www.w3.org/2000/svg">
+          <!-- central marketplace -->
+          <g transform="translate(150 100)">
+            <rect x="0" y="0" width="60" height="60" rx="12" fill="var(--accent)" stroke="none"/>
+            <g stroke="var(--accent-fg)" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 24 H 46 M 14 30 H 46 M 14 36 H 38"/>
+              <circle cx="30" cy="14" r="4" fill="var(--accent-fg)" stroke="none"/>
+            </g>
+            <text x="30" y="82" text-anchor="middle" font-family="system-ui" font-size="11" font-weight="600" fill="var(--fg)">marketplace</text>
+          </g>
+
+          <!-- peer nodes -->
+          <g stroke="currentColor" stroke-width="1.6" fill="var(--panel)">
+            <circle cx="60"  cy="60"  r="20"/>
+            <circle cx="300" cy="60"  r="20"/>
+            <circle cx="60"  cy="200" r="20"/>
+            <circle cx="300" cy="200" r="20"/>
+            <circle cx="40"  cy="130" r="16"/>
+            <circle cx="320" cy="130" r="16"/>
+          </g>
+          <g fill="var(--accent)" stroke="none">
+            <circle cx="60"  cy="60"  r="6"/>
+            <circle cx="300" cy="60"  r="6"/>
+            <circle cx="60"  cy="200" r="6"/>
+            <circle cx="300" cy="200" r="6"/>
+            <circle cx="40"  cy="130" r="4"/>
+            <circle cx="320" cy="130" r="4"/>
+          </g>
+
+          <!-- credit-flow connections (dashed = credits, solid = leases) -->
+          <g stroke="var(--accent)" stroke-width="1.6" fill="none" stroke-dasharray="3 5" opacity=".8">
+            <path d="M80 60   L 150 110"/>
+            <path d="M280 60  L 210 110"/>
+            <path d="M80 200  L 150 150"/>
+            <path d="M280 200 L 210 150"/>
+            <path d="M56 130  L 150 130"/>
+            <path d="M304 130 L 210 130"/>
+          </g>
+
+          <!-- legend -->
+          <g font-family="system-ui" font-size="10.5" fill="var(--mute)">
+            <text x="12" y="246">peers earn + spend credits</text>
+            <line x1="206" y1="242" x2="228" y2="242" stroke="var(--accent)" stroke-width="1.6" stroke-dasharray="3 5"/>
+            <text x="236" y="246">credit flow</text>
+          </g>
+        </svg>
       </div>
-      <div class="feature">
-        <h4>Learn by hosting</h4>
-        <p>Real reverse SSH, real TCP, real metering. The repo is open source — read it, fork it, and use AirWeb to teach yourself the bits of infrastructure that schools rarely cover.</p>
+
+      <div class="visual-copy-stack">
+        <div class="grid2">
+          <div class="feature">
+            <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18l-2 13H5z"/><path d="M8 7V5a4 4 0 0 1 8 0v2"/></svg></div>
+            <h4>Open marketplace</h4>
+            <p>List your spare-device tunnel, set a price per minute, and watch the leases come in. Browse what others offer and rent the right region or hardware for the job.</p>
+          </div>
+          <div class="feature">
+            <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 1-2-2z"/><path d="M8 7h8M8 11h8M8 15h5"/></svg></div>
+            <h4>Learn by hosting</h4>
+            <p>Real reverse SSH, real TCP, real metering. The repo is open source — read it, fork it, and use AirWeb to teach yourself the bits of infrastructure that schools rarely cover.</p>
+          </div>
+          <div class="feature">
+            <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a13 13 0 0 1 0 18M12 3a13 13 0 0 0 0 18"/></svg></div>
+            <h4>Reach any region</h4>
+            <p>Hosts on the marketplace are spread across home connections in many cities. Rent a node where your users actually are.</p>
+          </div>
+          <div class="feature">
+            <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6M12 16v6M2 12h6M16 12h6"/><circle cx="12" cy="12" r="3"/></svg></div>
+            <h4>Credits go both ways</h4>
+            <p>Today's host is tomorrow's renter. The same wallet that earns your uptime rewards pays for the leases you take \u2014 no separate billing surface.</p>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
   <section class="block" id="vision">
     <h2><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/></svg></span>The long view: a micro-server socio-economy</h2>
-    <p>The world is full of perfectly good hardware sitting idle — a billion phones, a hundred million laptops, racks of "obsolete" servers. They have CPU, memory, and bandwidth that today goes to waste. AirWeb is the first step toward letting all of that quietly become useful, owned by the people who already paid for it, traded in a transparent, peer-to-peer way.</p>
-    <div class="grid2">
+    <p>The world is full of perfectly good hardware sitting idle \u2014 a billion phones, a hundred million laptops, racks of "obsolete" servers. They have CPU, memory, and bandwidth that today goes to waste. AirWeb is the first step toward letting all of that quietly become useful, owned by the people who already paid for it.</p>
+
+    <div class="compare-grid">
+      <div class="compare-card bad">
+        <span class="tag">today</span>
+        <h4>A handful of hyperscalers</h4>
+        <p>Three logos own most of the public internet. Capacity = a credit card, a console, and a single-vendor lock-in.</p>
+        <ul>
+          <li>Always-on fleets that idle most of the day</li>
+          <li>Embodied carbon poured into new hardware</li>
+          <li>One vendor, one bill, one outage radius</li>
+        </ul>
+        <div class="big">~3 vendors</div>
+      </div>
+
+      <div class="arrow" aria-hidden="true">\u2192</div>
+
+      <div class="compare-card good">
+        <span class="tag">tomorrow</span>
+        <h4>A federated, people-powered cloud</h4>
+        <p>Capacity = whatever's plugged in around the world right now. Owned by the people who paid for it, traded peer-to-peer.</p>
+        <ul>
+          <li>Reuses devices that already exist</li>
+          <li>Capacity scales with how many people show up</li>
+          <li>No gatekeeper \u2014 anyone can host or rent</li>
+        </ul>
+        <div class="big">millions of nodes</div>
+      </div>
+    </div>
+
+    <div class="grid2" style="margin-top:1.2rem">
       <div class="feature">
+        <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H4z"/><path d="M2 20h20"/></svg></div>
         <h4>Open-source cloud provider</h4>
         <p>Hyperscaler-class capabilities don't have to live behind three logos and a credit-card form. Our long-term goal is an open, federated cloud where the "data center" is a coalition of homes, offices, and community spaces.</p>
       </div>
       <div class="feature">
-        <h4>A micro-server economy</h4>
-        <p>Credits earned by contributing capacity buy capacity from others. Over time, that loop becomes a real economy — one where small operators, students, and hobbyists are first-class participants, not just customers.</p>
+        <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg></div>
+        <h4>A real micro-server economy</h4>
+        <p>Credits earned by contributing capacity buy capacity from others. Over time, that loop becomes a real economy \u2014 one where small operators, students, and hobbyists are first-class participants, not just customers.</p>
       </div>
     </div>
   </section>
 
   <section class="block" id="esg">
     <h2><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3c0 9-7 16-16 16C5 10 12 3 21 3z"/><path d="M5 19c5-3 9-7 11-12"/></svg></span>Greener by default</h2>
-    <p>The most sustainable server is one that already exists. By giving a second life to devices that would otherwise be sitting idle — or worse, in a landfill — AirWeb reduces the need to spin up new fleets of always-on hardware just to serve a few requests per minute. Smaller fleet, less embodied carbon, less e-waste, less drain on the grid.</p>
-    <ul style="margin:.4rem 0 0; padding-left:1.2rem; color:var(--mute);">
-      <li>Reuses hardware you already own instead of provisioning new servers.</li>
-      <li>Idle tunnels consume effectively nothing — they just sit on an SSH socket.</li>
-      <li>No always-on overhead farms: capacity appears when devices are plugged in and disappears when they're not.</li>
-    </ul>
+    <p>The most sustainable server is one that already exists. By giving a second life to devices that would otherwise sit idle \u2014 or worse, in a landfill \u2014 AirWeb reduces the need to spin up new fleets of always-on hardware just to serve a few requests per minute.</p>
+
+    <div class="visual-grid">
+      <!-- Comparison: tall stacked server rack with smoke vs a single small
+           leafy device. Pure decorative SVG, themed via currentColor. -->
+      <div class="visual-art" aria-hidden="true">
+        <svg viewBox="0 0 360 240" xmlns="http://www.w3.org/2000/svg">
+          <!-- left: hyperscaler stack -->
+          <g transform="translate(40 30)" stroke="currentColor" stroke-width="1.5" fill="var(--panel)" stroke-linejoin="round">
+            <rect x="0" y="0"  width="90" height="22" rx="3"/>
+            <rect x="0" y="28" width="90" height="22" rx="3"/>
+            <rect x="0" y="56" width="90" height="22" rx="3"/>
+            <rect x="0" y="84" width="90" height="22" rx="3"/>
+            <rect x="0" y="112" width="90" height="22" rx="3"/>
+            <rect x="0" y="140" width="90" height="22" rx="3"/>
+          </g>
+          <g fill="var(--bad, #ff453a)" stroke="none">
+            <circle cx="55"  cy="41"  r="2.5"/>
+            <circle cx="55"  cy="69"  r="2.5"/>
+            <circle cx="55"  cy="97"  r="2.5"/>
+            <circle cx="55"  cy="125" r="2.5"/>
+            <circle cx="55"  cy="153" r="2.5"/>
+            <circle cx="55"  cy="181" r="2.5"/>
+          </g>
+          <!-- smoke wisps -->
+          <g fill="none" stroke="var(--bad, #ff453a)" stroke-width="1.5" stroke-linecap="round" opacity=".55">
+            <path d="M55 28 c -4 -10, 8 -14, 4 -24"/>
+            <path d="M70 28 c -4 -8, 8 -12, 4 -22"/>
+            <path d="M40 28 c -4 -8, 8 -12, 4 -22"/>
+          </g>
+          <text x="85" y="206" text-anchor="middle" font-family="system-ui" font-size="11" fill="var(--mute)">always-on fleet</text>
+
+          <!-- divider -->
+          <line x1="180" y1="30" x2="180" y2="200" stroke="var(--line2)" stroke-dasharray="3 4"/>
+
+          <!-- right: small reused device with leaf -->
+          <g transform="translate(220 80)" stroke="currentColor" stroke-width="1.6" fill="var(--panel)" stroke-linejoin="round">
+            <rect x="0" y="0" width="92" height="58" rx="6"/>
+            <rect x="6" y="6" width="80" height="42" rx="3" fill="var(--hover)"/>
+            <path d="M-6 64 H 98 L 92 72 H 0 Z"/>
+          </g>
+          <!-- leaf -->
+          <g transform="translate(296 56)">
+            <path d="M0 14 C 2 4, 10 0, 22 0 C 22 12, 18 22, 8 22 C 4 22, 0 18, 0 14 Z" fill="var(--good)" stroke="none"/>
+            <path d="M2 16 C 6 12, 12 8, 20 4" stroke="var(--panel)" stroke-width="1.2" fill="none"/>
+          </g>
+          <text x="266" y="206" text-anchor="middle" font-family="system-ui" font-size="11" fill="var(--mute)">device you already own</text>
+
+          <!-- footer arrow -->
+          <g transform="translate(118 214)" fill="var(--good)" stroke="none">
+            <path d="M0 6 L 110 6 L 110 0 L 124 9 L 110 18 L 110 12 L 0 12 Z" opacity=".85"/>
+          </g>
+        </svg>
+      </div>
+
+      <div class="visual-copy-stack">
+        <div class="stat-row">
+          <div class="stat-tile good">
+            <div class="stat-val">0 <small>new servers</small></div>
+            <div class="stat-label">No new fleet to provision; capacity comes from hardware already out there</div>
+          </div>
+          <div class="stat-tile good">
+            <div class="stat-val">~0 W <small>idle</small></div>
+            <div class="stat-label">Idle tunnels just sit on an SSH socket; no idle server farm behind them</div>
+          </div>
+          <div class="stat-tile good">
+            <div class="stat-val">2nd <small>life</small></div>
+            <div class="stat-label">Old laptops, phones, and Pis go back to work instead of becoming e-waste</div>
+          </div>
+        </div>
+        <ul class="visual-meta-list">
+          <li>Reuses hardware you already own instead of provisioning new servers.</li>
+          <li>Capacity appears when devices are plugged in and disappears when they're not.</li>
+          <li>Smaller fleet \u2192 less embodied carbon, less e-waste, less drain on the grid.</li>
+        </ul>
+      </div>
+    </div>
   </section>
 
   <section class="block faq" id="faq">
