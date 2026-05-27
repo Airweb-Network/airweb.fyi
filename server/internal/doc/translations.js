@@ -1,4 +1,4 @@
-// Per-locale overrides for AirWeb docs.
+// Per-locale overrides for Airweb docs.
 // Keys are "<sectionId|pageSlug>.<field>" where field is one of:
 //   label        (for sections)
 //   title        (for pages)

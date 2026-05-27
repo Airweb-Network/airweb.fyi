@@ -1,4 +1,4 @@
-// AirWeb documentation content.
+// Airweb documentation content.
 //
 // Each entry is a fully self-contained page used by both the HTML renderer
 // and the client-side search index. Keep the prose plain — placeholders like
@@ -12,7 +12,7 @@ const INTRO_HOME_HTML = `
 <div class="docs-home-hero">
   <div class="docs-home-hero-grid">
     <div>
-      <h1>AirWeb docs: pick a path, publish something, then go deeper.</h1>
+      <h1>Airweb docs: pick a path, publish something, then go deeper.</h1>
       <p class="lead">This landing page is the map, not the pitch. Use it to decide whether you need a first tunnel, a stable handle, raw TCP, billing details, or the API surface.</p>
       <div class="docs-home-badges">
         <span class="docs-home-badge"><span class="docs-home-badge-dot"></span>start with one SSH command</span>
@@ -79,7 +79,7 @@ const INTRO_HOME_HTML = `
 <ol class="docs-home-steps">
   <li>
     <h3>Your account is an SSH key</h3>
-    <p>Create one in the <a href="{{APEX}}/dashboard">dashboard</a> and keep the downloaded key file. AirWeb authenticates with that key, not with a password.</p>
+    <p>Create one in the <a href="{{APEX}}/dashboard">dashboard</a> and keep the downloaded key file. Airweb authenticates with that key, not with a password.</p>
   </li>
   <li>
     <h3>Your SSH username becomes a routing hint</h3>
@@ -87,7 +87,7 @@ const INTRO_HOME_HTML = `
   </li>
   <li>
     <h3>Your actual app stays on localhost</h3>
-    <p>AirWeb does not deploy your code. It forwards public traffic through the SSH session to the process you are already running locally.</p>
+    <p>Airweb does not deploy your code. It forwards public traffic through the SSH session to the process you are already running locally.</p>
   </li>
 </ol>
 
@@ -130,14 +130,14 @@ const SECTIONS = [
     pages: [
       {
         slug: 'introduction',
-        title: 'Introduction to AirWeb',
+        title: 'Introduction to Airweb',
         description:
-          'A docs-first overview of AirWeb. Start here to choose between ' +
+          'A docs-first overview of Airweb. Start here to choose between ' +
           'quick start, installation, HTTP tunnels, TCP tunnels, pricing, ' +
           'dashboard, API reference, and troubleshooting.',
         keywords:
-          'AirWeb documentation overview, docs landing page, reverse SSH ' +
-          'guide map, AirWeb quick start, HTTP tunnels, TCP tunnels, ' +
+          'Airweb documentation overview, docs landing page, reverse SSH ' +
+          'guide map, Airweb quick start, HTTP tunnels, TCP tunnels, ' +
           'dashboard docs, API reference',
         html: INTRO_HOME_HTML,
       },
@@ -149,7 +149,7 @@ const SECTIONS = [
           'ssh command. This step-by-step quick start gets you from zero ' +
           'to a working https URL in about a minute.',
         keywords:
-          'AirWeb quick start, ssh tunnel tutorial, expose localhost ' +
+          'Airweb quick start, ssh tunnel tutorial, expose localhost ' +
           'http, ssh -R example, share local server, get public URL',
         html: `
 <h1>Quick start</h1>
@@ -182,7 +182,7 @@ the URL down.</p>
   <dt><code>-i &lt;file&gt;</code></dt>
   <dd>The private key you downloaded.</dd>
   <dt><code>-p {{SSH_PORT}}</code></dt>
-  <dd>AirWeb's SSH server runs on port {{SSH_PORT}} (not 22).</dd>
+  <dd>Airweb's SSH server runs on port {{SSH_PORT}} (not 22).</dd>
   <dt><code>-R 80:localhost:3000</code></dt>
   <dd>Reverse-forward the public HTTP port to your local 3000.</dd>
   <dt><code>myapp@…</code></dt>
@@ -199,17 +199,17 @@ the URL down.</p>
       },
       {
         slug: 'installation',
-        title: 'Installing the AirWeb client',
+        title: 'Installing the Airweb client',
         description:
-          'AirWeb works with stock OpenSSH on macOS, Linux and Windows. ' +
+          'Airweb works with stock OpenSSH on macOS, Linux and Windows. ' +
           'You can also use the optional `airweb` Node.js wrapper for a ' +
           'friendlier command. Here is how to set both up.',
         keywords:
-          'install AirWeb, OpenSSH client install, ssh on Windows, ' +
-          'airweb npm cli, AirWeb setup macOS, AirWeb setup Linux',
+          'install Airweb, OpenSSH client install, ssh on Windows, ' +
+          'airweb npm cli, Airweb setup macOS, Airweb setup Linux',
         html: `
 <h1>Installation</h1>
-<p class="lead">AirWeb's "client" is whatever <code>ssh</code> binary is
+<p class="lead">Airweb's "client" is whatever <code>ssh</code> binary is
 already on your computer. If you want a slightly nicer command line, an
 optional Node.js wrapper is published too.</p>
 
@@ -264,18 +264,18 @@ with npm:</p>
         slug: 'http-tunnels',
         title: 'HTTP tunnels — sharing a web app',
         description:
-          'Detailed reference for AirWeb HTTP tunnels: choosing a ' +
+          'Detailed reference for Airweb HTTP tunnels: choosing a ' +
           'subdomain, request flow, websockets, host headers, custom ' +
           'paths and concurrent tunnels on one account.',
         keywords:
-          'http tunnel, AirWeb subdomain, websocket tunnel, ssh -R 80, ' +
+          'http tunnel, Airweb subdomain, websocket tunnel, ssh -R 80, ' +
           'reverse proxy localhost, share react dev server, expose ' +
           'rails server',
         html: `
 <h1>HTTP tunnels</h1>
-<p class="lead">When you ask AirWeb for <code>-R 80:localhost:&lt;port&gt;</code>
+<p class="lead">When you ask Airweb for <code>-R 80:localhost:&lt;port&gt;</code>
 you don't actually bind port 80 on the server — that would be one tunnel
-per machine. Instead AirWeb's HTTP router uses the <em>SSH username</em>
+per machine. Instead Airweb's HTTP router uses the <em>SSH username</em>
 as a subdomain and routes by Host header.</p>
 
 <h2>The request flow</h2>
@@ -338,13 +338,13 @@ anything that speaks web primitives once traffic reaches localhost.</p>
         title: 'TCP tunnels — databases, game servers and more',
         description:
           'Forward arbitrary TCP traffic — Postgres, Redis, Minecraft, ' +
-          'SSH-into-a-jumpbox — through an AirWeb reverse tunnel.',
+          'SSH-into-a-jumpbox — through an Airweb reverse tunnel.',
         keywords:
           'tcp tunnel, expose postgres, expose redis, expose ssh, ' +
           'minecraft server tunnel, reverse tcp forwarding',
         html: `
 <h1>TCP tunnels</h1>
-<p class="lead">HTTP is the common case, but AirWeb can carry any TCP
+<p class="lead">HTTP is the common case, but Airweb can carry any TCP
 protocol. Ask for a port other than 80 in your <code>-R</code> flag and
 the server will bind a dedicated TCP listener for you.</p>
 
@@ -382,9 +382,9 @@ add another firewall on top of that.</p>
         description:
           'A handle is a reserved subdomain only your account can ' +
           'publish under. Learn how to bid on, lease and renew handles ' +
-          'through the AirWeb marketplace.',
+          'through the Airweb marketplace.',
         keywords:
-          'reserve subdomain, custom URL, handle lease, AirWeb ' +
+          'reserve subdomain, custom URL, handle lease, Airweb ' +
           'marketplace, vanity subdomain, permanent ngrok URL',
         html: `
 <h1>Handles</h1>
@@ -416,7 +416,7 @@ your account can publish on it.</p>
 </ul>
 
 <h2>Topping up credit</h2>
-<p>Lease prices are denominated in credits (AWC). You can buy more from
+<p>Lease prices are denominated in credits (AWB). You can buy more from
 the <a href="{{APEX}}/dashboard">dashboard</a>. See the
 <a href="/credits">credits guide</a> for current pricing.</p>
 `,
@@ -430,18 +430,18 @@ the <a href="{{APEX}}/dashboard">dashboard</a>. See the
     pages: [
       {
         slug: 'credits',
-        title: 'Credits, billing and the AWC economy',
+        title: 'Credits, billing and the AWB economy',
         description:
-          'Credits (AWC) are the unit of value inside AirWeb — used for ' +
+          'Credits (AWB) are the unit of value inside Airweb — used for ' +
           'handle leases, premium subdomains and tipping creators. ' +
           'Learn how the economy works and how to top up.',
         keywords:
-          'AirWeb credits, AWC token, in-app billing, tunneling pricing, ' +
+          'Airweb credits, AWB token, in-app billing, tunneling pricing, ' +
           'handle pricing, top up balance, credit transfer',
         html: `
 <h1>Credits and billing</h1>
-<p class="lead">Everything that has a price inside AirWeb is priced in
-<strong>AirWeb Credits (AWC)</strong>. They are simple internal
+<p class="lead">Everything that has a price inside Airweb is priced in
+<strong>Airweb Credits (AWB)</strong>. They are simple internal
 accounting units — there is no blockchain involved.</p>
 
 <h2>How you get credits</h2>
@@ -510,14 +510,14 @@ uptime stipend from the traffic-based charge.</p>
         <circle cx="200" cy="100" r="3"/>
         <circle cx="230" cy="100" r="3"/>
       </g>
-      <text x="180" y="84" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="11" font-weight="600" fill="var(--good)">+{{CREDITS_UPTIME_PER_MINUTE}} AWC / min</text>
+      <text x="180" y="84" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="11" font-weight="600" fill="var(--good)">+{{CREDITS_UPTIME_PER_MINUTE}} AWB / min</text>
       <path d="M238 132 L 122 132" stroke="url(#docChargeCredits)" stroke-width="14" fill="none" stroke-linecap="round"/>
       <g fill="var(--bad, #ff453a)" stroke="none">
         <rect x="146" y="129" width="4" height="6" rx="1"/>
         <rect x="180" y="129" width="4" height="6" rx="1"/>
         <rect x="214" y="129" width="4" height="6" rx="1"/>
       </g>
-      <text x="180" y="156" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="11" font-weight="600" fill="var(--bad, #ff453a)">- bytes x {{CREDITS_BANDWIDTH_PER_MB}} AWC/MB</text>
+      <text x="180" y="156" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="11" font-weight="600" fill="var(--bad, #ff453a)">- bytes x {{CREDITS_BANDWIDTH_PER_MB}} AWB/MB</text>
       <g transform="translate(110 200)">
         <rect x="0" y="0" width="140" height="34" rx="17" fill="var(--panel)" stroke="var(--line2)"/>
         <text x="70" y="22" text-anchor="middle" font-family="system-ui" font-size="13" fill="var(--fg)">net = earn - charge</text>
@@ -527,19 +527,19 @@ uptime stipend from the traffic-based charge.</p>
   <div class="docs-home-copy-stack">
     <div class="docs-home-stat-row">
       <div class="docs-home-stat-tile good">
-        <div class="docs-home-stat-val">+{{CREDITS_UPTIME_PER_MINUTE}} <small>AWC / min</small></div>
+        <div class="docs-home-stat-val">+{{CREDITS_UPTIME_PER_MINUTE}} <small>AWB / min</small></div>
         <div class="docs-home-stat-label">Earned automatically while your tunnel stays online</div>
       </div>
       <div class="docs-home-stat-tile good">
-        <div class="docs-home-stat-val">{{CREDITS_DEFAULT_LEASE_PRICE}}+ <small>AWC / min</small></div>
+        <div class="docs-home-stat-val">{{CREDITS_DEFAULT_LEASE_PRICE}}+ <small>AWB / min</small></div>
         <div class="docs-home-stat-label">Possible extra income when someone leases your capacity</div>
       </div>
       <div class="docs-home-stat-tile neg">
-        <div class="docs-home-stat-val">-{{CREDITS_BANDWIDTH_PER_MB}} <small>AWC / MB</small></div>
+        <div class="docs-home-stat-val">-{{CREDITS_BANDWIDTH_PER_MB}} <small>AWB / MB</small></div>
         <div class="docs-home-stat-label">Only charged for bytes that really pass through</div>
       </div>
       <div class="docs-home-stat-tile">
-        <div class="docs-home-stat-val">{{CREDITS_SIGNUP_BONUS}} <small>AWC welcome</small></div>
+        <div class="docs-home-stat-val">{{CREDITS_SIGNUP_BONUS}} <small>AWB welcome</small></div>
         <div class="docs-home-stat-label">Starter balance for a brand-new account</div>
       </div>
     </div>
@@ -550,13 +550,13 @@ uptime stipend from the traffic-based charge.</p>
       },
       {
         slug: 'dashboard',
-        title: 'The dashboard — your AirWeb home base',
+        title: 'The dashboard — your Airweb home base',
         description:
-          'Inside the AirWeb dashboard you manage tunnels, handles, ' +
+          'Inside the Airweb dashboard you manage tunnels, handles, ' +
           'credits and account settings. Tour every panel and learn ' +
           'every shortcut.',
         keywords:
-          'AirWeb dashboard, manage tunnels, ssh key management, ' +
+          'Airweb dashboard, manage tunnels, ssh key management, ' +
           'account balance, account settings, language and theme',
         html: `
 <h1>The dashboard</h1>
@@ -578,7 +578,7 @@ click.</p>
 <a href="/credits">Read more about credits.</a></p>
 
 <h2>Header chrome</h2>
-<p>The top header is the same on every AirWeb page (dashboard,
+<p>The top header is the same on every Airweb page (dashboard,
 marketplace, connections, docs and any internal server). The gear icon
 opens settings for theme, language and currency — your preferences are
 stored in a cookie scoped to
@@ -590,11 +590,11 @@ subdomain.</p>
         slug: 'connections',
         title: 'The Connections page — live tunnel telemetry',
         description:
-          'See every live SSH tunnel into the AirWeb cluster — yours ' +
+          'See every live SSH tunnel into the Airweb cluster — yours ' +
           'and the public ones — with real-time bytes-in, bytes-out ' +
           'and origin information.',
         keywords:
-          'live tunnels, tunnel telemetry, AirWeb connections, ' +
+          'live tunnels, tunnel telemetry, Airweb connections, ' +
           'observability, ssh session list',
         html: `
 <h1>Connections</h1>
@@ -627,10 +627,10 @@ want to build a custom dashboard or alerting rule.</p>
         slug: 'marketplace',
         title: 'Marketplace — buy and sell handles',
         description:
-          'Browse and bid on AirWeb handles. Sellers list names they no ' +
+          'Browse and bid on Airweb handles. Sellers list names they no ' +
           'longer need; buyers grab the perfect subdomain.',
         keywords:
-          'AirWeb marketplace, handle auction, subdomain marketplace, ' +
+          'Airweb marketplace, handle auction, subdomain marketplace, ' +
           'buy domain alternative, sell handle',
         html: `
 <h1>Marketplace</h1>
@@ -641,7 +641,7 @@ buy, you own it.</p>
 <h2>Listing a handle</h2>
 <ol>
   <li>Open one of your leased handles in the dashboard.</li>
-  <li>Click <em>List for sale</em> and set a price in AWC.</li>
+  <li>Click <em>List for sale</em> and set a price in AWB.</li>
   <li>The listing appears on the marketplace immediately.</li>
   <li>When someone buys, credit is moved to your account and the
       remaining lease transfers to them.</li>
@@ -742,7 +742,7 @@ into usable credit for somebody else.</p>
           'examples for HTTP and TCP tunnels.',
         keywords:
           'airweb cli, command reference, ssh wrapper, --sub --key ' +
-          '--server --remote, AirWeb flags',
+          '--server --remote, Airweb flags',
         html: `
 <h1>CLI reference</h1>
 <p class="lead">The optional <code>airweb</code> wrapper saves you from
@@ -759,7 +759,7 @@ airweb tcp &lt;localPort&gt; [--remote &lt;port&gt;] \\
 <h2>Flags</h2>
 <dl>
   <dt><code>--server &lt;host[:port]&gt;</code> <em>(required)</em></dt>
-  <dd>The AirWeb SSH endpoint, e.g.
+  <dd>The Airweb SSH endpoint, e.g.
       <code>{{SSH_HOST}}:{{SSH_PORT}}</code>.</dd>
 
   <dt><code>--key &lt;path&gt;</code> <em>(required)</em></dt>
@@ -797,10 +797,10 @@ airweb tcp 5432 --remote 15432 \\
         slug: 'api',
         title: 'HTTP API reference',
         description:
-          'Every JSON endpoint AirWeb exposes — for authentication, ' +
+          'Every JSON endpoint Airweb exposes — for authentication, ' +
           'balance and ledger, handle marketplace and admin telemetry.',
         keywords:
-          'AirWeb API, json api, ssh tunneling api, /api/me, /api/ledger, ' +
+          'Airweb API, json api, ssh tunneling api, /api/me, /api/ledger, ' +
           '/api/listings, oauth-free api',
         html: `
 <h1>HTTP API</h1>
@@ -860,15 +860,15 @@ auth-required is 401, payment-required is 402, missing resources are
         slug: 'security',
         title: 'Security model and best practices',
         description:
-          'How AirWeb authenticates clients, isolates tunnels and ' +
+          'How Airweb authenticates clients, isolates tunnels and ' +
           'protects user data — plus best practices for hardening any ' +
           'service you expose.',
         keywords:
-          'AirWeb security, ssh key auth, tunnel isolation, secret ' +
+          'Airweb security, ssh key auth, tunnel isolation, secret ' +
           'rotation, abuse handling, threat model',
         html: `
 <h1>Security model</h1>
-<p class="lead">A short, honest threat model: what AirWeb does, what it
+<p class="lead">A short, honest threat model: what Airweb does, what it
 does not, and how to use it safely.</p>
 
 <h2>Authentication</h2>
@@ -882,7 +882,7 @@ cannot reissue it (we never stored it).</p>
 them. A second client that tries to bind a leased name is rejected
 during the <code>tcpip-forward</code> handshake.</p>
 
-<h2>What AirWeb sees</h2>
+<h2>What Airweb sees</h2>
 <ul>
   <li>The bytes flowing through your tunnel pass through the public
       router. The router never logs request bodies, only counters.</li>
@@ -913,23 +913,23 @@ and credit reporters publicly.</p>
         slug: 'faq',
         title: 'Frequently asked questions',
         description:
-          'Quick answers to the most common AirWeb questions: how it ' +
+          'Quick answers to the most common Airweb questions: how it ' +
           'compares to ngrok, whether you can self-host, custom ' +
           'domains, free quota and more.',
         keywords:
-          'AirWeb FAQ, AirWeb vs ngrok, self-hosted tunneling, custom ' +
-          'domain ssh tunnel, free tier, AirWeb pricing FAQ',
+          'Airweb FAQ, Airweb vs ngrok, self-hosted tunneling, custom ' +
+          'domain ssh tunnel, free tier, Airweb pricing FAQ',
         html: `
 <h1>Frequently asked questions</h1>
 
-<h3>How does AirWeb compare to ngrok or Cloudflare Tunnel?</h3>
-<p>AirWeb's transport is plain OpenSSH — no proprietary protocol, no
+<h3>How does Airweb compare to ngrok or Cloudflare Tunnel?</h3>
+<p>Airweb's transport is plain OpenSSH — no proprietary protocol, no
 client binary, no kernel module. The trade-off is that ngrok-style
 inspect UIs and Cloudflare's edge network are not part of the package.
-If "ssh works behind every firewall" is enough for you, AirWeb is the
+If "ssh works behind every firewall" is enough for you, Airweb is the
 simpler answer.</p>
 
-<h3>Can I run my own AirWeb server?</h3>
+<h3>Can I run my own Airweb server?</h3>
 <p>Yes — the repo is the same code that runs the hosted service.
 Clone it, copy <code>config.default.json</code> to
 <code>config.json</code>, set <code>AIRWEB_PUBLIC_DOMAIN</code> and run
@@ -953,12 +953,12 @@ configure any wildcard you control.</p>
 to get the same behaviour, or wrap the command in
 <code>autossh</code>.</p>
 
-<h3>Does AirWeb support HTTP/2 or HTTP/3?</h3>
+<h3>Does Airweb support HTTP/2 or HTTP/3?</h3>
 <p>The public edge speaks HTTP/1.1 and HTTP/2. HTTP/3 (QUIC) requires
 UDP and is on the roadmap. Your origin can speak whatever it wants —
 the proxy normalises to HTTP/1.1 for the tunnel hop.</p>
 
-<h3>Can I use AirWeb for production traffic?</h3>
+<h3>Can I use Airweb for production traffic?</h3>
 <p>People do, but understand what you are buying. A single SSH session
 is a single point of failure. For real production we recommend the
 self-hosted route with multiple regions and active/active sessions
@@ -967,13 +967,13 @@ backed by a load balancer.</p>
       },
       {
         slug: 'troubleshooting',
-        title: 'Troubleshooting common AirWeb errors',
+        title: 'Troubleshooting common Airweb errors',
         description:
           'Recipes for fixing the errors people hit most: forwarding ' +
           'failures, port already bound, key permissions, corporate ' +
           'proxies and more.',
         keywords:
-          'AirWeb troubleshooting, ssh forward failed, port already in ' +
+          'Airweb troubleshooting, ssh forward failed, port already in ' +
           'use, ssh permission denied, corporate proxy ssh, debug ssh',
         html: `
 <h1>Troubleshooting</h1>
@@ -1028,10 +1028,10 @@ sharing that output.</p>
         slug: 'changelog',
         title: 'Changelog',
         description:
-          'Notable changes to AirWeb across versions — features, ' +
+          'Notable changes to Airweb across versions — features, ' +
           'breaking changes and security fixes.',
         keywords:
-          'AirWeb changelog, release notes, version history, new ' +
+          'Airweb changelog, release notes, version history, new ' +
           'features, breaking changes',
         html: `
 <h1>Changelog</h1>

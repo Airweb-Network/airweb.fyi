@@ -1,5 +1,5 @@
 /**
- * AirWeb local-currency picker.
+ * Airweb local-currency picker.
  *
  * Exposes `window.currency` with:
  *   - getCurrency()                 → 'USD' | 'EUR' | …
@@ -57,7 +57,7 @@
 
   function detectInitial() {
     try {
-      const saved = (window.AirWebStore && window.AirWebStore.get(STORAGE_KEY)) || localStorage.getItem(STORAGE_KEY);
+      const saved = (window.AirwebStore && window.AirwebStore.get(STORAGE_KEY)) || localStorage.getItem(STORAGE_KEY);
       if (saved && RATES[saved]) return saved;
     } catch (e) {}
     try {
@@ -84,7 +84,7 @@
     if (code === current) return;
     current = code;
     try {
-      if (window.AirWebStore) window.AirWebStore.set(STORAGE_KEY, code);
+      if (window.AirwebStore) window.AirwebStore.set(STORAGE_KEY, code);
       else localStorage.setItem(STORAGE_KEY, code);
     } catch (e) {}
     updateAllPickers();

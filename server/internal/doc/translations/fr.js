@@ -1,4 +1,4 @@
-// French (fr) translations for AirWeb docs.
+// French (fr) translations for Airweb docs.
 module.exports = {
   'getting-started.label': 'Pour commencer',
   'tunneling.label':       'Tunnels',
@@ -6,15 +6,15 @@ module.exports = {
   'reference.label':       'Référence',
 
   // ---------- introduction ----------
-  'introduction.title': 'Introduction à AirWeb',
+  'introduction.title': 'Introduction à Airweb',
   'introduction.description':
-    'AirWeb transforme une seule commande SSH en URL HTTPS publique. ' +
-    'Découvrez ce qu\'est AirWeb, comment fonctionnent les tunnels SSH ' +
+    'Airweb transforme une seule commande SSH en URL HTTPS publique. ' +
+    'Découvrez ce qu\'est Airweb, comment fonctionnent les tunnels SSH ' +
     'inversés et pourquoi c\'est la manière la plus rapide de partager un ' +
     'service localhost avec le monde.',
   'introduction.html': `
-<h1>Qu'est-ce qu'AirWeb ?</h1>
-<p class="lead">AirWeb est un service de tunneling inverse qui vous permet
+<h1>Qu'est-ce qu'Airweb ?</h1>
+<p class="lead">Airweb est un service de tunneling inverse qui vous permet
 d'exposer n'importe quel service tournant sur votre portable ou dans un
 réseau privé à l'internet public, en utilisant uniquement la commande
 <code>ssh</code>. Aucun agent à installer — si OpenSSH est présent (les
@@ -22,7 +22,7 @@ versions modernes de macOS, Linux et Windows l'incluent), vous avez déjà
 tout ce qu'il faut.</p>
 
 <h2>Comment ça marche</h2>
-<p>Quand vous lancez <code>ssh&nbsp;-R</code> vers AirWeb, notre serveur SSH
+<p>Quand vous lancez <code>ssh&nbsp;-R</code> vers Airweb, notre serveur SSH
 accepte la requête de <em>reverse port forwarding</em> du client et ouvre
 un listener public pour vous. Le trafic qui arrive sur ce listener est
 renvoyé via la connexion SSH existante jusqu'à un port de votre machine.</p>
@@ -33,7 +33,7 @@ renvoyé via la connexion SSH existante jusqu'à un port de votre machine.</p>
       octets sont relayés tels quels.</li>
 </ul>
 
-<h2>Pourquoi on utilise AirWeb</h2>
+<h2>Pourquoi on utilise Airweb</h2>
 <ul>
   <li><strong>Aucune installation.</strong> Pas de binaire client, pas de
       module noyau, pas d'extension navigateur. Juste OpenSSH et un fichier
@@ -50,7 +50,7 @@ renvoyé via la connexion SSH existante jusqu'à un port de votre machine.</p>
 </ul>
 
 <h2>Et après ?</h2>
-<p>Le meilleur moyen de comprendre AirWeb est de publier une appli web
+<p>Le meilleur moyen de comprendre Airweb est de publier une appli web
 locale <em>tout de suite</em>. Filez vers le
 <a href="/quick-start">guide démarrage rapide</a> — vous aurez une URL en
 ligne en moins de deux minutes.</p>
@@ -108,14 +108,14 @@ serveur local. <kbd>Ctrl</kbd>+<kbd>C</kbd> pour couper l'URL.</p>
 `,
 
   // ---------- installation ----------
-  'installation.title': 'Installer le client AirWeb',
+  'installation.title': 'Installer le client Airweb',
   'installation.description':
-    'AirWeb fonctionne avec l\'OpenSSH système sous macOS, Linux et ' +
+    'Airweb fonctionne avec l\'OpenSSH système sous macOS, Linux et ' +
     'Windows. Vous pouvez aussi installer le wrapper Node.js optionnel ' +
     '`airweb` pour une CLI plus conviviale. Instructions pour les deux ci-dessous.',
   'installation.html': `
 <h1>Installation</h1>
-<p class="lead">Le « client » AirWeb est simplement le binaire
+<p class="lead">Le « client » Airweb est simplement le binaire
 <code>ssh</code> déjà présent sur votre ordinateur. Pour une ligne de
 commande un peu plus agréable, nous publions un wrapper Node.js optionnel.</p>
 
@@ -162,14 +162,14 @@ globalement via npm :</p>
   // ---------- http-tunnels ----------
   'http-tunnels.title': 'Tunnels HTTP — partager une appli web',
   'http-tunnels.description':
-    'Référence détaillée des tunnels HTTP AirWeb : choix du sous-domaine, ' +
+    'Référence détaillée des tunnels HTTP Airweb : choix du sous-domaine, ' +
     'flux de requête, WebSockets, en-têtes Host, chemins personnalisés et ' +
     'tunnels concurrents sur un même compte.',
   'http-tunnels.html': `
 <h1>Tunnels HTTP</h1>
 <p class="lead">Quand vous demandez <code>-R 80:localhost:&lt;port&gt;</code>
-à AirWeb, on ne bind pas réellement le port 80 du serveur pour vous — ça
-limiterait à un tunnel par machine. À la place, le routeur HTTP d'AirWeb
+à Airweb, on ne bind pas réellement le port 80 du serveur pour vous — ça
+limiterait à un tunnel par machine. À la place, le routeur HTTP d'Airweb
 traite votre <em>nom d'utilisateur SSH</em> comme un sous-domaine et route
 selon l'en-tête Host.</p>
 
@@ -222,10 +222,10 @@ réglez son « trusted host » ou « external URL » sur
   'tcp-tunnels.title': 'Tunnels TCP — BDD, serveurs de jeu et plus',
   'tcp-tunnels.description':
     'Forwardez du trafic TCP arbitraire — Postgres, Redis, Minecraft, SSH ' +
-    'bastion — à travers un tunnel inverse AirWeb.',
+    'bastion — à travers un tunnel inverse Airweb.',
   'tcp-tunnels.html': `
 <h1>Tunnels TCP</h1>
-<p class="lead">HTTP est le cas courant, mais AirWeb sait porter n'importe
+<p class="lead">HTTP est le cas courant, mais Airweb sait porter n'importe
 quel protocole TCP. Demandez un port autre que 80 dans le <code>-R</code>
 et le serveur ouvrira un listener TCP dédié pour vous.</p>
 
@@ -263,7 +263,7 @@ Mettez un mot de passe et ajoutez un firewall par-dessus.</p>
   'handles.description':
     'Les identifiants sont des sous-domaines réservés auxquels seul votre ' +
     'compte peut publier. Apprenez à miser, louer et renouveler des ' +
-    'identifiants sur le marketplace AirWeb.',
+    'identifiants sur le marketplace Airweb.',
   'handles.html': `
 <h1>Identifiants</h1>
 <p class="lead">Par défaut les sous-domaines sont en premier arrivé,
@@ -294,22 +294,22 @@ pour réserver un nom et seul votre compte peut publier dessous.</p>
 </ul>
 
 <h2>Recharger les crédits</h2>
-<p>Les locations sont facturées en crédits (AWC). Achetez-en depuis le
+<p>Les locations sont facturées en crédits (AWB). Achetez-en depuis le
 <a href="{{APEX}}/dashboard">tableau de bord</a>. Voir le
 <a href="/credits">guide des crédits</a> pour la tarification du moment.</p>
 `,
 
   // ---------- credits ----------
-  'credits.title': 'Crédits, facturation et économie AWC',
+  'credits.title': 'Crédits, facturation et économie AWB',
   'credits.description':
-    'Les crédits (AWC) sont l\'unité de valeur dans AirWeb — ils paient ' +
+    'Les crédits (AWB) sont l\'unité de valeur dans Airweb — ils paient ' +
     'les locations d\'identifiants, les sous-domaines premium et les ' +
     'pourboires aux créateurs. Découvrez comment l\'économie fonctionne ' +
     'et comment recharger.',
   'credits.html': `
 <h1>Crédits et facturation</h1>
-<p class="lead">Tout ce qui a un prix dans AirWeb est facturé en
-<strong>crédits AirWeb (AWC)</strong>. C'est une simple unité comptable
+<p class="lead">Tout ce qui a un prix dans Airweb est facturé en
+<strong>crédits Airweb (AWB)</strong>. C'est une simple unité comptable
 interne — pas de blockchain.</p>
 
 <h2>Comment obtenir des crédits</h2>
@@ -348,10 +348,10 @@ plus parlants.</p>
 `,
 
   // ---------- dashboard ----------
-  'dashboard.title': 'Le tableau de bord — votre base AirWeb',
+  'dashboard.title': 'Le tableau de bord — votre base Airweb',
   'dashboard.description':
     'Gérez tunnels, identifiants, crédits et paramètres de compte dans le ' +
-    'tableau de bord AirWeb. Visite guidée de chaque panneau avec les raccourcis.',
+    'tableau de bord Airweb. Visite guidée de chaque panneau avec les raccourcis.',
   'dashboard.html': `
 <h1>Le tableau de bord</h1>
 <p class="lead">Connectez-vous à <a href="{{APEX}}/dashboard">{{APEX}}/dashboard</a>
@@ -372,7 +372,7 @@ Renouvellement en un clic.</p>
 <a href="/credits">Plus sur les crédits ici.</a></p>
 
 <h2>L'en-tête commun</h2>
-<p>L'en-tête du haut est le même sur toutes les pages AirWeb (tableau de
+<p>L'en-tête du haut est le même sur toutes les pages Airweb (tableau de
 bord, marketplace, connexions, documentation et tout service interne).
 L'icône engrenage ouvre les paramètres thème, langue et devise — vos
 préférences sont stockées dans des cookies avec scope
@@ -383,7 +383,7 @@ sous-domaines.</p>
   // ---------- connections ----------
   'connections.title': 'Page connexions — télémétrie temps réel des tunnels',
   'connections.description':
-    'Voyez chaque tunnel SSH actif vers le cluster AirWeb — les vôtres et ' +
+    'Voyez chaque tunnel SSH actif vers le cluster Airweb — les vôtres et ' +
     'les publics — avec les octets entrée/sortie en direct et les infos d\'origine.',
   'connections.html': `
 <h1>Connexions</h1>
@@ -414,7 +414,7 @@ vous voulez monter des dashboards ou des règles d'alerte custom.</p>
   // ---------- marketplace ----------
   'marketplace.title': 'Marketplace — acheter et vendre des identifiants',
   'marketplace.description':
-    'Parcourez et enchérissez sur les identifiants AirWeb. Les vendeurs ' +
+    'Parcourez et enchérissez sur les identifiants Airweb. Les vendeurs ' +
     'listent ceux dont ils ne veulent plus ; les acheteurs récupèrent le ' +
     'sous-domaine idéal.',
   'marketplace.html': `
@@ -426,7 +426,7 @@ recherchez, cliquez sur acheter, c'est à vous.</p>
 <h2>Mettre en vente un identifiant</h2>
 <ol>
   <li>Ouvrez l'un de vos identifiants loués dans le tableau de bord.</li>
-  <li>Cliquez <em>List for sale</em> et fixez un prix en AWC.</li>
+  <li>Cliquez <em>List for sale</em> et fixez un prix en AWB.</li>
   <li>L'annonce apparaît immédiatement sur le marketplace.</li>
   <li>À l'achat, les crédits arrivent sur votre compte et le bail
       restant est transféré à l'acheteur.</li>
@@ -467,7 +467,7 @@ airweb tcp &lt;portLocal&gt; [--remote &lt;port&gt;] \\
 <h2>Options</h2>
 <dl>
   <dt><code>--server &lt;host[:port]&gt;</code> <em>(requis)</em></dt>
-  <dd>Le endpoint SSH d'AirWeb, par ex.
+  <dd>Le endpoint SSH d'Airweb, par ex.
       <code>{{SSH_HOST}}:{{SSH_PORT}}</code>.</dd>
 
   <dt><code>--key &lt;chemin&gt;</code> <em>(requis)</em></dt>
@@ -504,7 +504,7 @@ airweb tcp 5432 --remote 15432 \\
   // ---------- api ----------
   'api.title': 'Référence de l\'API HTTP',
   'api.description':
-    'Chaque endpoint JSON exposé par AirWeb — auth, solde et ledger, ' +
+    'Chaque endpoint JSON exposé par Airweb — auth, solde et ledger, ' +
     'marketplace d\'identifiants, télémétrie admin.',
   'api.html': `
 <h1>API HTTP</h1>
@@ -563,13 +563,13 @@ limitation : 429.</p>
   // ---------- security ----------
   'security.title': 'Modèle de sécurité et bonnes pratiques',
   'security.description':
-    'Comment AirWeb authentifie les clients, isole les tunnels et protège ' +
+    'Comment Airweb authentifie les clients, isole les tunnels et protège ' +
     'les données utilisateurs — plus des bonnes pratiques pour durcir les ' +
     'services que vous exposez.',
   'security.html': `
 <h1>Modèle de sécurité</h1>
 <p class="lead">Un modèle de menaces court et honnête : ce que fait
-AirWeb, ce qu'il ne fait pas, et comment l'utiliser en toute sécurité.</p>
+Airweb, ce qu'il ne fait pas, et comment l'utiliser en toute sécurité.</p>
 
 <h2>Authentification</h2>
 <p>Authentification par paire de clés SSH uniquement — les mots de passe
@@ -583,7 +583,7 @@ stockons jamais).</p>
 enregistrés. Tout autre client qui tente de se lier à un nom loué est
 rejeté pendant le handshake <code>tcpip-forward</code>.</p>
 
-<h2>Ce qu'AirWeb peut voir</h2>
+<h2>Ce qu'Airweb peut voir</h2>
 <ul>
   <li>Les octets qui transitent dans les tunnels passent par notre routeur
       public. Le routeur ne journalise jamais les corps de requête, juste
@@ -617,19 +617,19 @@ divulgation responsable et créditons publiquement les rapporteurs.</p>
   // ---------- faq ----------
   'faq.title': 'Questions fréquentes',
   'faq.description':
-    'Réponses brèves aux questions les plus posées sur AirWeb : comparaison ' +
+    'Réponses brèves aux questions les plus posées sur Airweb : comparaison ' +
     'avec ngrok, auto-hébergement, domaines personnalisés, offre gratuite, etc.',
   'faq.html': `
 <h1>Questions fréquentes</h1>
 
-<h3>AirWeb se compare comment à ngrok ou Cloudflare Tunnel ?</h3>
+<h3>Airweb se compare comment à ngrok ou Cloudflare Tunnel ?</h3>
 <p>Notre transport est de l'OpenSSH tout bête — pas de protocole
 propriétaire, pas de binaire client, pas de module noyau. En contrepartie,
 vous n'avez pas l'UI d'inspection façon ngrok ni le réseau edge de
 Cloudflare. Si « ssh passe à travers tous les firewalls » vous suffit,
-AirWeb est la réponse la plus simple.</p>
+Airweb est la réponse la plus simple.</p>
 
-<h3>Puis-je faire tourner mon propre serveur AirWeb ?</h3>
+<h3>Puis-je faire tourner mon propre serveur Airweb ?</h3>
 <p>Oui — le repo est le même code qui fait tourner le service hébergé.
 Clonez-le, copiez <code>config.default.json</code> en <code>config.json</code>,
 réglez <code>AIRWEB_PUBLIC_DOMAIN</code>, puis <code>npm start</code>.
@@ -652,12 +652,12 @@ avec <code>ServerAliveInterval</code>. En <code>ssh</code> brut, ajoutez
 <code>-o&nbsp;ServerAliveInterval=30</code> ou enveloppez la commande
 dans <code>autossh</code> pour le même comportement.</p>
 
-<h3>AirWeb supporte HTTP/2 ou HTTP/3 ?</h3>
+<h3>Airweb supporte HTTP/2 ou HTTP/3 ?</h3>
 <p>Le edge public parle HTTP/1.1 et HTTP/2. HTTP/3 (QUIC) nécessite UDP
 et est sur la feuille de route. Votre origine peut parler ce qu'elle
 veut — le proxy normalise en HTTP/1.1 pour le saut tunnel.</p>
 
-<h3>Je peux utiliser AirWeb pour du trafic de production ?</h3>
+<h3>Je peux utiliser Airweb pour du trafic de production ?</h3>
 <p>Certains le font, mais comprenez ce que vous achetez. Une session SSH
 unique est un point de défaillance unique. Pour du vrai prod, on
 recommande l'auto-hébergement multi-région avec des sessions active/active
@@ -665,7 +665,7 @@ derrière un load balancer.</p>
 `,
 
   // ---------- troubleshooting ----------
-  'troubleshooting.title': 'Résoudre les erreurs courantes d\'AirWeb',
+  'troubleshooting.title': 'Résoudre les erreurs courantes d\'Airweb',
   'troubleshooting.description':
     'Recettes pour les erreurs les plus rencontrées : forward refusé, ' +
     'port occupé, droits de clé, proxies d\'entreprise, et plus.',
@@ -721,7 +721,7 @@ résolvent en partageant cette sortie.</p>
   // ---------- changelog ----------
   'changelog.title': 'Changelog',
   'changelog.description':
-    'Les changements notables d\'une version à l\'autre d\'AirWeb — ' +
+    'Les changements notables d\'une version à l\'autre d\'Airweb — ' +
     'fonctionnalités, ruptures, correctifs de sécurité.',
   'changelog.html': `
 <h1>Changelog</h1>

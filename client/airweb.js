@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// AirWeb client — convenience wrapper around `ssh -R`.
+// Airweb client — convenience wrapper around `ssh -R`.
 //
 //   airweb http <localPort> [--sub <name>] --server <host[:port]> --key <path>
 //   airweb tcp  <localPort> [--remote <port>] --server <host[:port]> --key <path>
@@ -25,7 +25,7 @@ function parseArgs(argv) {
 }
 
 function help() {
-  console.log(`AirWeb client
+  console.log(`Airweb client
 
 Usage:
   airweb http <localPort> [--sub <name>] --server <host[:port]> --key <path>
@@ -86,7 +86,7 @@ function main() {
     `${user}@${serverHost}`,
   ];
 
-  console.log(`\n  AirWeb client`);
+  console.log(`\n  Airweb client`);
   console.log(`  -----------------`);
   console.log(`  local        : localhost:${localPort}`);
   console.log(`  server       : ${serverHost}:${serverPort}`);

@@ -125,7 +125,7 @@
   }
   header.site a { color: var(--fg); text-decoration: none; }
   header.site .brand {
-    display: flex; align-items: center; gap: .6rem;
+    display: flex; align-items: center; gap: .25rem;
     text-decoration: none; color: inherit;
   }
   header.site .logo {
@@ -371,7 +371,7 @@
     letter-spacing: -.02em;
   }
   .metric .value .cr { color: var(--mute); font-weight: 400; font-size: .55em; margin-left: .08em; letter-spacing: 0; }
-  /* Generic small currency-unit suffix (e.g. "AWC", "AWC/min") */
+  /* Generic small currency-unit suffix (e.g. "AWB", "AWB/min") */
   .unit { color: var(--mute); font-weight: 400; font-size: .68em; margin-left: .18em; letter-spacing: 0; }
   .metric .sub { color: var(--mute); font-size: .7rem; line-height: 1.35; }
   .metric .usd-est { color: var(--mute); font-size: .62rem; letter-spacing: .02em; font-variant-numeric: tabular-nums; line-height: 1; margin-bottom: -.25rem; text-align: right; }

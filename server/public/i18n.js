@@ -1,4 +1,4 @@
-/* AirWeb i18n
+/* Airweb i18n
    Runtime DOM-walker translator. Loaded BEFORE the page script so the
    global `i18n.t()` helper is available, and a MutationObserver picks up
    anything added later (dynamic table rows, modal copy, etc.) and replaces
@@ -33,8 +33,8 @@
     en: {},
     es: {
       // header / user menu
-      'AirWeb': 'AirWeb',
-      'AirWeb home': 'Inicio de AirWeb',
+      'Airweb': 'Airweb',
+      'Airweb home': 'Inicio de Airweb',
       'Settings': 'Ajustes',
       'Currency': 'Moneda',
       'Go to dashboard': 'Ir al panel',
@@ -49,20 +49,20 @@
       'Platform': 'Plataforma',
       'Reference': 'Referencia',
       // Docs sidebar — page nav labels
-      'Introduction to AirWeb': 'Introducción a AirWeb',
+      'Introduction to Airweb': 'Introducción a Airweb',
       'Quick start': 'Inicio rápido',
-      'Installing the AirWeb client': 'Instalar el cliente AirWeb',
+      'Installing the Airweb client': 'Instalar el cliente Airweb',
       'HTTP tunnels': 'Túneles HTTP',
       'TCP tunnels': 'Túneles TCP',
       'Handles': 'Identificadores',
-      'Credits, billing and the AWC economy': 'Créditos, facturación y la economía AWC',
+      'Credits, billing and the AWB economy': 'Créditos, facturación y la economía AWB',
       'The dashboard': 'El panel de control',
       'The Connections page': 'La página de conexiones',
       'The airweb CLI reference': 'Referencia de la CLI de airweb',
       'HTTP API reference': 'Referencia de la API HTTP',
       'Security model and best practices': 'Modelo de seguridad y buenas prácticas',
       'Frequently asked questions': 'Preguntas frecuentes',
-      'Troubleshooting common AirWeb errors': 'Solución de errores comunes de AirWeb',
+      'Troubleshooting common Airweb errors': 'Solución de errores comunes de Airweb',
       'Changelog': 'Registro de cambios',
       // Docs chrome
       'Search the docs… (press / to focus)': 'Buscar en la documentación… (pulsa / para enfocar)',
@@ -125,7 +125,7 @@
       'Country': 'País',
       'Min cores': 'Núcleos mín.',
       'Min RAM (GB)': 'RAM mín. (GB)',
-      'Max price (cr/min)': 'Precio máx. (AWC/min)',
+      'Max price (cr/min)': 'Precio máx. (AWB/min)',
       'OS contains': 'SO contiene',
       'linux, debian…': 'linux, debian…',
       'Apply': 'Aplicar',
@@ -230,7 +230,7 @@
       'After it connects, the new tunnel will show up in My activity with kind tcp. Click Resume on it, then List for lease.':
         'Cuando conecte, el nuevo túnel aparecerá en Mi actividad con tipo tcp. Haz clic en Reanudar y luego en Publicar para alquiler.',
       // login page
-      'Sign in with your AirWeb key': 'Inicia sesión con tu clave AirWeb',
+      'Sign in with your Airweb key': 'Inicia sesión con tu clave Airweb',
       'Paste your': 'Pega tu archivo',
       'file (the OpenSSH private key you downloaded at registration). We re-derive your account ID from it locally on the server and start a session — the key is not stored.':
         '(la clave privada OpenSSH que descargaste al registrarte). Volvemos a derivar tu ID de cuenta en el servidor e iniciamos una sesión — la clave no se almacena.',
@@ -261,10 +261,10 @@
       'passcode': 'código',
       'spent': 'gastado',
       'avg': 'prom.',
-      'cr/min': 'AWC/min',
-      'cr': 'AWC',
-      'AWC/min': 'AWC/min',
-      'AWC': 'AWC',
+      'cr/min': 'AWB/min',
+      'cr': 'AWB',
+      'AWB/min': 'AWB/min',
+      'AWB': 'AWB',
       'tunnel offline': 'túnel desconectado',
       'Type': 'Tipo',
       'Item': 'Elemento',
@@ -288,8 +288,8 @@
       // ---- Landing page ----
       'A people-powered cloud, built from the': 'Una nube impulsada por las personas, construida con los',
       'devices you already own': 'dispositivos que ya tienes',
-      'AirWeb turns spare laptops, old phones, and idle home servers into tiny public endpoints. Demo an app in seconds, reach your home computer from anywhere, or lease a micro-server by the minute — and earn credits while your own devices help carry the load.':
-        'AirWeb convierte laptops sin uso, teléfonos viejos y servidores domésticos inactivos en pequeños endpoints públicos. Muestra una app en segundos, accede a tu computadora desde cualquier lugar o alquila un micro-servidor por minuto, y gana créditos mientras tus dispositivos ayudan a llevar la carga.',
+      'Airweb turns spare laptops, old phones, and idle home servers into tiny public endpoints. Demo an app in seconds, reach your home computer from anywhere, or lease a micro-server by the minute — and earn credits while your own devices help carry the load.':
+        'Airweb convierte laptops sin uso, teléfonos viejos y servidores domésticos inactivos en pequeños endpoints públicos. Muestra una app en segundos, accede a tu computadora desde cualquier lugar o alquila un micro-servidor por minuto, y gana créditos mientras tus dispositivos ayudan a llevar la carga.',
       'get your key →': 'obtén tu clave →',
       'or restore from existing key': 'o restaura desde una clave existente',
       'pay only for traffic': 'paga sólo por el tráfico',
@@ -347,17 +347,17 @@
       'in uptime rewards, plus': 'en recompensas de uptime, más',
       'when someone leases your tunnel from the marketplace.': 'cuando alguien alquila tu túnel desde el mercado.',
       'Earn, learn, and build with the community': 'Gana, aprende y construye con la comunidad',
-      'AirWeb is built around a simple loop: plug in a spare device, share its uptime, earn credits, spend them on things you need. Along the way you pick up real networking, SSH, and distributed-systems skills — and you do it next to other people doing the same.':
-        'AirWeb se construye sobre un ciclo simple: enchufa un dispositivo libre, comparte su uptime, gana créditos y gástalos en lo que necesitas. En el camino aprendes redes reales, SSH y sistemas distribuidos — junto a otras personas que hacen lo mismo.',
+      'Airweb is built around a simple loop: plug in a spare device, share its uptime, earn credits, spend them on things you need. Along the way you pick up real networking, SSH, and distributed-systems skills — and you do it next to other people doing the same.':
+        'Airweb se construye sobre un ciclo simple: enchufa un dispositivo libre, comparte su uptime, gana créditos y gástalos en lo que necesitas. En el camino aprendes redes reales, SSH y sistemas distribuidos — junto a otras personas que hacen lo mismo.',
       'Open marketplace': 'Mercado abierto',
       'List your spare-device tunnel, set a price per minute, and watch the leases come in. Browse what others are offering and rent the right region or hardware for the job.':
         'Publica el túnel de tu dispositivo libre, fija un precio por minuto y mira llegar los alquileres. Explora lo que otros ofrecen y alquila la región o el hardware adecuados.',
       'Learn by hosting': 'Aprende alojando',
-      'Real reverse SSH, real TCP, real metering. The repo is open source — read it, fork it, and use AirWeb to teach yourself the bits of infrastructure that schools rarely cover.':
-        'SSH inverso real, TCP real, medición real. El repositorio es código abierto — léelo, bifurca, y usa AirWeb para enseñarte la infraestructura que la escuela rara vez cubre.',
+      'Real reverse SSH, real TCP, real metering. The repo is open source — read it, fork it, and use Airweb to teach yourself the bits of infrastructure that schools rarely cover.':
+        'SSH inverso real, TCP real, medición real. El repositorio es código abierto — léelo, bifurca, y usa Airweb para enseñarte la infraestructura que la escuela rara vez cubre.',
       'The long view: a micro-server socio-economy': 'La visión a largo plazo: una socio-economía de micro-servidores',
-      'The world is full of perfectly good hardware sitting idle — a billion phones, a hundred million laptops, racks of "obsolete" servers. They have CPU, memory, and bandwidth that today goes to waste. AirWeb is the first step toward letting all of that quietly become useful, owned by the people who already paid for it, traded in a transparent, peer-to-peer way.':
-        'El mundo está lleno de hardware perfectamente bueno sin usar — mil millones de teléfonos, cien millones de laptops, racks de servidores "obsoletos". Tienen CPU, memoria y ancho de banda que hoy se desperdician. AirWeb es el primer paso para que todo eso se vuelva útil, propiedad de quienes ya lo pagaron, intercambiado de forma transparente y entre pares.',
+      'The world is full of perfectly good hardware sitting idle — a billion phones, a hundred million laptops, racks of "obsolete" servers. They have CPU, memory, and bandwidth that today goes to waste. Airweb is the first step toward letting all of that quietly become useful, owned by the people who already paid for it, traded in a transparent, peer-to-peer way.':
+        'El mundo está lleno de hardware perfectamente bueno sin usar — mil millones de teléfonos, cien millones de laptops, racks de servidores "obsoletos". Tienen CPU, memoria y ancho de banda que hoy se desperdician. Airweb es el primer paso para que todo eso se vuelva útil, propiedad de quienes ya lo pagaron, intercambiado de forma transparente y entre pares.',
       'Open-source cloud provider': 'Proveedor cloud de código abierto',
       'Hyperscaler-class capabilities don\'t have to live behind three logos and a credit-card form. Our long-term goal is an open, federated cloud where the "data center" is a coalition of homes, offices, and community spaces.':
         'Las capacidades de los hyperscalers no tienen que vivir detrás de tres logos y un formulario de tarjeta de crédito. Nuestro objetivo es una nube abierta y federada donde el "centro de datos" es una coalición de hogares, oficinas y espacios comunitarios.',
@@ -365,8 +365,8 @@
       'Credits earned by contributing capacity buy capacity from others. Over time, that loop becomes a real economy — one where small operators, students, and hobbyists are first-class participants, not just customers.':
         'Los créditos ganados aportando capacidad compran capacidad de otros. Con el tiempo, ese ciclo se convierte en una economía real — donde pequeños operadores, estudiantes y aficionados son participantes de primera clase, no sólo clientes.',
       'Greener by default': 'Más ecológico por defecto',
-      'The most sustainable server is one that already exists. By giving a second life to devices that would otherwise be sitting idle — or worse, in a landfill — AirWeb reduces the need to spin up new fleets of always-on hardware just to serve a few requests per minute. Smaller fleet, less embodied carbon, less e-waste, less drain on the grid.':
-        'El servidor más sostenible es el que ya existe. Al dar una segunda vida a dispositivos que de otro modo estarían inactivos — o peor, en un vertedero — AirWeb reduce la necesidad de desplegar nuevas flotas de hardware always-on sólo para servir unas pocas peticiones por minuto. Menos flota, menos carbono incorporado, menos basura electrónica, menos consumo de la red.',
+      'The most sustainable server is one that already exists. By giving a second life to devices that would otherwise be sitting idle — or worse, in a landfill — Airweb reduces the need to spin up new fleets of always-on hardware just to serve a few requests per minute. Smaller fleet, less embodied carbon, less e-waste, less drain on the grid.':
+        'El servidor más sostenible es el que ya existe. Al dar una segunda vida a dispositivos que de otro modo estarían inactivos — o peor, en un vertedero — Airweb reduce la necesidad de desplegar nuevas flotas de hardware always-on sólo para servir unas pocas peticiones por minuto. Menos flota, menos carbono incorporado, menos basura electrónica, menos consumo de la red.',
       'Reuses hardware you already own instead of provisioning new servers.':
         'Reutiliza el hardware que ya tienes en lugar de aprovisionar servidores nuevos.',
       'Idle tunnels consume effectively nothing — they just sit on an SSH socket.':
@@ -376,8 +376,8 @@
       'FAQ': 'Preguntas frecuentes',
       'What kind of "spare device" actually works?': '¿Qué tipo de "dispositivo libre" funciona?',
       'Anything that can run an': 'Cualquier cosa que pueda ejecutar un cliente',
-      'client and stay online: an old laptop, a desktop you barely use, a Raspberry Pi, a NAS, a mini-PC, even some routers. If it can hold an SSH session open, it can be an AirWeb node.':
-        'y estar en línea: una laptop vieja, un escritorio que apenas usas, una Raspberry Pi, un NAS, un mini-PC, incluso algunos routers. Si puede mantener una sesión SSH abierta, puede ser un nodo AirWeb.',
+      'client and stay online: an old laptop, a desktop you barely use, a Raspberry Pi, a NAS, a mini-PC, even some routers. If it can hold an SSH session open, it can be an Airweb node.':
+        'y estar en línea: una laptop vieja, un escritorio que apenas usas, una Raspberry Pi, un NAS, un mini-PC, incluso algunos routers. Si puede mantener una sesión SSH abierta, puede ser un nodo Airweb.',
       'Do I need to install anything?': '¿Necesito instalar algo?',
       'No. Any standard': 'No. Cualquier',
       'client works once you\'ve downloaded': 'estándar funciona una vez que descargas',
@@ -394,8 +394,8 @@
       'account id is derived deterministically from the public key.':
         'id de cuenta se deriva de forma determinista desde la clave pública.',
       'Is the traffic encrypted?': '¿Está cifrado el tráfico?',
-      'The leg between your device and AirWeb is encrypted by SSH. The public leg uses whatever the front door speaks (HTTP on the bare port, HTTPS behind a TLS reverse proxy). For end-to-end TLS, terminate inside your local app and use a raw TCP tunnel.':
-        'El tramo entre tu dispositivo y AirWeb está cifrado por SSH. El tramo público usa lo que hable la puerta de entrada (HTTP en el puerto, HTTPS detrás de un proxy TLS). Para TLS extremo a extremo, termina dentro de tu app local y usa un túnel TCP puro.',
+      'The leg between your device and Airweb is encrypted by SSH. The public leg uses whatever the front door speaks (HTTP on the bare port, HTTPS behind a TLS reverse proxy). For end-to-end TLS, terminate inside your local app and use a raw TCP tunnel.':
+        'El tramo entre tu dispositivo y Airweb está cifrado por SSH. El tramo público usa lo que hable la puerta de entrada (HTTP en el puerto, HTTPS detrás de un proxy TLS). Para TLS extremo a extremo, termina dentro de tu app local y usa un túnel TCP puro.',
       'Can I pick my own subdomain?': '¿Puedo elegir mi propio subdominio?',
       'Yes — the SSH username you connect with becomes your subdomain (':
         'Sí — el usuario SSH con el que te conectas se convierte en tu subdominio (',
@@ -409,8 +409,8 @@
       'source': 'código'
     },
     fr: {
-      'AirWeb': 'AirWeb',
-      'AirWeb home': 'Accueil AirWeb',
+      'Airweb': 'Airweb',
+      'Airweb home': 'Accueil Airweb',
       'Settings': 'Paramètres',
       'Currency': 'Devise',
       'Go to dashboard': 'Aller au tableau de bord',
@@ -424,20 +424,20 @@
       'Platform': 'Plateforme',
       'Reference': 'Référence',
       // Docs sidebar — page nav labels
-      'Introduction to AirWeb': 'Introduction à AirWeb',
+      'Introduction to Airweb': 'Introduction à Airweb',
       'Quick start': 'Démarrage rapide',
-      'Installing the AirWeb client': 'Installer le client AirWeb',
+      'Installing the Airweb client': 'Installer le client Airweb',
       'HTTP tunnels': 'Tunnels HTTP',
       'TCP tunnels': 'Tunnels TCP',
       'Handles': 'Identifiants',
-      'Credits, billing and the AWC economy': 'Crédits, facturation et économie AWC',
+      'Credits, billing and the AWB economy': 'Crédits, facturation et économie AWB',
       'The dashboard': 'Le tableau de bord',
       'The Connections page': 'La page Connexions',
       'The airweb CLI reference': 'Référence de la CLI airweb',
       'HTTP API reference': "Référence de l'API HTTP",
       'Security model and best practices': 'Modèle de sécurité et bonnes pratiques',
       'Frequently asked questions': 'Questions fréquentes',
-      'Troubleshooting common AirWeb errors': "Résolution des erreurs courantes d'AirWeb",
+      'Troubleshooting common Airweb errors': "Résolution des erreurs courantes d'Airweb",
       'Changelog': 'Journal des modifications',
       // Docs chrome
       'Search the docs… (press / to focus)': 'Rechercher dans la documentation… (appuyez sur / pour cibler)',
@@ -496,7 +496,7 @@
       'Country': 'Pays',
       'Min cores': 'Cœurs min.',
       'Min RAM (GB)': 'RAM min. (Go)',
-      'Max price (cr/min)': 'Prix max. (AWC/min)',
+      'Max price (cr/min)': 'Prix max. (AWB/min)',
       'OS contains': 'OS contient',
       'linux, debian…': 'linux, debian…',
       'Apply': 'Appliquer',
@@ -592,7 +592,7 @@
         'Reconnectez-vous avec la commande ci-dessous. Choisissez un nom mysub libre (ou utilisez un de vos alias) :',
       'After it connects, the new tunnel will show up in My activity with kind tcp. Click Resume on it, then List for lease.':
         'Une fois connecté, le nouveau tunnel apparaîtra dans Mon activité avec le type tcp. Cliquez sur Reprendre, puis sur Publier.',
-      'Sign in with your AirWeb key': 'Connectez-vous avec votre clé AirWeb',
+      'Sign in with your Airweb key': 'Connectez-vous avec votre clé Airweb',
       'Paste your': 'Collez votre fichier',
       'file (the OpenSSH private key you downloaded at registration). We re-derive your account ID from it locally on the server and start a session — the key is not stored.':
         '(la clé privée OpenSSH téléchargée à l\'inscription). Nous redérivons votre ID de compte localement sur le serveur et démarrons une session — la clé n\'est pas stockée.',
@@ -611,7 +611,7 @@
       'no credits': 'sans crédits', 'lease': 'location', 'listed': 'publié',
       'private': 'privé', 'validated': 'validé', 'none': 'aucun', 'never': 'jamais',
       'expired': 'expiré', 'open': 'ouvrir', 'passcode': 'code', 'spent': 'dépensé',
-      'avg': 'moy.', 'cr/min': 'AWC/min', 'cr': 'AWC', 'AWC/min': 'AWC/min', 'AWC': 'AWC', 'tunnel offline': 'tunnel hors ligne',
+      'avg': 'moy.', 'cr/min': 'AWB/min', 'cr': 'AWB', 'AWB/min': 'AWB/min', 'AWB': 'AWB', 'tunnel offline': 'tunnel hors ligne',
       'Type': 'Type', 'Item': 'Élément', 'Details': 'Détails', 'Charged': 'Coût',
       'Listed': 'Publié', 'Earned': 'Gagné', 'Rate': 'Tarif', 'Actions': 'Actions',
       'List': 'Publier', 'List?': 'Publier ?', 'Remove listing': 'Supprimer l\'annonce',
@@ -625,8 +625,8 @@
       // ---- Landing page ----
       'A people-powered cloud, built from the': 'Un cloud porté par les gens, construit avec les',
       'devices you already own': 'appareils que vous possédez déjà',
-      'AirWeb turns spare laptops, old phones, and idle home servers into tiny public endpoints. Demo an app in seconds, reach your home computer from anywhere, or lease a micro-server by the minute — and earn credits while your own devices help carry the load.':
-        'AirWeb transforme les ordinateurs portables inutilisés, vieux téléphones et serveurs domestiques inactifs en petits points d\'accès publics. Démontrez une app en quelques secondes, accédez à votre ordinateur depuis n\'importe où ou louez un micro-serveur à la minute — et gagnez des crédits pendant que vos appareils contribuent.',
+      'Airweb turns spare laptops, old phones, and idle home servers into tiny public endpoints. Demo an app in seconds, reach your home computer from anywhere, or lease a micro-server by the minute — and earn credits while your own devices help carry the load.':
+        'Airweb transforme les ordinateurs portables inutilisés, vieux téléphones et serveurs domestiques inactifs en petits points d\'accès publics. Démontrez une app en quelques secondes, accédez à votre ordinateur depuis n\'importe où ou louez un micro-serveur à la minute — et gagnez des crédits pendant que vos appareils contribuent.',
       'get your key →': 'obtenir votre clé →',
       'or restore from existing key': 'ou restaurer depuis une clé existante',
       'pay only for traffic': 'payez uniquement le trafic',
@@ -684,17 +684,17 @@
       'in uptime rewards, plus': 'en récompenses de uptime, plus',
       'when someone leases your tunnel from the marketplace.': 'quand quelqu\'un loue votre tunnel sur le marché.',
       'Earn, learn, and build with the community': 'Gagnez, apprenez et construisez avec la communauté',
-      'AirWeb is built around a simple loop: plug in a spare device, share its uptime, earn credits, spend them on things you need. Along the way you pick up real networking, SSH, and distributed-systems skills — and you do it next to other people doing the same.':
-        'AirWeb repose sur une boucle simple : branchez un appareil libre, partagez son uptime, gagnez des crédits, dépensez-les pour ce dont vous avez besoin. Au passage, vous acquérez de vraies compétences réseau, SSH et systèmes distribués — aux côtés d\'autres qui font la même chose.',
+      'Airweb is built around a simple loop: plug in a spare device, share its uptime, earn credits, spend them on things you need. Along the way you pick up real networking, SSH, and distributed-systems skills — and you do it next to other people doing the same.':
+        'Airweb repose sur une boucle simple : branchez un appareil libre, partagez son uptime, gagnez des crédits, dépensez-les pour ce dont vous avez besoin. Au passage, vous acquérez de vraies compétences réseau, SSH et systèmes distribués — aux côtés d\'autres qui font la même chose.',
       'Open marketplace': 'Marché ouvert',
       'List your spare-device tunnel, set a price per minute, and watch the leases come in. Browse what others are offering and rent the right region or hardware for the job.':
         'Publiez le tunnel de votre appareil libre, fixez un prix à la minute et regardez les locations arriver. Parcourez ce que les autres proposent et louez la bonne région ou le bon matériel.',
       'Learn by hosting': 'Apprenez en hébergeant',
-      'Real reverse SSH, real TCP, real metering. The repo is open source — read it, fork it, and use AirWeb to teach yourself the bits of infrastructure that schools rarely cover.':
-        'Vrai SSH inverse, vrai TCP, vraie facturation. Le dépôt est open source — lisez-le, forkez-le et utilisez AirWeb pour vous enseigner les morceaux d\'infrastructure que l\'école couvre rarement.',
+      'Real reverse SSH, real TCP, real metering. The repo is open source — read it, fork it, and use Airweb to teach yourself the bits of infrastructure that schools rarely cover.':
+        'Vrai SSH inverse, vrai TCP, vraie facturation. Le dépôt est open source — lisez-le, forkez-le et utilisez Airweb pour vous enseigner les morceaux d\'infrastructure que l\'école couvre rarement.',
       'The long view: a micro-server socio-economy': 'La vision à long terme : une socio-économie de micro-serveurs',
-      'The world is full of perfectly good hardware sitting idle — a billion phones, a hundred million laptops, racks of "obsolete" servers. They have CPU, memory, and bandwidth that today goes to waste. AirWeb is the first step toward letting all of that quietly become useful, owned by the people who already paid for it, traded in a transparent, peer-to-peer way.':
-        'Le monde regorge de matériel parfaitement bon mais inutilisé — un milliard de téléphones, cent millions d\'ordinateurs portables, des baies de serveurs "obsolètes". Ils ont du CPU, de la mémoire et de la bande passante gaspillés. AirWeb est le premier pas pour rendre tout cela utile, aux mains de ceux qui l\'ont déjà payé, échangé de manière transparente et pair-à-pair.',
+      'The world is full of perfectly good hardware sitting idle — a billion phones, a hundred million laptops, racks of "obsolete" servers. They have CPU, memory, and bandwidth that today goes to waste. Airweb is the first step toward letting all of that quietly become useful, owned by the people who already paid for it, traded in a transparent, peer-to-peer way.':
+        'Le monde regorge de matériel parfaitement bon mais inutilisé — un milliard de téléphones, cent millions d\'ordinateurs portables, des baies de serveurs "obsolètes". Ils ont du CPU, de la mémoire et de la bande passante gaspillés. Airweb est le premier pas pour rendre tout cela utile, aux mains de ceux qui l\'ont déjà payé, échangé de manière transparente et pair-à-pair.',
       'Open-source cloud provider': 'Fournisseur cloud open-source',
       'Hyperscaler-class capabilities don\'t have to live behind three logos and a credit-card form. Our long-term goal is an open, federated cloud where the "data center" is a coalition of homes, offices, and community spaces.':
         'Les capacités d\'hyperscaler n\'ont pas à se cacher derrière trois logos et un formulaire de carte de crédit. Notre objectif est un cloud ouvert et fédéré où le "centre de données" est une coalition de foyers, bureaux et espaces communautaires.',
@@ -702,8 +702,8 @@
       'Credits earned by contributing capacity buy capacity from others. Over time, that loop becomes a real economy — one where small operators, students, and hobbyists are first-class participants, not just customers.':
         'Les crédits gagnés en contribuant achètent la capacité des autres. Avec le temps, cette boucle devient une vraie économie — où petits opérateurs, étudiants et passionnés sont des participants à part entière, pas que des clients.',
       'Greener by default': 'Plus écologique par défaut',
-      'The most sustainable server is one that already exists. By giving a second life to devices that would otherwise be sitting idle — or worse, in a landfill — AirWeb reduces the need to spin up new fleets of always-on hardware just to serve a few requests per minute. Smaller fleet, less embodied carbon, less e-waste, less drain on the grid.':
-        'Le serveur le plus durable est celui qui existe déjà. En donnant une seconde vie à des appareils qui seraient sinon inactifs — ou pire, à la décharge — AirWeb réduit le besoin de déployer de nouvelles flottes always-on pour servir quelques requêtes par minute. Flotte plus petite, moins de carbone incorporé, moins d\'e-déchets, moins de charge sur le réseau.',
+      'The most sustainable server is one that already exists. By giving a second life to devices that would otherwise be sitting idle — or worse, in a landfill — Airweb reduces the need to spin up new fleets of always-on hardware just to serve a few requests per minute. Smaller fleet, less embodied carbon, less e-waste, less drain on the grid.':
+        'Le serveur le plus durable est celui qui existe déjà. En donnant une seconde vie à des appareils qui seraient sinon inactifs — ou pire, à la décharge — Airweb réduit le besoin de déployer de nouvelles flottes always-on pour servir quelques requêtes par minute. Flotte plus petite, moins de carbone incorporé, moins d\'e-déchets, moins de charge sur le réseau.',
       'Reuses hardware you already own instead of provisioning new servers.':
         'Réutilise le matériel que vous possédez déjà au lieu d\'approvisionner de nouveaux serveurs.',
       'Idle tunnels consume effectively nothing — they just sit on an SSH socket.':
@@ -713,8 +713,8 @@
       'FAQ': 'FAQ',
       'What kind of "spare device" actually works?': 'Quel genre d\'"appareil libre" fonctionne vraiment ?',
       'Anything that can run an': 'Tout ce qui peut exécuter un client',
-      'client and stay online: an old laptop, a desktop you barely use, a Raspberry Pi, a NAS, a mini-PC, even some routers. If it can hold an SSH session open, it can be an AirWeb node.':
-        'et rester en ligne : vieux portable, bureau peu utilisé, Raspberry Pi, NAS, mini-PC, même certains routeurs. S\'il peut maintenir une session SSH, il peut être un nœud AirWeb.',
+      'client and stay online: an old laptop, a desktop you barely use, a Raspberry Pi, a NAS, a mini-PC, even some routers. If it can hold an SSH session open, it can be an Airweb node.':
+        'et rester en ligne : vieux portable, bureau peu utilisé, Raspberry Pi, NAS, mini-PC, même certains routeurs. S\'il peut maintenir une session SSH, il peut être un nœud Airweb.',
       'Do I need to install anything?': 'Dois-je installer quelque chose ?',
       'No. Any standard': 'Non. Tout',
       'client works once you\'ve downloaded': 'standard fonctionne une fois que vous avez téléchargé',
@@ -731,8 +731,8 @@
       'account id is derived deterministically from the public key.':
         'id de compte est dérivé de manière déterministe de la clé publique.',
       'Is the traffic encrypted?': 'Le trafic est-il chiffré ?',
-      'The leg between your device and AirWeb is encrypted by SSH. The public leg uses whatever the front door speaks (HTTP on the bare port, HTTPS behind a TLS reverse proxy). For end-to-end TLS, terminate inside your local app and use a raw TCP tunnel.':
-        'Le segment entre votre appareil et AirWeb est chiffré par SSH. Le segment public utilise ce que parle la porte d\'entrée (HTTP sur le port brut, HTTPS derrière un proxy TLS). Pour du TLS bout-en-bout, terminez dans votre app locale et utilisez un tunnel TCP brut.',
+      'The leg between your device and Airweb is encrypted by SSH. The public leg uses whatever the front door speaks (HTTP on the bare port, HTTPS behind a TLS reverse proxy). For end-to-end TLS, terminate inside your local app and use a raw TCP tunnel.':
+        'Le segment entre votre appareil et Airweb est chiffré par SSH. Le segment public utilise ce que parle la porte d\'entrée (HTTP sur le port brut, HTTPS derrière un proxy TLS). Pour du TLS bout-en-bout, terminez dans votre app locale et utilisez un tunnel TCP brut.',
       'Can I pick my own subdomain?': 'Puis-je choisir mon sous-domaine ?',
       'Yes — the SSH username you connect with becomes your subdomain (':
         'Oui — le nom d\'utilisateur SSH avec lequel vous vous connectez devient votre sous-domaine (',
@@ -746,8 +746,8 @@
       'source': 'source'
     },
     de: {
-      'AirWeb': 'AirWeb',
-      'AirWeb home': 'AirWeb-Startseite',
+      'Airweb': 'Airweb',
+      'Airweb home': 'Airweb-Startseite',
       'Settings': 'Einstellungen',
       'Currency': 'Währung',
       'Go to dashboard': 'Zur Übersicht',
@@ -761,20 +761,20 @@
       'Platform': 'Plattform',
       'Reference': 'Referenz',
       // Docs sidebar — page nav labels
-      'Introduction to AirWeb': 'Einführung in AirWeb',
+      'Introduction to Airweb': 'Einführung in Airweb',
       'Quick start': 'Schnellstart',
-      'Installing the AirWeb client': 'AirWeb-Client installieren',
+      'Installing the Airweb client': 'Airweb-Client installieren',
       'HTTP tunnels': 'HTTP-Tunnel',
       'TCP tunnels': 'TCP-Tunnel',
       'Handles': 'Handles',
-      'Credits, billing and the AWC economy': 'Credits, Abrechnung und die AWC-Wirtschaft',
+      'Credits, billing and the AWB economy': 'Credits, Abrechnung und die AWB-Wirtschaft',
       'The dashboard': 'Das Dashboard',
       'The Connections page': 'Die Verbindungen-Seite',
       'The airweb CLI reference': 'airweb-CLI-Referenz',
       'HTTP API reference': 'HTTP-API-Referenz',
       'Security model and best practices': 'Sicherheitsmodell und Best Practices',
       'Frequently asked questions': 'Häufig gestellte Fragen',
-      'Troubleshooting common AirWeb errors': 'Häufige AirWeb-Fehler beheben',
+      'Troubleshooting common Airweb errors': 'Häufige Airweb-Fehler beheben',
       'Changelog': 'Änderungsprotokoll',
       // Docs chrome
       'Search the docs… (press / to focus)': 'Doku durchsuchen… (drücke / zum Fokussieren)',
@@ -833,7 +833,7 @@
       'Country': 'Land',
       'Min cores': 'Min. Kerne',
       'Min RAM (GB)': 'Min. RAM (GB)',
-      'Max price (cr/min)': 'Max. Preis (AWC/min)',
+      'Max price (cr/min)': 'Max. Preis (AWB/min)',
       'OS contains': 'OS enthält',
       'linux, debian…': 'linux, debian…',
       'Apply': 'Anwenden',
@@ -929,7 +929,7 @@
         'Verbinde dich mit dem Befehl unten neu. Wähle einen freien mysub-Namen (oder einen deiner Aliasse):',
       'After it connects, the new tunnel will show up in My activity with kind tcp. Click Resume on it, then List for lease.':
         'Nach der Verbindung erscheint der neue Tunnel unter Meine Aktivität mit Typ tcp. Klicke auf Fortsetzen und dann auf Anbieten.',
-      'Sign in with your AirWeb key': 'Mit deinem AirWeb-Schlüssel anmelden',
+      'Sign in with your Airweb key': 'Mit deinem Airweb-Schlüssel anmelden',
       'Paste your': 'Füge deine',
       'file (the OpenSSH private key you downloaded at registration). We re-derive your account ID from it locally on the server and start a session — the key is not stored.':
         '-Datei ein (den bei der Registrierung heruntergeladenen privaten OpenSSH-Schlüssel). Wir leiten die Konto-ID lokal auf dem Server neu ab und starten eine Sitzung — der Schlüssel wird nicht gespeichert.',
@@ -948,7 +948,7 @@
       'no credits': 'keine Credits', 'lease': 'Miete', 'listed': 'angeboten',
       'private': 'privat', 'validated': 'validiert', 'none': 'keine', 'never': 'nie',
       'expired': 'abgelaufen', 'open': 'öffnen', 'passcode': 'Code', 'spent': 'ausgegeben',
-      'avg': 'Ø', 'cr/min': 'AWC/min', 'cr': 'AWC', 'AWC/min': 'AWC/min', 'AWC': 'AWC', 'tunnel offline': 'Tunnel offline',
+      'avg': 'Ø', 'cr/min': 'AWB/min', 'cr': 'AWB', 'AWB/min': 'AWB/min', 'AWB': 'AWB', 'tunnel offline': 'Tunnel offline',
       'Type': 'Typ', 'Item': 'Element', 'Details': 'Details', 'Charged': 'Berechnet',
       'Listed': 'Angeboten', 'Earned': 'Verdient', 'Rate': 'Tarif', 'Actions': 'Aktionen',
       'List': 'Anbieten', 'List?': 'Anbieten?', 'Remove listing': 'Anzeige entfernen',
@@ -962,8 +962,8 @@
       // ---- Landing page ----
       'A people-powered cloud, built from the': 'Eine von Menschen getragene Cloud, gebaut aus den',
       'devices you already own': 'Geräten, die du bereits besitzt',
-      'AirWeb turns spare laptops, old phones, and idle home servers into tiny public endpoints. Demo an app in seconds, reach your home computer from anywhere, or lease a micro-server by the minute — and earn credits while your own devices help carry the load.':
-        'AirWeb verwandelt ungenutzte Laptops, alte Handys und leerlaufende Heim-Server in winzige öffentliche Endpunkte. Zeige eine App in Sekunden, erreiche deinen Heimrechner von überall oder miete einen Mikro-Server pro Minute — und verdiene Credits, während deine Geräte mithelfen.',
+      'Airweb turns spare laptops, old phones, and idle home servers into tiny public endpoints. Demo an app in seconds, reach your home computer from anywhere, or lease a micro-server by the minute — and earn credits while your own devices help carry the load.':
+        'Airweb verwandelt ungenutzte Laptops, alte Handys und leerlaufende Heim-Server in winzige öffentliche Endpunkte. Zeige eine App in Sekunden, erreiche deinen Heimrechner von überall oder miete einen Mikro-Server pro Minute — und verdiene Credits, während deine Geräte mithelfen.',
       'get your key →': 'Schlüssel holen →',
       'or restore from existing key': 'oder aus vorhandenem Schlüssel wiederherstellen',
       'pay only for traffic': 'zahle nur für Traffic',
@@ -1021,17 +1021,17 @@
       'in uptime rewards, plus': 'an Uptime-Belohnungen, plus',
       'when someone leases your tunnel from the marketplace.': ', wenn jemand deinen Tunnel im Marktplatz mietet.',
       'Earn, learn, and build with the community': 'Verdiene, lerne und baue mit der Community',
-      'AirWeb is built around a simple loop: plug in a spare device, share its uptime, earn credits, spend them on things you need. Along the way you pick up real networking, SSH, and distributed-systems skills — and you do it next to other people doing the same.':
-        'AirWeb basiert auf einem einfachen Kreislauf: ungenutztes Gerät einstöpseln, Uptime teilen, Credits verdienen, sie für Bedarfe ausgeben. Nebenbei lernst du echtes Networking, SSH und Distributed Systems — gemeinsam mit anderen, die dasselbe tun.',
+      'Airweb is built around a simple loop: plug in a spare device, share its uptime, earn credits, spend them on things you need. Along the way you pick up real networking, SSH, and distributed-systems skills — and you do it next to other people doing the same.':
+        'Airweb basiert auf einem einfachen Kreislauf: ungenutztes Gerät einstöpseln, Uptime teilen, Credits verdienen, sie für Bedarfe ausgeben. Nebenbei lernst du echtes Networking, SSH und Distributed Systems — gemeinsam mit anderen, die dasselbe tun.',
       'Open marketplace': 'Offener Marktplatz',
       'List your spare-device tunnel, set a price per minute, and watch the leases come in. Browse what others are offering and rent the right region or hardware for the job.':
         'Stelle den Tunnel deines Ersatzgeräts ein, setze einen Preis pro Minute und siehe Mieten eingehen. Stöbere durch Angebote und miete die passende Region oder Hardware.',
       'Learn by hosting': 'Lerne durch Hosten',
-      'Real reverse SSH, real TCP, real metering. The repo is open source — read it, fork it, and use AirWeb to teach yourself the bits of infrastructure that schools rarely cover.':
-        'Echtes Reverse-SSH, echtes TCP, echte Abrechnung. Das Repo ist Open Source — lies, forke und nutze AirWeb, um dir die Infrastruktur-Teile beizubringen, die Schulen selten abdecken.',
+      'Real reverse SSH, real TCP, real metering. The repo is open source — read it, fork it, and use Airweb to teach yourself the bits of infrastructure that schools rarely cover.':
+        'Echtes Reverse-SSH, echtes TCP, echte Abrechnung. Das Repo ist Open Source — lies, forke und nutze Airweb, um dir die Infrastruktur-Teile beizubringen, die Schulen selten abdecken.',
       'The long view: a micro-server socio-economy': 'Der lange Blick: eine Mikro-Server-Sozio-Ökonomie',
-      'The world is full of perfectly good hardware sitting idle — a billion phones, a hundred million laptops, racks of "obsolete" servers. They have CPU, memory, and bandwidth that today goes to waste. AirWeb is the first step toward letting all of that quietly become useful, owned by the people who already paid for it, traded in a transparent, peer-to-peer way.':
-        'Die Welt ist voll von einwandfreier Hardware, die brachliegt — eine Milliarde Handys, hundert Millionen Laptops, Racks "veralteter" Server. Sie haben CPU, Speicher und Bandbreite, die heute verschwendet werden. AirWeb ist der erste Schritt, all das nützlich zu machen, im Besitz derer, die es bezahlt haben, transparent peer-to-peer gehandelt.',
+      'The world is full of perfectly good hardware sitting idle — a billion phones, a hundred million laptops, racks of "obsolete" servers. They have CPU, memory, and bandwidth that today goes to waste. Airweb is the first step toward letting all of that quietly become useful, owned by the people who already paid for it, traded in a transparent, peer-to-peer way.':
+        'Die Welt ist voll von einwandfreier Hardware, die brachliegt — eine Milliarde Handys, hundert Millionen Laptops, Racks "veralteter" Server. Sie haben CPU, Speicher und Bandbreite, die heute verschwendet werden. Airweb ist der erste Schritt, all das nützlich zu machen, im Besitz derer, die es bezahlt haben, transparent peer-to-peer gehandelt.',
       'Open-source cloud provider': 'Open-Source-Cloud-Anbieter',
       'Hyperscaler-class capabilities don\'t have to live behind three logos and a credit-card form. Our long-term goal is an open, federated cloud where the "data center" is a coalition of homes, offices, and community spaces.':
         'Hyperscaler-Fähigkeiten müssen nicht hinter drei Logos und einem Kreditkarten-Formular leben. Unser Langzeit-Ziel ist eine offene, föderierte Cloud, in der das "Rechenzentrum" eine Koalition aus Wohnungen, Büros und Gemeinschaftsräumen ist.',
@@ -1039,8 +1039,8 @@
       'Credits earned by contributing capacity buy capacity from others. Over time, that loop becomes a real economy — one where small operators, students, and hobbyists are first-class participants, not just customers.':
         'Credits, die durch beigetragene Kapazität verdient werden, kaufen Kapazität anderer. Mit der Zeit wird daraus eine echte Wirtschaft — in der kleine Betreiber, Studenten und Hobbyisten erstklassige Teilnehmer sind, nicht nur Kunden.',
       'Greener by default': 'Grüner von Haus aus',
-      'The most sustainable server is one that already exists. By giving a second life to devices that would otherwise be sitting idle — or worse, in a landfill — AirWeb reduces the need to spin up new fleets of always-on hardware just to serve a few requests per minute. Smaller fleet, less embodied carbon, less e-waste, less drain on the grid.':
-        'Der nachhaltigste Server ist der, den es schon gibt. Indem AirWeb Geräten ein zweites Leben gibt, die sonst brachliegen — oder schlimmer, auf dem Schrott landen — verringert es den Bedarf an neuen Always-on-Flotten nur für ein paar Anfragen pro Minute. Kleinere Flotte, weniger graue Energie, weniger E-Müll, weniger Netzbelastung.',
+      'The most sustainable server is one that already exists. By giving a second life to devices that would otherwise be sitting idle — or worse, in a landfill — Airweb reduces the need to spin up new fleets of always-on hardware just to serve a few requests per minute. Smaller fleet, less embodied carbon, less e-waste, less drain on the grid.':
+        'Der nachhaltigste Server ist der, den es schon gibt. Indem Airweb Geräten ein zweites Leben gibt, die sonst brachliegen — oder schlimmer, auf dem Schrott landen — verringert es den Bedarf an neuen Always-on-Flotten nur für ein paar Anfragen pro Minute. Kleinere Flotte, weniger graue Energie, weniger E-Müll, weniger Netzbelastung.',
       'Reuses hardware you already own instead of provisioning new servers.':
         'Wiederverwendet Hardware, die du bereits besitzt, statt neue Server bereitzustellen.',
       'Idle tunnels consume effectively nothing — they just sit on an SSH socket.':
@@ -1050,8 +1050,8 @@
       'FAQ': 'FAQ',
       'What kind of "spare device" actually works?': 'Welche Art "ungenutztes Gerät" funktioniert eigentlich?',
       'Anything that can run an': 'Alles, was einen',
-      'client and stay online: an old laptop, a desktop you barely use, a Raspberry Pi, a NAS, a mini-PC, even some routers. If it can hold an SSH session open, it can be an AirWeb node.':
-        '-Client laufen lassen und online bleiben kann: ein alter Laptop, ein kaum genutzter Desktop, ein Raspberry Pi, ein NAS, ein Mini-PC, sogar manche Router. Wenn es eine SSH-Session offen halten kann, kann es ein AirWeb-Knoten sein.',
+      'client and stay online: an old laptop, a desktop you barely use, a Raspberry Pi, a NAS, a mini-PC, even some routers. If it can hold an SSH session open, it can be an Airweb node.':
+        '-Client laufen lassen und online bleiben kann: ein alter Laptop, ein kaum genutzter Desktop, ein Raspberry Pi, ein NAS, ein Mini-PC, sogar manche Router. Wenn es eine SSH-Session offen halten kann, kann es ein Airweb-Knoten sein.',
       'Do I need to install anything?': 'Muss ich etwas installieren?',
       'No. Any standard': 'Nein. Jeder Standard-',
       'client works once you\'ve downloaded': '-Client funktioniert, sobald du',
@@ -1068,8 +1068,8 @@
       'account id is derived deterministically from the public key.':
         '-Konto-ID wird deterministisch aus dem öffentlichen Schlüssel abgeleitet.',
       'Is the traffic encrypted?': 'Ist der Traffic verschlüsselt?',
-      'The leg between your device and AirWeb is encrypted by SSH. The public leg uses whatever the front door speaks (HTTP on the bare port, HTTPS behind a TLS reverse proxy). For end-to-end TLS, terminate inside your local app and use a raw TCP tunnel.':
-        'Der Abschnitt zwischen deinem Gerät und AirWeb ist per SSH verschlüsselt. Der öffentliche Abschnitt nutzt, was die Eingangstür spricht (HTTP am Port, HTTPS hinter TLS-Reverse-Proxy). Für End-zu-End-TLS terminiere in deiner lokalen App und nutze einen Raw-TCP-Tunnel.',
+      'The leg between your device and Airweb is encrypted by SSH. The public leg uses whatever the front door speaks (HTTP on the bare port, HTTPS behind a TLS reverse proxy). For end-to-end TLS, terminate inside your local app and use a raw TCP tunnel.':
+        'Der Abschnitt zwischen deinem Gerät und Airweb ist per SSH verschlüsselt. Der öffentliche Abschnitt nutzt, was die Eingangstür spricht (HTTP am Port, HTTPS hinter TLS-Reverse-Proxy). Für End-zu-End-TLS terminiere in deiner lokalen App und nutze einen Raw-TCP-Tunnel.',
       'Can I pick my own subdomain?': 'Kann ich meine eigene Subdomain wählen?',
       'Yes — the SSH username you connect with becomes your subdomain (':
         'Ja — der SSH-Benutzername, mit dem du dich verbindest, wird deine Subdomain (',
@@ -1083,8 +1083,8 @@
       'source': 'Quelltext'
     },
     zh: {
-      'AirWeb': 'AirWeb',
-      'AirWeb home': 'AirWeb 首页',
+      'Airweb': 'Airweb',
+      'Airweb home': 'Airweb 首页',
       'Settings': '设置',
       'Currency': '货币',
       'Go to dashboard': '前往仪表盘',
@@ -1098,20 +1098,20 @@
       'Platform': '平台',
       'Reference': '参考',
       // Docs sidebar — page nav labels
-      'Introduction to AirWeb': 'AirWeb 简介',
+      'Introduction to Airweb': 'Airweb 简介',
       'Quick start': '快速开始',
-      'Installing the AirWeb client': '安装 AirWeb 客户端',
+      'Installing the Airweb client': '安装 Airweb 客户端',
       'HTTP tunnels': 'HTTP 隧道',
       'TCP tunnels': 'TCP 隧道',
       'Handles': '句柄',
-      'Credits, billing and the AWC economy': '积分、计费与 AWC 经济',
+      'Credits, billing and the AWB economy': '积分、计费与 AWB 经济',
       'The dashboard': '控制台',
       'The Connections page': '连接页面',
       'The airweb CLI reference': 'airweb CLI 参考',
       'HTTP API reference': 'HTTP API 参考',
       'Security model and best practices': '安全模型与最佳实践',
       'Frequently asked questions': '常见问题',
-      'Troubleshooting common AirWeb errors': 'AirWeb 常见错误排查',
+      'Troubleshooting common Airweb errors': 'Airweb 常见错误排查',
       'Changelog': '更新日志',
       // Docs chrome
       'Search the docs… (press / to focus)': '搜索文档…（按 / 聚焦）',
@@ -1170,7 +1170,7 @@
       'Country': '国家',
       'Min cores': '最低核心数',
       'Min RAM (GB)': '最低内存 (GB)',
-      'Max price (cr/min)': '最高价 (AWC/分)',
+      'Max price (cr/min)': '最高价 (AWB/分)',
       'OS contains': '操作系统包含',
       'linux, debian…': 'linux, debian…',
       'Apply': '应用',
@@ -1266,7 +1266,7 @@
         '使用以下命令重新连接。选择任意空闲的 mysub 名称（或使用你的别名）：',
       'After it connects, the new tunnel will show up in My activity with kind tcp. Click Resume on it, then List for lease.':
         '连接后，新隧道将出现在「我的活动」中，类型为 tcp。点击「恢复」，然后「挂牌出租」。',
-      'Sign in with your AirWeb key': '使用你的 AirWeb 密钥登录',
+      'Sign in with your Airweb key': '使用你的 Airweb 密钥登录',
       'Paste your': '粘贴你的',
       'file (the OpenSSH private key you downloaded at registration). We re-derive your account ID from it locally on the server and start a session — the key is not stored.':
         '文件（注册时下载的 OpenSSH 私钥）。我们在服务器本地由此重新派生账户 ID 并开始会话 — 密钥不会被存储。',
@@ -1285,7 +1285,7 @@
       'no credits': '无积分', 'lease': '租赁', 'listed': '已挂牌',
       'private': '私密', 'validated': '已验证', 'none': '无', 'never': '从未',
       'expired': '已过期', 'open': '打开', 'passcode': '通行码', 'spent': '已花费',
-      'avg': '平均', 'cr/min': 'AWC/分', 'cr': 'AWC', 'AWC/min': 'AWC/分', 'AWC': 'AWC', 'tunnel offline': '隧道离线',
+      'avg': '平均', 'cr/min': 'AWB/分', 'cr': 'AWB', 'AWB/min': 'AWB/分', 'AWB': 'AWB', 'tunnel offline': '隧道离线',
       'Type': '类型', 'Item': '项目', 'Details': '详情', 'Charged': '费用',
       'Listed': '挂牌', 'Earned': '收益', 'Rate': '费率', 'Actions': '操作',
       'List': '挂牌', 'List?': '挂牌？', 'Remove listing': '移除挂牌',
@@ -1299,8 +1299,8 @@
       // ---- Landing page ----
       'A people-powered cloud, built from the': '由人民驱动的云,构建于',
       'devices you already own': '你已经拥有的设备',
-      'AirWeb turns spare laptops, old phones, and idle home servers into tiny public endpoints. Demo an app in seconds, reach your home computer from anywhere, or lease a micro-server by the minute — and earn credits while your own devices help carry the load.':
-        'AirWeb 把闲置的笔记本、旧手机和空转的家庭服务器变成小型公共端点。几秒钟演示一个应用,从任何地方访问你的家庭电脑,或按分钟租赁一个微型服务器 —— 同时在你的设备帮忙分担负载时赚取积分。',
+      'Airweb turns spare laptops, old phones, and idle home servers into tiny public endpoints. Demo an app in seconds, reach your home computer from anywhere, or lease a micro-server by the minute — and earn credits while your own devices help carry the load.':
+        'Airweb 把闲置的笔记本、旧手机和空转的家庭服务器变成小型公共端点。几秒钟演示一个应用,从任何地方访问你的家庭电脑,或按分钟租赁一个微型服务器 —— 同时在你的设备帮忙分担负载时赚取积分。',
       'get your key →': '获取你的密钥 →',
       'or restore from existing key': '或从已有密钥恢复',
       'pay only for traffic': '只为流量付费',
@@ -1358,17 +1358,17 @@
       'in uptime rewards, plus': '的在线奖励,加上',
       'when someone leases your tunnel from the marketplace.': ',当有人从市场租用你的隧道时。',
       'Earn, learn, and build with the community': '与社区一起赚取、学习和构建',
-      'AirWeb is built around a simple loop: plug in a spare device, share its uptime, earn credits, spend them on things you need. Along the way you pick up real networking, SSH, and distributed-systems skills — and you do it next to other people doing the same.':
-        'AirWeb 围绕一个简单循环:插入闲置设备,共享其在线时间,赚取积分,用它换你需要的东西。一路上你掌握真实的网络、SSH 和分布式系统技能 —— 与做同样事情的人一起。',
+      'Airweb is built around a simple loop: plug in a spare device, share its uptime, earn credits, spend them on things you need. Along the way you pick up real networking, SSH, and distributed-systems skills — and you do it next to other people doing the same.':
+        'Airweb 围绕一个简单循环:插入闲置设备,共享其在线时间,赚取积分,用它换你需要的东西。一路上你掌握真实的网络、SSH 和分布式系统技能 —— 与做同样事情的人一起。',
       'Open marketplace': '开放市场',
       'List your spare-device tunnel, set a price per minute, and watch the leases come in. Browse what others are offering and rent the right region or hardware for the job.':
         '上架你的闲置设备隧道,设置每分钟价格,看着租约滚滚而来。浏览他人的供应,租到合适的地区或硬件。',
       'Learn by hosting': '在托管中学习',
-      'Real reverse SSH, real TCP, real metering. The repo is open source — read it, fork it, and use AirWeb to teach yourself the bits of infrastructure that schools rarely cover.':
-        '真实的反向 SSH、真实的 TCP、真实的计费。仓库开源 —— 读它、fork 它,用 AirWeb 自学学校很少涵盖的基础设施。',
+      'Real reverse SSH, real TCP, real metering. The repo is open source — read it, fork it, and use Airweb to teach yourself the bits of infrastructure that schools rarely cover.':
+        '真实的反向 SSH、真实的 TCP、真实的计费。仓库开源 —— 读它、fork 它,用 Airweb 自学学校很少涵盖的基础设施。',
       'The long view: a micro-server socio-economy': '长远视角:微服务器社会经济',
-      'The world is full of perfectly good hardware sitting idle — a billion phones, a hundred million laptops, racks of "obsolete" servers. They have CPU, memory, and bandwidth that today goes to waste. AirWeb is the first step toward letting all of that quietly become useful, owned by the people who already paid for it, traded in a transparent, peer-to-peer way.':
-        '世界上充满了状况良好却闲置的硬件 —— 十亿部手机、一亿台笔记本、一柜柜"过时"服务器。它们有今天被浪费的 CPU、内存和带宽。AirWeb 是让这一切静静变得有用的第一步,归早已为之付费的人所有,以透明的点对点方式交易。',
+      'The world is full of perfectly good hardware sitting idle — a billion phones, a hundred million laptops, racks of "obsolete" servers. They have CPU, memory, and bandwidth that today goes to waste. Airweb is the first step toward letting all of that quietly become useful, owned by the people who already paid for it, traded in a transparent, peer-to-peer way.':
+        '世界上充满了状况良好却闲置的硬件 —— 十亿部手机、一亿台笔记本、一柜柜"过时"服务器。它们有今天被浪费的 CPU、内存和带宽。Airweb 是让这一切静静变得有用的第一步,归早已为之付费的人所有,以透明的点对点方式交易。',
       'Open-source cloud provider': '开源云服务商',
       'Hyperscaler-class capabilities don\'t have to live behind three logos and a credit-card form. Our long-term goal is an open, federated cloud where the "data center" is a coalition of homes, offices, and community spaces.':
         '超大规模级能力不必躲在三个 logo 和一张信用卡表单背后。我们的长期目标是一个开放、联邦化的云,其中"数据中心"是家庭、办公室和社区空间的联盟。',
@@ -1376,8 +1376,8 @@
       'Credits earned by contributing capacity buy capacity from others. Over time, that loop becomes a real economy — one where small operators, students, and hobbyists are first-class participants, not just customers.':
         '贡献算力赚到的积分用于购买他人的算力。随着时间推移,这个循环成为真正的经济 —— 在那里小运营者、学生和爱好者是一等参与者,而非仅仅客户。',
       'Greener by default': '默认更环保',
-      'The most sustainable server is one that already exists. By giving a second life to devices that would otherwise be sitting idle — or worse, in a landfill — AirWeb reduces the need to spin up new fleets of always-on hardware just to serve a few requests per minute. Smaller fleet, less embodied carbon, less e-waste, less drain on the grid.':
-        '最可持续的服务器是已经存在的那台。通过给原本闲置 —— 或更糟,被填埋 —— 的设备第二次生命,AirWeb 减少了仅为每分钟几个请求而启动新批 always-on 硬件的需要。更小的机群、更少的碳足迹、更少的电子垃圾、更少的电网负担。',
+      'The most sustainable server is one that already exists. By giving a second life to devices that would otherwise be sitting idle — or worse, in a landfill — Airweb reduces the need to spin up new fleets of always-on hardware just to serve a few requests per minute. Smaller fleet, less embodied carbon, less e-waste, less drain on the grid.':
+        '最可持续的服务器是已经存在的那台。通过给原本闲置 —— 或更糟,被填埋 —— 的设备第二次生命,Airweb 减少了仅为每分钟几个请求而启动新批 always-on 硬件的需要。更小的机群、更少的碳足迹、更少的电子垃圾、更少的电网负担。',
       'Reuses hardware you already own instead of provisioning new servers.':
         '重用你已经拥有的硬件,而不是配备新服务器。',
       'Idle tunnels consume effectively nothing — they just sit on an SSH socket.':
@@ -1387,8 +1387,8 @@
       'FAQ': '常见问题',
       'What kind of "spare device" actually works?': '什么样的"闲置设备"可以用?',
       'Anything that can run an': '任何能运行',
-      'client and stay online: an old laptop, a desktop you barely use, a Raspberry Pi, a NAS, a mini-PC, even some routers. If it can hold an SSH session open, it can be an AirWeb node.':
-        '客户端并保持在线的设备:旧笔记本、你几乎不用的台式机、Raspberry Pi、NAS、迷你 PC,甚至一些路由器。只要能保持 SSH 会话,它就可以成为 AirWeb 节点。',
+      'client and stay online: an old laptop, a desktop you barely use, a Raspberry Pi, a NAS, a mini-PC, even some routers. If it can hold an SSH session open, it can be an Airweb node.':
+        '客户端并保持在线的设备:旧笔记本、你几乎不用的台式机、Raspberry Pi、NAS、迷你 PC,甚至一些路由器。只要能保持 SSH 会话,它就可以成为 Airweb 节点。',
       'Do I need to install anything?': '我需要安装什么吗?',
       'No. Any standard': '不需要。任何标准的',
       'client works once you\'ve downloaded': '客户端只要你下载了',
@@ -1405,8 +1405,8 @@
       'account id is derived deterministically from the public key.':
         '账户 ID 是从公钥确定性派生的。',
       'Is the traffic encrypted?': '流量加密吗?',
-      'The leg between your device and AirWeb is encrypted by SSH. The public leg uses whatever the front door speaks (HTTP on the bare port, HTTPS behind a TLS reverse proxy). For end-to-end TLS, terminate inside your local app and use a raw TCP tunnel.':
-        '你的设备到 AirWeb 这一段由 SSH 加密。公共那一段使用前门支持的协议(裸端口上是 HTTP,TLS 反向代理后是 HTTPS)。要端到端 TLS,请在本地应用内终止 TLS 并使用原始 TCP 隧道。',
+      'The leg between your device and Airweb is encrypted by SSH. The public leg uses whatever the front door speaks (HTTP on the bare port, HTTPS behind a TLS reverse proxy). For end-to-end TLS, terminate inside your local app and use a raw TCP tunnel.':
+        '你的设备到 Airweb 这一段由 SSH 加密。公共那一段使用前门支持的协议(裸端口上是 HTTP,TLS 反向代理后是 HTTPS)。要端到端 TLS,请在本地应用内终止 TLS 并使用原始 TCP 隧道。',
       'Can I pick my own subdomain?': '我可以选择自己的子域名吗?',
       'Yes — the SSH username you connect with becomes your subdomain (':
         '可以 —— 你连接时使用的 SSH 用户名就是你的子域名 (',
@@ -1420,8 +1420,8 @@
       'source': '源码'
     },
     ja: {
-      'AirWeb': 'AirWeb',
-      'AirWeb home': 'AirWeb ホーム',
+      'Airweb': 'Airweb',
+      'Airweb home': 'Airweb ホーム',
       'Settings': '設定',
       'Currency': '通貨',
       'Go to dashboard': 'ダッシュボードへ',
@@ -1435,20 +1435,20 @@
       'Platform': 'プラットフォーム',
       'Reference': 'リファレンス',
       // Docs sidebar — page nav labels
-      'Introduction to AirWeb': 'AirWeb の概要',
+      'Introduction to Airweb': 'Airweb の概要',
       'Quick start': 'クイックスタート',
-      'Installing the AirWeb client': 'AirWeb クライアントのインストール',
+      'Installing the Airweb client': 'Airweb クライアントのインストール',
       'HTTP tunnels': 'HTTP トンネル',
       'TCP tunnels': 'TCP トンネル',
       'Handles': 'ハンドル',
-      'Credits, billing and the AWC economy': 'クレジット・課金・AWC エコノミー',
+      'Credits, billing and the AWB economy': 'クレジット・課金・AWB エコノミー',
       'The dashboard': 'ダッシュボード',
       'The Connections page': '接続ページ',
       'The airweb CLI reference': 'airweb CLI リファレンス',
       'HTTP API reference': 'HTTP API リファレンス',
       'Security model and best practices': 'セキュリティモデルとベストプラクティス',
       'Frequently asked questions': 'よくある質問',
-      'Troubleshooting common AirWeb errors': 'AirWeb のよくあるエラー対処',
+      'Troubleshooting common Airweb errors': 'Airweb のよくあるエラー対処',
       'Changelog': '変更履歴',
       // Docs chrome
       'Search the docs… (press / to focus)': 'ドキュメントを検索…（/ でフォーカス）',
@@ -1507,7 +1507,7 @@
       'Country': '国',
       'Min cores': '最小コア数',
       'Min RAM (GB)': '最小RAM (GB)',
-      'Max price (cr/min)': '最大価格 (AWC/分)',
+      'Max price (cr/min)': '最大価格 (AWB/分)',
       'OS contains': 'OSに含む',
       'linux, debian…': 'linux, debian…',
       'Apply': '適用',
@@ -1603,7 +1603,7 @@
         '下のコマンドで再接続してください。空いているmysub名（またはあなたのハンドル）を選択：',
       'After it connects, the new tunnel will show up in My activity with kind tcp. Click Resume on it, then List for lease.':
         '接続後、新しいトンネルは「マイアクティビティ」に種別tcpで表示されます。「再開」をクリックし、次に「リース出品」。',
-      'Sign in with your AirWeb key': 'AirWebキーでサインイン',
+      'Sign in with your Airweb key': 'Airwebキーでサインイン',
       'Paste your': 'あなたの',
       'file (the OpenSSH private key you downloaded at registration). We re-derive your account ID from it locally on the server and start a session — the key is not stored.':
         'ファイル（登録時にダウンロードしたOpenSSH秘密鍵）を貼り付けてください。サーバー上でアカウントIDを再導出してセッションを開始 — キーは保存されません。',
@@ -1622,7 +1622,7 @@
       'no credits': 'クレジットなし', 'lease': 'リース', 'listed': '出品中',
       'private': '非公開', 'validated': '検証済み', 'none': 'なし', 'never': 'なし',
       'expired': '期限切れ', 'open': '開く', 'passcode': 'パスコード', 'spent': '使用',
-      'avg': '平均', 'cr/min': 'AWC/分', 'cr': 'AWC', 'AWC/min': 'AWC/分', 'AWC': 'AWC', 'tunnel offline': 'トンネルオフライン',
+      'avg': '平均', 'cr/min': 'AWB/分', 'cr': 'AWB', 'AWB/min': 'AWB/分', 'AWB': 'AWB', 'tunnel offline': 'トンネルオフライン',
       'Type': '種別', 'Item': '項目', 'Details': '詳細', 'Charged': '課金',
       'Listed': '出品', 'Earned': '獲得', 'Rate': 'レート', 'Actions': '操作',
       'List': '出品', 'List?': '出品？', 'Remove listing': '出品を削除',
@@ -1636,8 +1636,8 @@
       // ---- Landing page ----
       'A people-powered cloud, built from the': '人が動かすクラウド、',
       'devices you already own': 'あなたが既に持っているデバイス',
-      'AirWeb turns spare laptops, old phones, and idle home servers into tiny public endpoints. Demo an app in seconds, reach your home computer from anywhere, or lease a micro-server by the minute — and earn credits while your own devices help carry the load.':
-        'AirWeb は余ったノートPC、古いスマホ、遊んでいるホームサーバを小さな公開エンドポイントに変えます。数秒でアプリをデモし、どこからでも自宅PCにアクセスし、分単位でマイクロサーバを借りる ——その間、自分のデバイスが負荷を分担してクレジットを稼ぎます。',
+      'Airweb turns spare laptops, old phones, and idle home servers into tiny public endpoints. Demo an app in seconds, reach your home computer from anywhere, or lease a micro-server by the minute — and earn credits while your own devices help carry the load.':
+        'Airweb は余ったノートPC、古いスマホ、遊んでいるホームサーバを小さな公開エンドポイントに変えます。数秒でアプリをデモし、どこからでも自宅PCにアクセスし、分単位でマイクロサーバを借りる ——その間、自分のデバイスが負荷を分担してクレジットを稼ぎます。',
       'get your key →': 'キーを取得 →',
       'or restore from existing key': 'または既存のキーから復元',
       'pay only for traffic': 'トラフィック分だけ支払い',
@@ -1695,17 +1695,17 @@
       'in uptime rewards, plus': 'のアップタイム報酬、さらに',
       'when someone leases your tunnel from the marketplace.': '、マーケットで誰かがあなたのトンネルを借りた時。',
       'Earn, learn, and build with the community': 'コミュニティで稼ぎ、学び、作る',
-      'AirWeb is built around a simple loop: plug in a spare device, share its uptime, earn credits, spend them on things you need. Along the way you pick up real networking, SSH, and distributed-systems skills — and you do it next to other people doing the same.':
-        'AirWeb はシンプルなループに基づいています:余ったデバイスを差し、そのアップタイムを共有し、クレジットを稼ぎ、必要なものに使う。途中で本物のネットワーキング、SSH、分散システムのスキルが身につく ——同じことをする他の人たちと一緒に。',
+      'Airweb is built around a simple loop: plug in a spare device, share its uptime, earn credits, spend them on things you need. Along the way you pick up real networking, SSH, and distributed-systems skills — and you do it next to other people doing the same.':
+        'Airweb はシンプルなループに基づいています:余ったデバイスを差し、そのアップタイムを共有し、クレジットを稼ぎ、必要なものに使う。途中で本物のネットワーキング、SSH、分散システムのスキルが身につく ——同じことをする他の人たちと一緒に。',
       'Open marketplace': 'オープンなマーケット',
       'List your spare-device tunnel, set a price per minute, and watch the leases come in. Browse what others are offering and rent the right region or hardware for the job.':
         '余ったデバイスのトンネルを出品して分単価を設定すれば、リースが入ってきます。他人の提供を見て、必要な地域やハードウェアを借りましょう。',
       'Learn by hosting': 'ホストして学ぶ',
-      'Real reverse SSH, real TCP, real metering. The repo is open source — read it, fork it, and use AirWeb to teach yourself the bits of infrastructure that schools rarely cover.':
-        '本物のリバース SSH、本物の TCP、本物の計量。リポジトリはオープンソース ——読んで、フォークして、学校ではあまり扱われないインフラの知識を AirWeb で自分に教えましょう。',
+      'Real reverse SSH, real TCP, real metering. The repo is open source — read it, fork it, and use Airweb to teach yourself the bits of infrastructure that schools rarely cover.':
+        '本物のリバース SSH、本物の TCP、本物の計量。リポジトリはオープンソース ——読んで、フォークして、学校ではあまり扱われないインフラの知識を Airweb で自分に教えましょう。',
       'The long view: a micro-server socio-economy': '長期的視点:マイクロサーバの社会経済',
-      'The world is full of perfectly good hardware sitting idle — a billion phones, a hundred million laptops, racks of "obsolete" servers. They have CPU, memory, and bandwidth that today goes to waste. AirWeb is the first step toward letting all of that quietly become useful, owned by the people who already paid for it, traded in a transparent, peer-to-peer way.':
-        '世界には完全に使える状態で遊んでいるハードウェアが溢れています ——10 億台のスマホ、1 億台のノート PC、「旧式」サーバのラック。それらは今日無駄になっている CPU、メモリ、帯域を持っています。AirWeb はそのすべてを静かに有用化する最初の一歩 —— 既にそれを買った人々の手に残り、透明な P2P で取引されます。',
+      'The world is full of perfectly good hardware sitting idle — a billion phones, a hundred million laptops, racks of "obsolete" servers. They have CPU, memory, and bandwidth that today goes to waste. Airweb is the first step toward letting all of that quietly become useful, owned by the people who already paid for it, traded in a transparent, peer-to-peer way.':
+        '世界には完全に使える状態で遊んでいるハードウェアが溢れています ——10 億台のスマホ、1 億台のノート PC、「旧式」サーバのラック。それらは今日無駄になっている CPU、メモリ、帯域を持っています。Airweb はそのすべてを静かに有用化する最初の一歩 —— 既にそれを買った人々の手に残り、透明な P2P で取引されます。',
       'Open-source cloud provider': 'オープンソースのクラウドプロバイダ',
       'Hyperscaler-class capabilities don\'t have to live behind three logos and a credit-card form. Our long-term goal is an open, federated cloud where the "data center" is a coalition of homes, offices, and community spaces.':
         'ハイパースケーラ級の機能を、3 つのロゴとクレジットカード入力フォームの向こうに置く必要はありません。私たちの長期目標は、「データセンター」が家庭・オフィス・コミュニティ空間の連合になる、オープンでフェデレートされたクラウドです。',
@@ -1713,7 +1713,7 @@
       'Credits earned by contributing capacity buy capacity from others. Over time, that loop becomes a real economy — one where small operators, students, and hobbyists are first-class participants, not just customers.':
         '容量を提供して得たクレジットで、他人の容量を買えます。時を経て、そのループは本物の経済になります ——小さな運営者、学生、愛好家がただの顧客ではなく、一級の参加者である経済に。',
       'Greener by default': 'デフォルトでより環境に優しい',
-      'The most sustainable server is one that already exists. By giving a second life to devices that would otherwise be sitting idle — or worse, in a landfill — AirWeb reduces the need to spin up new fleets of always-on hardware just to serve a few requests per minute. Smaller fleet, less embodied carbon, less e-waste, less drain on the grid.':
+      'The most sustainable server is one that already exists. By giving a second life to devices that would otherwise be sitting idle — or worse, in a landfill — Airweb reduces the need to spin up new fleets of always-on hardware just to serve a few requests per minute. Smaller fleet, less embodied carbon, less e-waste, less drain on the grid.':
         '最も持続可能なサーバは既に存在するものです。本来なら遊んでいる ——あるいは埋立地行きの ——デバイスに第二の命を与えることで、毎分数リクエスト程度のために新しい常時稼働ハードウェアの群れを立ち上げる必要が減ります。群れが小さくなり、含有炭素が減り、電子ゴミが減り、電力網の負担も減ります。',
       'Reuses hardware you already own instead of provisioning new servers.':
         '新しいサーバを用意するのではなく、既に持っているハードウェアを再利用します。',
@@ -1724,8 +1724,8 @@
       'FAQ': 'FAQ',
       'What kind of "spare device" actually works?': 'どんな「余ったデバイス」が実際に使えますか?',
       'Anything that can run an': '',
-      'client and stay online: an old laptop, a desktop you barely use, a Raspberry Pi, a NAS, a mini-PC, even some routers. If it can hold an SSH session open, it can be an AirWeb node.':
-        'クライアントを実行してオンラインを保てるものなら何でも:古いノート PC、ほとんど使っていないデスクトップ、Raspberry Pi、NAS、ミニ PC、一部のルータも。SSH セッションを開いておけるなら、AirWeb ノードになれます。',
+      'client and stay online: an old laptop, a desktop you barely use, a Raspberry Pi, a NAS, a mini-PC, even some routers. If it can hold an SSH session open, it can be an Airweb node.':
+        'クライアントを実行してオンラインを保てるものなら何でも:古いノート PC、ほとんど使っていないデスクトップ、Raspberry Pi、NAS、ミニ PC、一部のルータも。SSH セッションを開いておけるなら、Airweb ノードになれます。',
       'Do I need to install anything?': '何かインストールが必要ですか?',
       'No. Any standard': 'いいえ。標準的な',
       'client works once you\'ve downloaded': 'クライアントなら、',
@@ -1742,8 +1742,8 @@
       'account id is derived deterministically from the public key.':
         'アカウント ID は公開鍵から決定論的に導出されます。',
       'Is the traffic encrypted?': 'トラフィックは暗号化されますか?',
-      'The leg between your device and AirWeb is encrypted by SSH. The public leg uses whatever the front door speaks (HTTP on the bare port, HTTPS behind a TLS reverse proxy). For end-to-end TLS, terminate inside your local app and use a raw TCP tunnel.':
-        'デバイスと AirWeb の間は SSH で暗号化されます。公開側は入口の話す言語次第(素ポートでは HTTP、TLS リバースプロキシ越しでは HTTPS)。エンドツーエンド TLS が必要ならローカルアプリ内で終端し、Raw TCP トンネルを使ってください。',
+      'The leg between your device and Airweb is encrypted by SSH. The public leg uses whatever the front door speaks (HTTP on the bare port, HTTPS behind a TLS reverse proxy). For end-to-end TLS, terminate inside your local app and use a raw TCP tunnel.':
+        'デバイスと Airweb の間は SSH で暗号化されます。公開側は入口の話す言語次第(素ポートでは HTTP、TLS リバースプロキシ越しでは HTTPS)。エンドツーエンド TLS が必要ならローカルアプリ内で終端し、Raw TCP トンネルを使ってください。',
       'Can I pick my own subdomain?': '自分のサブドメインを選べますか?',
       'Yes — the SSH username you connect with becomes your subdomain (':
         'はい ——接続時に使った SSH ユーザー名がサブドメインになります (',
@@ -1757,8 +1757,8 @@
       'source': 'ソース'
     },
     ko: {
-      'AirWeb': 'AirWeb',
-      'AirWeb home': 'AirWeb 홈',
+      'Airweb': 'Airweb',
+      'Airweb home': 'Airweb 홈',
       'Settings': '설정',
       'Go to dashboard': '대시보드로 이동',
       'Dashboard': '대시보드',
@@ -1771,20 +1771,20 @@
       'Platform': '플랫폼',
       'Reference': '참조',
       // Docs sidebar — page nav labels
-      'Introduction to AirWeb': 'AirWeb 소개',
+      'Introduction to Airweb': 'Airweb 소개',
       'Quick start': '빠른 시작',
-      'Installing the AirWeb client': 'AirWeb 클라이언트 설치',
+      'Installing the Airweb client': 'Airweb 클라이언트 설치',
       'HTTP tunnels': 'HTTP 터널',
       'TCP tunnels': 'TCP 터널',
       'Handles': '핸들',
-      'Credits, billing and the AWC economy': '크레딧, 결제 및 AWC 경제',
+      'Credits, billing and the AWB economy': '크레딧, 결제 및 AWB 경제',
       'The dashboard': '대시보드',
       'The Connections page': '연결 페이지',
       'The airweb CLI reference': 'airweb CLI 참조',
       'HTTP API reference': 'HTTP API 참조',
       'Security model and best practices': '보안 모델과 모범 사례',
       'Frequently asked questions': '자주 묻는 질문',
-      'Troubleshooting common AirWeb errors': '일반적인 AirWeb 오류 해결',
+      'Troubleshooting common Airweb errors': '일반적인 Airweb 오류 해결',
       'Changelog': '변경 로그',
       // Docs chrome
       'Search the docs… (press / to focus)': '문서 검색… (/ 로 포커스)',
@@ -1844,7 +1844,7 @@
       'Country': '국가',
       'Min cores': '최소 코어 수',
       'Min RAM (GB)': '최소 RAM (GB)',
-      'Max price (cr/min)': '최대 가격 (AWC/분)',
+      'Max price (cr/min)': '최대 가격 (AWB/분)',
       'OS contains': 'OS 포함',
       'linux, debian…': 'linux, debian…',
       'Apply': '적용',
@@ -1940,7 +1940,7 @@
         '아래 명령으로 재연결하세요. 사용 가능한 mysub 이름(또는 본인의 핸들)을 선택하세요:',
       'After it connects, the new tunnel will show up in My activity with kind tcp. Click Resume on it, then List for lease.':
         '연결 후 새 터널이 「내 활동」에 tcp 종류로 표시됩니다. 「재개」를 클릭한 다음 「리스 등록」을 클릭하세요.',
-      'Sign in with your AirWeb key': 'AirWeb 키로 로그인',
+      'Sign in with your Airweb key': 'Airweb 키로 로그인',
       'Paste your': '당신의',
       'file (the OpenSSH private key you downloaded at registration). We re-derive your account ID from it locally on the server and start a session — the key is not stored.':
         '파일(등록 시 다운로드한 OpenSSH 개인 키)을 붙여넣으세요. 서버에서 로컬로 계정 ID를 다시 도출하고 세션을 시작합니다 — 키는 저장되지 않습니다.',
@@ -1959,7 +1959,7 @@
       'no credits': '크레딧 없음', 'lease': '리스', 'listed': '등록됨',
       'private': '비공개', 'validated': '검증됨', 'none': '없음', 'never': '없음',
       'expired': '만료됨', 'open': '열기', 'passcode': '패스코드', 'spent': '사용',
-      'avg': '평균', 'cr/min': 'AWC/분', 'cr': 'AWC', 'AWC/min': 'AWC/분', 'AWC': 'AWC', 'tunnel offline': '터널 오프라인',
+      'avg': '평균', 'cr/min': 'AWB/분', 'cr': 'AWB', 'AWB/min': 'AWB/분', 'AWB': 'AWB', 'tunnel offline': '터널 오프라인',
       'Type': '종류', 'Item': '항목', 'Details': '세부', 'Charged': '청구',
       'Listed': '등록', 'Earned': '획득', 'Rate': '레이트', 'Actions': '작업',
       'List': '등록', 'List?': '등록?', 'Remove listing': '등록 제거',
@@ -1973,8 +1973,8 @@
       // ---- Landing page ----
       'A people-powered cloud, built from the': '사람이 만드는 클라우드,',
       'devices you already own': '이미 가진 디바이스로',
-      'AirWeb turns spare laptops, old phones, and idle home servers into tiny public endpoints. Demo an app in seconds, reach your home computer from anywhere, or lease a micro-server by the minute — and earn credits while your own devices help carry the load.':
-        'AirWeb는 안 쓰는 노트북, 오래된 휴대폰, 놀고 있는 홈 서버를 작은 공개 엔드포인트로 바꿉니다. 몇 초 만에 앱을 시연하고, 어디서든 집 컴퓨터에 접속하고, 분 단위로 마이크로 서버를 임대하세요 —— 당신의 기기가 부하를 분담하는 동안 크레딧을 얻습니다.',
+      'Airweb turns spare laptops, old phones, and idle home servers into tiny public endpoints. Demo an app in seconds, reach your home computer from anywhere, or lease a micro-server by the minute — and earn credits while your own devices help carry the load.':
+        'Airweb는 안 쓰는 노트북, 오래된 휴대폰, 놀고 있는 홈 서버를 작은 공개 엔드포인트로 바꿉니다. 몇 초 만에 앱을 시연하고, 어디서든 집 컴퓨터에 접속하고, 분 단위로 마이크로 서버를 임대하세요 —— 당신의 기기가 부하를 분담하는 동안 크레딧을 얻습니다.',
       'get your key →': '키 받기 →',
       'or restore from existing key': '또는 기존 키로 복원',
       'pay only for traffic': '트래픽만큼만 결제',
@@ -2032,17 +2032,17 @@
       'in uptime rewards, plus': '의 가동 시간 보상, 그리고',
       'when someone leases your tunnel from the marketplace.': ', 누군가 마켓플레이스에서 당신의 터널을 임대할 때.',
       'Earn, learn, and build with the community': '커뮤니티와 함께 벌고, 배우고, 만들기',
-      'AirWeb is built around a simple loop: plug in a spare device, share its uptime, earn credits, spend them on things you need. Along the way you pick up real networking, SSH, and distributed-systems skills — and you do it next to other people doing the same.':
-        'AirWeb는 단순한 순환을 기반으로 합니다: 안 쓰는 기기를 연결하고, 가동 시간을 공유하고, 크레딧을 벌어, 필요한 것에 쓰세요. 그 과정에서 실제 네트워킹, SSH, 분산 시스템 기술을 익히게 됩니다 —— 같은 일을 하는 다른 사람들과 함께.',
+      'Airweb is built around a simple loop: plug in a spare device, share its uptime, earn credits, spend them on things you need. Along the way you pick up real networking, SSH, and distributed-systems skills — and you do it next to other people doing the same.':
+        'Airweb는 단순한 순환을 기반으로 합니다: 안 쓰는 기기를 연결하고, 가동 시간을 공유하고, 크레딧을 벌어, 필요한 것에 쓰세요. 그 과정에서 실제 네트워킹, SSH, 분산 시스템 기술을 익히게 됩니다 —— 같은 일을 하는 다른 사람들과 함께.',
       'Open marketplace': '오픈 마켓플레이스',
       'List your spare-device tunnel, set a price per minute, and watch the leases come in. Browse what others are offering and rent the right region or hardware for the job.':
         '안 쓰는 기기의 터널을 등록하고, 분당 가격을 설정한 뒤 임대가 들어오는 걸 지켜보세요. 다른 사람이 제공하는 것을 둘러보고 작업에 맞는 지역이나 하드웨어를 빌리세요.',
       'Learn by hosting': '호스팅하며 배우기',
-      'Real reverse SSH, real TCP, real metering. The repo is open source — read it, fork it, and use AirWeb to teach yourself the bits of infrastructure that schools rarely cover.':
-        '진짜 리버스 SSH, 진짜 TCP, 진짜 과금. 저장소는 오픈 소스 —— 읽고, 포크하고, 학교에서 거의 다루지 않는 인프라 지식을 AirWeb로 스스로 익히세요.',
+      'Real reverse SSH, real TCP, real metering. The repo is open source — read it, fork it, and use Airweb to teach yourself the bits of infrastructure that schools rarely cover.':
+        '진짜 리버스 SSH, 진짜 TCP, 진짜 과금. 저장소는 오픈 소스 —— 읽고, 포크하고, 학교에서 거의 다루지 않는 인프라 지식을 Airweb로 스스로 익히세요.',
       'The long view: a micro-server socio-economy': '장기적 시각: 마이크로 서버 사회경제',
-      'The world is full of perfectly good hardware sitting idle — a billion phones, a hundred million laptops, racks of "obsolete" servers. They have CPU, memory, and bandwidth that today goes to waste. AirWeb is the first step toward letting all of that quietly become useful, owned by the people who already paid for it, traded in a transparent, peer-to-peer way.':
-        '세상은 멀쩡한데도 놀고 있는 하드웨어로 가득합니다 —— 10억 대의 휴대폰, 1억 대의 노트북, "구식"이라 불리는 서버 랙들. 오늘 낭비되고 있는 CPU, 메모리, 대역폭을 가지고 있죠. AirWeb는 그 모두가 조용히 유용해지도록 만드는 첫걸음입니다 —— 이미 그것을 산 사람들의 손에 남고, 투명한 P2P 방식으로 거래됩니다.',
+      'The world is full of perfectly good hardware sitting idle — a billion phones, a hundred million laptops, racks of "obsolete" servers. They have CPU, memory, and bandwidth that today goes to waste. Airweb is the first step toward letting all of that quietly become useful, owned by the people who already paid for it, traded in a transparent, peer-to-peer way.':
+        '세상은 멀쩡한데도 놀고 있는 하드웨어로 가득합니다 —— 10억 대의 휴대폰, 1억 대의 노트북, "구식"이라 불리는 서버 랙들. 오늘 낭비되고 있는 CPU, 메모리, 대역폭을 가지고 있죠. Airweb는 그 모두가 조용히 유용해지도록 만드는 첫걸음입니다 —— 이미 그것을 산 사람들의 손에 남고, 투명한 P2P 방식으로 거래됩니다.',
       'Open-source cloud provider': '오픈소스 클라우드 제공자',
       'Hyperscaler-class capabilities don\'t have to live behind three logos and a credit-card form. Our long-term goal is an open, federated cloud where the "data center" is a coalition of homes, offices, and community spaces.':
         '하이퍼스케일러급 기능이 꼭 세 개의 로고와 신용카드 양식 뒤에 있을 필요는 없습니다. 우리의 장기 목표는 "데이터센터"가 가정, 사무실, 커뮤니티 공간의 연합인 개방적이고 페더레이트된 클라우드입니다.',
@@ -2050,8 +2050,8 @@
       'Credits earned by contributing capacity buy capacity from others. Over time, that loop becomes a real economy — one where small operators, students, and hobbyists are first-class participants, not just customers.':
         '용량을 기여해 얻은 크레딧으로 다른 사람의 용량을 살 수 있습니다. 시간이 지나면 그 순환은 진짜 경제가 됩니다 —— 작은 운영자, 학생, 취미인들이 단순한 고객이 아닌 1등 참가자인 경제로.',
       'Greener by default': '기본적으로 더 친환경적',
-      'The most sustainable server is one that already exists. By giving a second life to devices that would otherwise be sitting idle — or worse, in a landfill — AirWeb reduces the need to spin up new fleets of always-on hardware just to serve a few requests per minute. Smaller fleet, less embodied carbon, less e-waste, less drain on the grid.':
-        '가장 지속 가능한 서버는 이미 존재하는 서버입니다. 그렇지 않으면 놀고 있을 —— 또는 더 나쁘게는 매립지로 갈 —— 기기에 두 번째 생명을 줌으로써, AirWeb는 분당 몇 개 요청을 처리하려고 새 상시 가동 하드웨어를 띄울 필요를 줄입니다. 더 작은 함대, 더 적은 내재 탄소, 더 적은 전자 폐기물, 더 적은 전력망 부담.',
+      'The most sustainable server is one that already exists. By giving a second life to devices that would otherwise be sitting idle — or worse, in a landfill — Airweb reduces the need to spin up new fleets of always-on hardware just to serve a few requests per minute. Smaller fleet, less embodied carbon, less e-waste, less drain on the grid.':
+        '가장 지속 가능한 서버는 이미 존재하는 서버입니다. 그렇지 않으면 놀고 있을 —— 또는 더 나쁘게는 매립지로 갈 —— 기기에 두 번째 생명을 줌으로써, Airweb는 분당 몇 개 요청을 처리하려고 새 상시 가동 하드웨어를 띄울 필요를 줄입니다. 더 작은 함대, 더 적은 내재 탄소, 더 적은 전자 폐기물, 더 적은 전력망 부담.',
       'Reuses hardware you already own instead of provisioning new servers.':
         '새 서버를 마련하는 대신 이미 가지고 있는 하드웨어를 재사용합니다.',
       'Idle tunnels consume effectively nothing — they just sit on an SSH socket.':
@@ -2061,8 +2061,8 @@
       'FAQ': '자주 묻는 질문',
       'What kind of "spare device" actually works?': '어떤 종류의 "안 쓰는 기기"가 실제로 동작하나요?',
       'Anything that can run an': '',
-      'client and stay online: an old laptop, a desktop you barely use, a Raspberry Pi, a NAS, a mini-PC, even some routers. If it can hold an SSH session open, it can be an AirWeb node.':
-        '클라이언트를 실행하고 온라인을 유지할 수 있는 것이라면 무엇이든: 오래된 노트북, 거의 쓰지 않는 데스크톱, Raspberry Pi, NAS, 미니 PC, 일부 라우터까지. SSH 세션을 열어둘 수 있다면 AirWeb 노드가 될 수 있습니다.',
+      'client and stay online: an old laptop, a desktop you barely use, a Raspberry Pi, a NAS, a mini-PC, even some routers. If it can hold an SSH session open, it can be an Airweb node.':
+        '클라이언트를 실행하고 온라인을 유지할 수 있는 것이라면 무엇이든: 오래된 노트북, 거의 쓰지 않는 데스크톱, Raspberry Pi, NAS, 미니 PC, 일부 라우터까지. SSH 세션을 열어둘 수 있다면 Airweb 노드가 될 수 있습니다.',
       'Do I need to install anything?': '무엇이든 설치해야 하나요?',
       'No. Any standard': '아니요. 표준',
       'client works once you\'ve downloaded': '클라이언트면 충분합니다 ——',
@@ -2079,8 +2079,8 @@
       'account id is derived deterministically from the public key.':
         '계정 ID는 공개 키에서 결정적으로 도출됩니다.',
       'Is the traffic encrypted?': '트래픽은 암호화되나요?',
-      'The leg between your device and AirWeb is encrypted by SSH. The public leg uses whatever the front door speaks (HTTP on the bare port, HTTPS behind a TLS reverse proxy). For end-to-end TLS, terminate inside your local app and use a raw TCP tunnel.':
-        '기기와 AirWeb 사이 구간은 SSH로 암호화됩니다. 공개 구간은 입구가 말하는 프로토콜을 사용합니다(맨 포트에서는 HTTP, TLS 리버스 프록시 뒤에서는 HTTPS). 종단 간 TLS가 필요하면 로컬 앱 내부에서 종료하고 raw TCP 터널을 사용하세요.',
+      'The leg between your device and Airweb is encrypted by SSH. The public leg uses whatever the front door speaks (HTTP on the bare port, HTTPS behind a TLS reverse proxy). For end-to-end TLS, terminate inside your local app and use a raw TCP tunnel.':
+        '기기와 Airweb 사이 구간은 SSH로 암호화됩니다. 공개 구간은 입구가 말하는 프로토콜을 사용합니다(맨 포트에서는 HTTP, TLS 리버스 프록시 뒤에서는 HTTPS). 종단 간 TLS가 필요하면 로컬 앱 내부에서 종료하고 raw TCP 터널을 사용하세요.',
       'Can I pick my own subdomain?': '내 서브도메인을 직접 고를 수 있나요?',
       'Yes — the SSH username you connect with becomes your subdomain (':
         '네 —— 접속할 때 사용한 SSH 사용자명이 그대로 서브도메인이 됩니다 (',
@@ -2097,8 +2097,8 @@
 
   const LANDING_OVERRIDES = {
     es: {
-      'AirWeb turns spare laptops, old phones, and idle home servers into tiny public endpoints. Demo an app, reach your home computer from anywhere, or lease a micro-server by the minute — and earn credits while your own devices help carry the load.':
-        'AirWeb convierte laptops guardadas, teléfonos viejos y servidores caseros inactivos en pequeños endpoints públicos. Muestra una app, entra a tu compu de casa desde cualquier lugar o alquila un microservidor por minuto, y gana créditos mientras tus propios equipos ponen su parte.',
+      'Airweb turns spare laptops, old phones, and idle home servers into tiny public endpoints. Demo an app, reach your home computer from anywhere, or lease a micro-server by the minute — and earn credits while your own devices help carry the load.':
+        'Airweb convierte laptops guardadas, teléfonos viejos y servidores caseros inactivos en pequeños endpoints públicos. Muestra una app, entra a tu compu de casa desde cualquier lugar o alquila un microservidor por minuto, y gana créditos mientras tus propios equipos ponen su parte.',
       'restore from existing key': 'usar una clave guardada',
       'open source': 'código abierto',
       'your devices': 'tus equipos',
@@ -2106,7 +2106,7 @@
       'Any local service becomes a public endpoint': 'Cualquier servicio local puede volverse un endpoint público',
       'supported protocols': 'protocolos compatibles',
       'If it speaks TCP on ': 'Si habla TCP en ',
-      ', AirWeb can expose it. HTTP and HTTPS get a shareable subdomain; raw-TCP services get a public ': ', AirWeb puede exponerlo. HTTP y HTTPS reciben un subdominio para compartir; los servicios TCP puro obtienen un ',
+      ', Airweb can expose it. HTTP and HTTPS get a shareable subdomain; raw-TCP services get a public ': ', Airweb puede exponerlo. HTTP y HTTPS reciben un subdominio para compartir; los servicios TCP puro obtienen un ',
       ' assigned by the server.': ' asignado por el servidor.',
       'Get a local app online in three steps': 'Pon una app local en línea en tres pasos',
       'Open the ': 'Abre el ',
@@ -2116,7 +2116,7 @@
       ' your account — no password, no email.': ' es tu cuenta: sin contraseña ni correo.',
       'Run one SSH command': 'Ejecuta un solo comando SSH',
       'Point an ': 'Apunta un ',
-      ' at AirWeb. The local port is whatever your app already listens on; the public side is the AirWeb host.': ' a AirWeb. El puerto local es el que ya usa tu app; el lado público es el host de AirWeb.',
+      ' at Airweb. The local port is whatever your app already listens on; the public side is the Airweb host.': ' a Airweb. El puerto local es el que ya usa tu app; el lado público es el host de Airweb.',
       'For raw TCP (databases, SSH, game servers, RDP, …) use ': 'Para TCP puro (bases de datos, SSH, servidores de juegos, RDP, …) usa ',
       ' — the server picks a free public port and prints it.': ' — el servidor elige un puerto público libre y te lo muestra.',
       'Share the URL — and earn while it runs': 'Comparte la URL y gana mientras siga activo',
@@ -2124,7 +2124,7 @@
       '; raw TCP tunnels get ': '; los túneles TCP puro reciben ',
       '. Every minute it stays up, you earn ': '. Cada minuto que siga activo ganas ',
       '. List it on the marketplace to earn lease income on top.': '. Publícalo en el mercado y suma ingresos por alquiler.',
-      'What you can do with it': 'Lo que puedes hacer con AirWeb',
+      'What you can do with it': 'Lo que puedes hacer con Airweb',
       'No subscriptions. No "free tier" cliffs. Opening a tunnel is free — you\'re billed in credits only for the bytes that actually flow through it, and you earn credits every minute your own devices are serving traffic.':
         'Sin suscripciones. Sin trampas de "plan gratis". Abrir un túnel es gratis: sólo pagas en créditos por los bytes que realmente pasan, y ganas créditos por cada minuto que tus propios equipos sirven tráfico.',
       'your device': 'tu equipo',
@@ -2136,13 +2136,13 @@
       'Extra lease income when someone rents your tunnel': 'Ingreso extra por alquiler cuando alguien renta tu túnel',
       'Charged for bytes that actually flow through': 'Se cobra por los bytes que realmente pasan',
       'Only charged for bytes that really pass through': 'Sólo se cobra por los bytes que de verdad pasan',
-      'AWC welcome': 'AWC de bienvenida',
+      'AWB welcome': 'AWB de bienvenida',
       'Free credits the moment you create an account': 'Créditos gratis en cuanto creas la cuenta',
       'Idle tunnels cost nothing. The dashboard shows a live earn-vs-charge meter and a 24-hour ledger so the math is never a mystery.':
         'Los túneles inactivos no cuestan nada. El panel muestra en vivo lo que ganas frente a lo que pagas y un libro de 24 horas, para que las cuentas estén claras.',
       'A marketplace, not a billing portal': 'Un mercado, no un portal de cobro',
-      'AirWeb is built around a simple loop: plug in a spare device, share its uptime, earn credits, spend them on capacity from other people. Every node is also a customer.':
-        'AirWeb gira alrededor de un ciclo simple: conectas un equipo libre, compartes su tiempo en línea, ganas créditos y los gastas en capacidad de otras personas. Cada nodo también es cliente.',
+      'Airweb is built around a simple loop: plug in a spare device, share its uptime, earn credits, spend them on capacity from other people. Every node is also a customer.':
+        'Airweb gira alrededor de un ciclo simple: conectas un equipo libre, compartes su tiempo en línea, ganas créditos y los gastas en capacidad de otras personas. Cada nodo también es cliente.',
       'marketplace': 'mercado',
       'peers earn + spend credits': 'la comunidad gana y gasta créditos',
       'credit flow': 'flujo de créditos',
@@ -2154,8 +2154,8 @@
       'Credits go both ways': 'Los créditos van en ambos sentidos',
       'Today\'s host is tomorrow\'s renter. The same wallet that earns your uptime rewards pays for the leases you take — no separate billing surface.':
         'Quien hoy hospeda, mañana alquila. La misma cartera que gana recompensas por uptime paga los alquileres que tomas, sin otra capa de facturación.',
-      'The world is full of perfectly good hardware sitting idle — a billion phones, a hundred million laptops, racks of "obsolete" servers. They have CPU, memory, and bandwidth that today goes to waste. AirWeb is the first step toward letting all of that quietly become useful, owned by the people who already paid for it.':
-        'El mundo está lleno de hardware perfectamente útil sin hacer nada: miles de millones de teléfonos, cientos de millones de laptops y racks de servidores "obsoletos". Tienen CPU, memoria y ancho de banda que hoy se desperdician. AirWeb es un primer paso para que todo eso vuelva a ser útil, en manos de quienes ya lo pagaron.',
+      'The world is full of perfectly good hardware sitting idle — a billion phones, a hundred million laptops, racks of "obsolete" servers. They have CPU, memory, and bandwidth that today goes to waste. Airweb is the first step toward letting all of that quietly become useful, owned by the people who already paid for it.':
+        'El mundo está lleno de hardware perfectamente útil sin hacer nada: miles de millones de teléfonos, cientos de millones de laptops y racks de servidores "obsoletos". Tienen CPU, memoria y ancho de banda que hoy se desperdician. Airweb es un primer paso para que todo eso vuelva a ser útil, en manos de quienes ya lo pagaron.',
       'today': 'hoy',
       'A handful of hyperscalers': 'Un puñado de hyperscalers',
       'Three logos own most of the public internet. Capacity = a credit card, a console, and a single-vendor lock-in.':
@@ -2173,8 +2173,8 @@
       'No gatekeeper — anyone can host or rent': 'Sin portero: cualquiera puede hospedar o alquilar',
       'millions of nodes': 'millones de nodos',
       'A real micro-server economy': 'Una economía real de microservidores',
-      'The most sustainable server is one that already exists. By giving a second life to devices that would otherwise sit idle — or worse, in a landfill — AirWeb reduces the need to spin up new fleets of always-on hardware just to serve a few requests per minute.':
-        'El servidor más sostenible es el que ya existe. Al dar una segunda vida a equipos que de otro modo quedarían guardados o, peor, terminarían en la basura, AirWeb reduce la necesidad de encender flotas nuevas de hardware siempre activo para atender unas pocas solicitudes por minuto.',
+      'The most sustainable server is one that already exists. By giving a second life to devices that would otherwise sit idle — or worse, in a landfill — Airweb reduces the need to spin up new fleets of always-on hardware just to serve a few requests per minute.':
+        'El servidor más sostenible es el que ya existe. Al dar una segunda vida a equipos que de otro modo quedarían guardados o, peor, terminarían en la basura, Airweb reduce la necesidad de encender flotas nuevas de hardware siempre activo para atender unas pocas solicitudes por minuto.',
       'always-on fleet': 'flota siempre encendida',
       'device you already own': 'equipo que ya tienes',
       'new servers': 'servidores nuevos',
@@ -2193,8 +2193,8 @@
       'fail': 'falló'
     },
     fr: {
-      'AirWeb turns spare laptops, old phones, and idle home servers into tiny public endpoints. Demo an app, reach your home computer from anywhere, or lease a micro-server by the minute — and earn credits while your own devices help carry the load.':
-        'AirWeb transforme les vieux portables, les téléphones oubliés et les serveurs maison inactifs en petits points d\'accès publics. Montrez une app, rejoignez votre ordinateur perso depuis n\'importe où ou louez un micro-serveur à la minute, tout en gagnant des crédits pendant que vos propres appareils prennent leur part de la charge.',
+      'Airweb turns spare laptops, old phones, and idle home servers into tiny public endpoints. Demo an app, reach your home computer from anywhere, or lease a micro-server by the minute — and earn credits while your own devices help carry the load.':
+        'Airweb transforme les vieux portables, les téléphones oubliés et les serveurs maison inactifs en petits points d\'accès publics. Montrez une app, rejoignez votre ordinateur perso depuis n\'importe où ou louez un micro-serveur à la minute, tout en gagnant des crédits pendant que vos propres appareils prennent leur part de la charge.',
       'restore from existing key': 'utiliser une clé existante',
       'open source': 'open source',
       'your devices': 'vos appareils',
@@ -2202,7 +2202,7 @@
       'Any local service becomes a public endpoint': 'N\'importe quel service local peut devenir un endpoint public',
       'supported protocols': 'protocoles pris en charge',
       'If it speaks TCP on ': 'Si ça parle TCP sur ',
-      ', AirWeb can expose it. HTTP and HTTPS get a shareable subdomain; raw-TCP services get a public ': ', AirWeb peut l\'exposer. HTTP et HTTPS reçoivent un sous-domaine partageable ; les services TCP bruts reçoivent un ',
+      ', Airweb can expose it. HTTP and HTTPS get a shareable subdomain; raw-TCP services get a public ': ', Airweb peut l\'exposer. HTTP et HTTPS reçoivent un sous-domaine partageable ; les services TCP bruts reçoivent un ',
       ' assigned by the server.': ' attribué par le serveur.',
       'Get a local app online in three steps': 'Mettez une app locale en ligne en trois étapes',
       'Open the ': 'Ouvrez le ',
@@ -2212,7 +2212,7 @@
       ' your account — no password, no email.': ' est votre compte : pas de mot de passe, pas d\'e-mail.',
       'Run one SSH command': 'Lancez une seule commande SSH',
       'Point an ': 'Pointez un ',
-      ' at AirWeb. The local port is whatever your app already listens on; the public side is the AirWeb host.': ' vers AirWeb. Le port local est celui que votre app écoute déjà ; côté public, c\'est l\'hôte AirWeb.',
+      ' at Airweb. The local port is whatever your app already listens on; the public side is the Airweb host.': ' vers Airweb. Le port local est celui que votre app écoute déjà ; côté public, c\'est l\'hôte Airweb.',
       'For raw TCP (databases, SSH, game servers, RDP, …) use ': 'Pour du TCP brut (bases de données, SSH, serveurs de jeu, RDP, …), utilisez ',
       ' — the server picks a free public port and prints it.': ' : le serveur choisit un port public libre et vous l\'affiche.',
       'Share the URL — and earn while it runs': 'Partagez l\'URL et gagnez tant que ça tourne',
@@ -2232,13 +2232,13 @@
       'Extra lease income when someone rents your tunnel': 'Revenu de location supplémentaire quand quelqu\'un loue votre tunnel',
       'Charged for bytes that actually flow through': 'Facturé sur les octets qui passent réellement',
       'Only charged for bytes that really pass through': 'Facturé uniquement sur les octets qui passent vraiment',
-      'AWC welcome': 'AWC de bienvenue',
+      'AWB welcome': 'AWB de bienvenue',
       'Free credits the moment you create an account': 'Crédits offerts dès la création du compte',
       'Idle tunnels cost nothing. The dashboard shows a live earn-vs-charge meter and a 24-hour ledger so the math is never a mystery.':
         'Les tunnels inactifs ne coûtent rien. Le tableau de bord montre en direct ce que vous gagnez face à ce que vous payez, plus un relevé sur 24 heures, pour que le calcul reste limpide.',
       'A marketplace, not a billing portal': 'Une place de marché, pas un portail de facturation',
-      'AirWeb is built around a simple loop: plug in a spare device, share its uptime, earn credits, spend them on capacity from other people. Every node is also a customer.':
-        'AirWeb repose sur une boucle simple : branchez un appareil en rab, partagez son uptime, gagnez des crédits et dépensez-les pour la capacité d\'autres personnes. Chaque nœud est aussi un client.',
+      'Airweb is built around a simple loop: plug in a spare device, share its uptime, earn credits, spend them on capacity from other people. Every node is also a customer.':
+        'Airweb repose sur une boucle simple : branchez un appareil en rab, partagez son uptime, gagnez des crédits et dépensez-les pour la capacité d\'autres personnes. Chaque nœud est aussi un client.',
       'marketplace': 'place de marché',
       'peers earn + spend credits': 'les pairs gagnent et dépensent des crédits',
       'credit flow': 'flux de crédits',
@@ -2250,8 +2250,8 @@
       'Credits go both ways': 'Les crédits circulent dans les deux sens',
       'Today\'s host is tomorrow\'s renter. The same wallet that earns your uptime rewards pays for the leases you take — no separate billing surface.':
         'L\'hôte d\'aujourd\'hui est le locataire de demain. Le même portefeuille qui encaisse vos récompenses d\'uptime paie aussi vos locations, sans couche de facturation séparée.',
-      'The world is full of perfectly good hardware sitting idle — a billion phones, a hundred million laptops, racks of "obsolete" servers. They have CPU, memory, and bandwidth that today goes to waste. AirWeb is the first step toward letting all of that quietly become useful, owned by the people who already paid for it.':
-        'Le monde est plein de matériel encore parfaitement utile qui dort : un milliard de téléphones, des centaines de millions de portables, des racks de serveurs dits "obsolètes". Ils ont du CPU, de la mémoire et de la bande passante qui partent aujourd\'hui à la poubelle. AirWeb est un premier pas pour rendre tout cela utile, au profit des personnes qui l\'ont déjà payé.',
+      'The world is full of perfectly good hardware sitting idle — a billion phones, a hundred million laptops, racks of "obsolete" servers. They have CPU, memory, and bandwidth that today goes to waste. Airweb is the first step toward letting all of that quietly become useful, owned by the people who already paid for it.':
+        'Le monde est plein de matériel encore parfaitement utile qui dort : un milliard de téléphones, des centaines de millions de portables, des racks de serveurs dits "obsolètes". Ils ont du CPU, de la mémoire et de la bande passante qui partent aujourd\'hui à la poubelle. Airweb est un premier pas pour rendre tout cela utile, au profit des personnes qui l\'ont déjà payé.',
       'today': 'aujourd\'hui',
       'A handful of hyperscalers': 'Une poignée d\'hyperscalers',
       'Three logos own most of the public internet. Capacity = a credit card, a console, and a single-vendor lock-in.':
@@ -2269,8 +2269,8 @@
       'No gatekeeper — anyone can host or rent': 'Pas de gardien à l\'entrée : tout le monde peut héberger ou louer',
       'millions of nodes': 'des millions de nœuds',
       'A real micro-server economy': 'Une vraie économie de micro-serveurs',
-      'The most sustainable server is one that already exists. By giving a second life to devices that would otherwise sit idle — or worse, in a landfill — AirWeb reduces the need to spin up new fleets of always-on hardware just to serve a few requests per minute.':
-        'Le serveur le plus durable est celui qui existe déjà. En donnant une seconde vie à des appareils qui resteraient sinon inutilisés, voire finiraient à la benne, AirWeb réduit le besoin de déployer de nouvelles flottes de matériel toujours allumé pour servir quelques requêtes par minute.',
+      'The most sustainable server is one that already exists. By giving a second life to devices that would otherwise sit idle — or worse, in a landfill — Airweb reduces the need to spin up new fleets of always-on hardware just to serve a few requests per minute.':
+        'Le serveur le plus durable est celui qui existe déjà. En donnant une seconde vie à des appareils qui resteraient sinon inutilisés, voire finiraient à la benne, Airweb réduit le besoin de déployer de nouvelles flottes de matériel toujours allumé pour servir quelques requêtes par minute.',
       'always-on fleet': 'flotte toujours allumée',
       'device you already own': 'appareil que vous avez déjà',
       'new servers': 'nouveaux serveurs',
@@ -2288,8 +2288,8 @@
       'fail': 'échec'
     },
     de: {
-      'AirWeb turns spare laptops, old phones, and idle home servers into tiny public endpoints. Demo an app, reach your home computer from anywhere, or lease a micro-server by the minute — and earn credits while your own devices help carry the load.':
-        'AirWeb macht aus alten Laptops, ausrangierten Handys und ungenutzten Heimservern kleine öffentliche Endpunkte. Zeig eine App live, greif von überall auf deinen Rechner zu Hause zu oder miete einen Mikroserver minutenweise — und verdiene Credits, während deine eigenen Geräte mithelfen.',
+      'Airweb turns spare laptops, old phones, and idle home servers into tiny public endpoints. Demo an app, reach your home computer from anywhere, or lease a micro-server by the minute — and earn credits while your own devices help carry the load.':
+        'Airweb macht aus alten Laptops, ausrangierten Handys und ungenutzten Heimservern kleine öffentliche Endpunkte. Zeig eine App live, greif von überall auf deinen Rechner zu Hause zu oder miete einen Mikroserver minutenweise — und verdiene Credits, während deine eigenen Geräte mithelfen.',
       'restore from existing key': 'mit vorhandenem Schlüssel weiter',
       'open source': 'Open Source',
       'your devices': 'deine Geräte',
@@ -2297,7 +2297,7 @@
       'Any local service becomes a public endpoint': 'Jeder lokale Dienst kann ein öffentlicher Endpunkt werden',
       'supported protocols': 'unterstützte Protokolle',
       'If it speaks TCP on ': 'Wenn es auf ',
-      ', AirWeb can expose it. HTTP and HTTPS get a shareable subdomain; raw-TCP services get a public ': ' per TCP spricht, kann AirWeb es nach außen bringen. HTTP und HTTPS bekommen eine teilbare Subdomain; Raw-TCP-Dienste bekommen ein öffentliches ',
+      ', Airweb can expose it. HTTP and HTTPS get a shareable subdomain; raw-TCP services get a public ': ' per TCP spricht, kann Airweb es nach außen bringen. HTTP und HTTPS bekommen eine teilbare Subdomain; Raw-TCP-Dienste bekommen ein öffentliches ',
       ' assigned by the server.': ', das der Server zuweist.',
       'Get a local app online in three steps': 'Bring deine lokale App in drei Schritten online',
       'Open the ': 'Öffne das ',
@@ -2307,7 +2307,7 @@
       ' your account — no password, no email.': ' ist dein Konto — kein Passwort, keine E-Mail.',
       'Run one SSH command': 'Führe genau einen SSH-Befehl aus',
       'Point an ': 'Richte ein ',
-      ' at AirWeb. The local port is whatever your app already listens on; the public side is the AirWeb host.': ' auf AirWeb. Lokal nutzt du einfach den Port deiner App; öffentlich ist die AirWeb-Adresse.',
+      ' at Airweb. The local port is whatever your app already listens on; the public side is the Airweb host.': ' auf Airweb. Lokal nutzt du einfach den Port deiner App; öffentlich ist die Airweb-Adresse.',
       'For raw TCP (databases, SSH, game servers, RDP, …) use ': 'Für Raw TCP (Datenbanken, SSH, Gameserver, RDP, …) nimm ',
       ' — the server picks a free public port and prints it.': ' — der Server sucht einen freien öffentlichen Port aus und gibt ihn aus.',
       'Share the URL — and earn while it runs': 'Teile die URL und verdiene mit, solange sie läuft',
@@ -2327,13 +2327,13 @@
       'Extra lease income when someone rents your tunnel': 'Zusätzliche Mieteinnahmen, wenn jemand deinen Tunnel mietet',
       'Charged for bytes that actually flow through': 'Abgerechnet werden nur Bytes, die wirklich durchlaufen',
       'Only charged for bytes that really pass through': 'Berechnet werden nur Bytes, die wirklich hindurchgehen',
-      'AWC welcome': 'AWC zur Begrüßung',
+      'AWB welcome': 'AWB zur Begrüßung',
       'Free credits the moment you create an account': 'Gratis-Credits direkt beim Erstellen des Kontos',
       'Idle tunnels cost nothing. The dashboard shows a live earn-vs-charge meter and a 24-hour ledger so the math is never a mystery.':
         'Leerlaufende Tunnel kosten nichts. Das Dashboard zeigt live Einnahmen gegen Kosten und ein 24-Stunden-Ledger, damit die Rechnung nachvollziehbar bleibt.',
       'A marketplace, not a billing portal': 'Ein Marktplatz, kein Abrechnungsportal',
-      'AirWeb is built around a simple loop: plug in a spare device, share its uptime, earn credits, spend them on capacity from other people. Every node is also a customer.':
-        'AirWeb basiert auf einem einfachen Kreislauf: ungenutztes Gerät anschließen, Uptime teilen, Credits verdienen und sie für Kapazität anderer Leute ausgeben. Jeder Knoten ist auch Kunde.',
+      'Airweb is built around a simple loop: plug in a spare device, share its uptime, earn credits, spend them on capacity from other people. Every node is also a customer.':
+        'Airweb basiert auf einem einfachen Kreislauf: ungenutztes Gerät anschließen, Uptime teilen, Credits verdienen und sie für Kapazität anderer Leute ausgeben. Jeder Knoten ist auch Kunde.',
       'marketplace': 'Marktplatz',
       'peers earn + spend credits': 'Peers verdienen und geben Credits aus',
       'credit flow': 'Credit-Fluss',
@@ -2345,8 +2345,8 @@
       'Credits go both ways': 'Credits laufen in beide Richtungen',
       'Today\'s host is tomorrow\'s renter. The same wallet that earns your uptime rewards pays for the leases you take — no separate billing surface.':
         'Wer heute hostet, mietet morgen vielleicht selbst. Dieselbe Wallet, die deine Uptime-Belohnungen sammelt, bezahlt auch deine gemieteten Verbindungen — ohne separate Abrechnungsoberfläche.',
-      'The world is full of perfectly good hardware sitting idle — a billion phones, a hundred million laptops, racks of "obsolete" servers. They have CPU, memory, and bandwidth that today goes to waste. AirWeb is the first step toward letting all of that quietly become useful, owned by the people who already paid for it.':
-        'Die Welt ist voll mit völlig brauchbarer Hardware, die ungenutzt herumsteht: Milliarden Handys, hunderte Millionen Laptops, Racks voller "veralteter" Server. Darin stecken CPU, Speicher und Bandbreite, die heute verpuffen. AirWeb ist ein erster Schritt, all das wieder nutzbar zu machen — im Besitz der Menschen, die längst dafür bezahlt haben.',
+      'The world is full of perfectly good hardware sitting idle — a billion phones, a hundred million laptops, racks of "obsolete" servers. They have CPU, memory, and bandwidth that today goes to waste. Airweb is the first step toward letting all of that quietly become useful, owned by the people who already paid for it.':
+        'Die Welt ist voll mit völlig brauchbarer Hardware, die ungenutzt herumsteht: Milliarden Handys, hunderte Millionen Laptops, Racks voller "veralteter" Server. Darin stecken CPU, Speicher und Bandbreite, die heute verpuffen. Airweb ist ein erster Schritt, all das wieder nutzbar zu machen — im Besitz der Menschen, die längst dafür bezahlt haben.',
       'today': 'heute',
       'A handful of hyperscalers': 'Eine Handvoll Hyperscaler',
       'Three logos own most of the public internet. Capacity = a credit card, a console, and a single-vendor lock-in.':
@@ -2364,7 +2364,7 @@
       'No gatekeeper — anyone can host or rent': 'Kein Türsteher — jede Person kann hosten oder mieten',
       'millions of nodes': 'Millionen von Knoten',
       'A real micro-server economy': 'Eine echte Mikroserver-Ökonomie',
-      'The most sustainable server is one that already exists. By giving a second life to devices that would otherwise sit idle — or worse, in a landfill — AirWeb reduces the need to spin up new fleets of always-on hardware just to serve a few requests per minute.':
+      'The most sustainable server is one that already exists. By giving a second life to devices that would otherwise sit idle — or worse, in a landfill — Airweb reduces the need to spin up new fleets of always-on hardware just to serve a few requests per minute.':
         'Der nachhaltigste Server ist der, den es schon gibt. Wenn Geräte, die sonst ungenutzt herumliegen oder im schlimmsten Fall im Müll landen würden, ein zweites Leben bekommen, muss weniger neue Always-on-Hardware nur für ein paar Requests pro Minute hochgefahren werden.',
       'always-on fleet': 'Always-on-Flotte',
       'device you already own': 'Gerät, das du schon besitzt',
@@ -2383,8 +2383,8 @@
       'fail': 'fehler'
     },
     zh: {
-      'AirWeb turns spare laptops, old phones, and idle home servers into tiny public endpoints. Demo an app, reach your home computer from anywhere, or lease a micro-server by the minute — and earn credits while your own devices help carry the load.':
-        'AirWeb 把闲置笔记本、旧手机和家里的空闲服务器变成小巧的公共入口。你可以随手演示应用、从任何地方连回家里的电脑，或者按分钟租用一台微型服务器；同时你的设备也能分担流量并赚取积分。',
+      'Airweb turns spare laptops, old phones, and idle home servers into tiny public endpoints. Demo an app, reach your home computer from anywhere, or lease a micro-server by the minute — and earn credits while your own devices help carry the load.':
+        'Airweb 把闲置笔记本、旧手机和家里的空闲服务器变成小巧的公共入口。你可以随手演示应用、从任何地方连回家里的电脑，或者按分钟租用一台微型服务器；同时你的设备也能分担流量并赚取积分。',
       'restore from existing key': '用已有密钥恢复',
       'open source': '开源',
       'your devices': '你的设备',
@@ -2392,7 +2392,7 @@
       'Any local service becomes a public endpoint': '任何本地服务都能变成公开入口',
       'supported protocols': '支持的协议',
       'If it speaks TCP on ': '只要它在 ',
-      ', AirWeb can expose it. HTTP and HTTPS get a shareable subdomain; raw-TCP services get a public ': ' 上使用 TCP，AirWeb 就能把它暴露出去。HTTP 和 HTTPS 会得到一个可分享的子域名；原始 TCP 服务会得到一个公开的 ',
+      ', Airweb can expose it. HTTP and HTTPS get a shareable subdomain; raw-TCP services get a public ': ' 上使用 TCP，Airweb 就能把它暴露出去。HTTP 和 HTTPS 会得到一个可分享的子域名；原始 TCP 服务会得到一个公开的 ',
       ' assigned by the server.': '，由服务器分配。',
       'Get a local app online in three steps': '三步把本地应用放到公网',
       'Open the ': '打开 ',
@@ -2402,7 +2402,7 @@
       ' your account — no password, no email.': ' 就是你的账号，不用密码，也不用邮箱。',
       'Run one SSH command': '执行一条 SSH 命令',
       'Point an ': '把 ',
-      ' at AirWeb. The local port is whatever your app already listens on; the public side is the AirWeb host.': ' 指向 AirWeb。本地端口就是你的应用已经在监听的端口；公网侧则是 AirWeb 主机。',
+      ' at Airweb. The local port is whatever your app already listens on; the public side is the Airweb host.': ' 指向 Airweb。本地端口就是你的应用已经在监听的端口；公网侧则是 Airweb 主机。',
       'For raw TCP (databases, SSH, game servers, RDP, …) use ': '如果是原始 TCP（数据库、SSH、游戏服务器、RDP 等），请使用 ',
       ' — the server picks a free public port and prints it.': '，服务器会挑一个空闲公网端口并打印出来。',
       'Share the URL — and earn while it runs': '分享链接，运行期间持续赚积分',
@@ -2422,13 +2422,13 @@
       'Extra lease income when someone rents your tunnel': '有人租用你的隧道时的额外租赁收入',
       'Charged for bytes that actually flow through': '只按真正经过的字节计费',
       'Only charged for bytes that really pass through': '只对真正经过的字节收费',
-      'AWC welcome': '欢迎 AWC',
+      'AWB welcome': '欢迎 AWB',
       'Free credits the moment you create an account': '创建账号立刻送积分',
       'Idle tunnels cost nothing. The dashboard shows a live earn-vs-charge meter and a 24-hour ledger so the math is never a mystery.':
         '空闲隧道不花钱。仪表盘会实时显示收入和支出的对比，以及 24 小时账本，让每一笔都看得清楚。',
       'A marketplace, not a billing portal': '这是一个市场，不是缴费后台',
-      'AirWeb is built around a simple loop: plug in a spare device, share its uptime, earn credits, spend them on capacity from other people. Every node is also a customer.':
-        'AirWeb 围绕一个很简单的循环运转：把闲置设备接上、共享在线时间、赚积分，再把积分花在别人的算力和带宽上。每个节点同时也是用户。',
+      'Airweb is built around a simple loop: plug in a spare device, share its uptime, earn credits, spend them on capacity from other people. Every node is also a customer.':
+        'Airweb 围绕一个很简单的循环运转：把闲置设备接上、共享在线时间、赚积分，再把积分花在别人的算力和带宽上。每个节点同时也是用户。',
       'marketplace': '市场',
       'peers earn + spend credits': '节点之间赚积分也花积分',
       'credit flow': '积分流动',
@@ -2440,8 +2440,8 @@
       'Credits go both ways': '积分两头都能用',
       'Today\'s host is tomorrow\'s renter. The same wallet that earns your uptime rewards pays for the leases you take — no separate billing surface.':
         '今天的主机提供者，明天也可能是租客。赚在线奖励和支付租赁都用同一个钱包，不需要再切到另一套计费界面。',
-      'The world is full of perfectly good hardware sitting idle — a billion phones, a hundred million laptops, racks of "obsolete" servers. They have CPU, memory, and bandwidth that today goes to waste. AirWeb is the first step toward letting all of that quietly become useful, owned by the people who already paid for it.':
-        '世界上有大量明明还能用、却在闲置的硬件：数十亿部手机、上亿台笔记本，还有一整排被说成“过时”的服务器。它们都有 CPU、内存和带宽，只是今天都被浪费掉了。AirWeb 想做的第一步，就是让这些资源重新变得有用，而且归已经为它们买单的人所有。',
+      'The world is full of perfectly good hardware sitting idle — a billion phones, a hundred million laptops, racks of "obsolete" servers. They have CPU, memory, and bandwidth that today goes to waste. Airweb is the first step toward letting all of that quietly become useful, owned by the people who already paid for it.':
+        '世界上有大量明明还能用、却在闲置的硬件：数十亿部手机、上亿台笔记本，还有一整排被说成“过时”的服务器。它们都有 CPU、内存和带宽，只是今天都被浪费掉了。Airweb 想做的第一步，就是让这些资源重新变得有用，而且归已经为它们买单的人所有。',
       'today': '今天',
       'A handful of hyperscalers': '少数几家超大云厂商',
       'Three logos own most of the public internet. Capacity = a credit card, a console, and a single-vendor lock-in.':
@@ -2459,8 +2459,8 @@
       'No gatekeeper — anyone can host or rent': '没有守门人，任何人都能提供或租用',
       'millions of nodes': '数百万个节点',
       'A real micro-server economy': '真正的微型服务器经济',
-      'The most sustainable server is one that already exists. By giving a second life to devices that would otherwise sit idle — or worse, in a landfill — AirWeb reduces the need to spin up new fleets of always-on hardware just to serve a few requests per minute.':
-        '最环保的服务器，就是已经存在的那一台。让原本会闲置、甚至被扔进垃圾场的设备重新上岗，AirWeb 就能减少为了服务每分钟几次请求而额外拉起整批常开硬件的需求。',
+      'The most sustainable server is one that already exists. By giving a second life to devices that would otherwise sit idle — or worse, in a landfill — Airweb reduces the need to spin up new fleets of always-on hardware just to serve a few requests per minute.':
+        '最环保的服务器，就是已经存在的那一台。让原本会闲置、甚至被扔进垃圾场的设备重新上岗，Airweb 就能减少为了服务每分钟几次请求而额外拉起整批常开硬件的需求。',
       'always-on fleet': '常开机群',
       'device you already own': '你已经拥有的设备',
       'new servers': '新服务器',
@@ -2478,8 +2478,8 @@
       'fail': '失败'
     },
     ja: {
-      'AirWeb turns spare laptops, old phones, and idle home servers into tiny public endpoints. Demo an app, reach your home computer from anywhere, or lease a micro-server by the minute — and earn credits while your own devices help carry the load.':
-        'AirWeb は、使っていないノート PC、古いスマホ、家で眠っているサーバーを小さな公開エンドポイントに変えます。アプリをその場で見せたり、どこからでも自宅 PC に入ったり、マイクロサーバーを分単位で借りたりでき、その間あなたの機器も負荷を分担してクレジットを稼げます。',
+      'Airweb turns spare laptops, old phones, and idle home servers into tiny public endpoints. Demo an app, reach your home computer from anywhere, or lease a micro-server by the minute — and earn credits while your own devices help carry the load.':
+        'Airweb は、使っていないノート PC、古いスマホ、家で眠っているサーバーを小さな公開エンドポイントに変えます。アプリをその場で見せたり、どこからでも自宅 PC に入ったり、マイクロサーバーを分単位で借りたりでき、その間あなたの機器も負荷を分担してクレジットを稼げます。',
       'restore from existing key': '手元のキーで復元',
       'open source': 'オープンソース',
       'your devices': 'あなたのデバイス',
@@ -2487,7 +2487,7 @@
       'Any local service becomes a public endpoint': 'ローカルのサービスは何でも公開エンドポイントにできる',
       'supported protocols': '対応プロトコル',
       'If it speaks TCP on ': 'もし ',
-      ', AirWeb can expose it. HTTP and HTTPS get a shareable subdomain; raw-TCP services get a public ': ' で TCP を話すなら、AirWeb で外に出せます。HTTP と HTTPS には共有しやすいサブドメインが付き、Raw TCP サービスには公開 ',
+      ', Airweb can expose it. HTTP and HTTPS get a shareable subdomain; raw-TCP services get a public ': ' で TCP を話すなら、Airweb で外に出せます。HTTP と HTTPS には共有しやすいサブドメインが付き、Raw TCP サービスには公開 ',
       ' assigned by the server.': ' がサーバーから割り当てられます。',
       'Get a local app online in three steps': '3 ステップでローカルアプリを公開',
       'Open the ': 'まず ',
@@ -2497,7 +2497,7 @@
       ' your account — no password, no email.': ' がそのままあなたのアカウントです。パスワードもメールも不要です。',
       'Run one SSH command': 'SSH コマンドを 1 つ実行',
       'Point an ': '次に ',
-      ' at AirWeb. The local port is whatever your app already listens on; the public side is the AirWeb host.': ' を AirWeb に向けます。ローカル側のポートはアプリが今 слушいているもので OK、公開側は AirWeb ホストです。',
+      ' at Airweb. The local port is whatever your app already listens on; the public side is the Airweb host.': ' を Airweb に向けます。ローカル側のポートはアプリが今 слушいているもので OK、公開側は Airweb ホストです。',
       'For raw TCP (databases, SSH, game servers, RDP, …) use ': 'Raw TCP（データベース、SSH、ゲームサーバー、RDP など）の場合は ',
       ' — the server picks a free public port and prints it.': ' を使います。空いている公開ポートはサーバー側が選んで表示してくれます。',
       'Share the URL — and earn while it runs': 'URL を共有して、動いている間は稼ぐ',
@@ -2517,13 +2517,13 @@
       'Extra lease income when someone rents your tunnel': '誰かがあなたのトンネルを借りたときに入る追加の貸し出し収入',
       'Charged for bytes that actually flow through': '実際に流れたバイトだけ課金',
       'Only charged for bytes that really pass through': '本当に流れたバイトにだけ課金',
-      'AWC welcome': 'AWC ウェルカム',
+      'AWB welcome': 'AWB ウェルカム',
       'Free credits the moment you create an account': 'アカウント作成ですぐ無料クレジット',
       'Idle tunnels cost nothing. The dashboard shows a live earn-vs-charge meter and a 24-hour ledger so the math is never a mystery.':
         'アイドル状態のトンネルは無料です。ダッシュボードには収入と課金の差がリアルタイムで表示され、24 時間の台帳もあるので、いくら動いたのかが分からなくなりません。',
       'A marketplace, not a billing portal': '請求ポータルではなくマーケットプレイス',
-      'AirWeb is built around a simple loop: plug in a spare device, share its uptime, earn credits, spend them on capacity from other people. Every node is also a customer.':
-        'AirWeb はとてもシンプルな循環で動きます。余っている機器をつなぎ、稼働時間を提供してクレジットを稼ぎ、そのクレジットで他の人のキャパシティを使う。すべてのノードが同時に利用者でもあります。',
+      'Airweb is built around a simple loop: plug in a spare device, share its uptime, earn credits, spend them on capacity from other people. Every node is also a customer.':
+        'Airweb はとてもシンプルな循環で動きます。余っている機器をつなぎ、稼働時間を提供してクレジットを稼ぎ、そのクレジットで他の人のキャパシティを使う。すべてのノードが同時に利用者でもあります。',
       'marketplace': 'マーケットプレイス',
       'peers earn + spend credits': '参加者同士でクレジットを稼ぎ、使う',
       'credit flow': 'クレジットの流れ',
@@ -2535,8 +2535,8 @@
       'Credits go both ways': 'クレジットは行きも帰りも同じ',
       'Today\'s host is tomorrow\'s renter. The same wallet that earns your uptime rewards pays for the leases you take — no separate billing surface.':
         '今日はホストでも、明日は借り手かもしれません。稼働報酬を受け取るのと同じウォレットで、そのまま借りた分の支払いもでき、別の請求画面は要りません。',
-      'The world is full of perfectly good hardware sitting idle — a billion phones, a hundred million laptops, racks of "obsolete" servers. They have CPU, memory, and bandwidth that today goes to waste. AirWeb is the first step toward letting all of that quietly become useful, owned by the people who already paid for it.':
-        '世の中には、まだ十分使えるのに眠っているハードウェアがあふれています。何十億台ものスマホ、何億台ものノート PC、そして「古い」と言われたサーバーラック。そこには CPU もメモリも帯域もあるのに、今は無駄になっています。AirWeb は、それらを静かに再び役立つものに戻し、すでに代金を払った人の手元で活かすための第一歩です。',
+      'The world is full of perfectly good hardware sitting idle — a billion phones, a hundred million laptops, racks of "obsolete" servers. They have CPU, memory, and bandwidth that today goes to waste. Airweb is the first step toward letting all of that quietly become useful, owned by the people who already paid for it.':
+        '世の中には、まだ十分使えるのに眠っているハードウェアがあふれています。何十億台ものスマホ、何億台ものノート PC、そして「古い」と言われたサーバーラック。そこには CPU もメモリも帯域もあるのに、今は無駄になっています。Airweb は、それらを静かに再び役立つものに戻し、すでに代金を払った人の手元で活かすための第一歩です。',
       'today': 'いま',
       'A handful of hyperscalers': 'ごく少数のハイパースケーラー',
       'Three logos own most of the public internet. Capacity = a credit card, a console, and a single-vendor lock-in.':
@@ -2554,7 +2554,7 @@
       'No gatekeeper — anyone can host or rent': '門番なしで、誰でもホストにも借り手にもなれる',
       'millions of nodes': '数百万のノード',
       'A real micro-server economy': '本物のマイクロサーバー経済',
-      'The most sustainable server is one that already exists. By giving a second life to devices that would otherwise sit idle — or worse, in a landfill — AirWeb reduces the need to spin up new fleets of always-on hardware just to serve a few requests per minute.':
+      'The most sustainable server is one that already exists. By giving a second life to devices that would otherwise sit idle — or worse, in a landfill — Airweb reduces the need to spin up new fleets of always-on hardware just to serve a few requests per minute.':
         'いちばん持続可能なのは、すでに存在しているサーバーです。放置されるか、最悪なら埋立地に行ってしまう機器にもう一度役割を与えることで、1 分に数件のリクエストを処理するためだけに新しい常時稼働ハードウェア群を増やさずに済みます。',
       'always-on fleet': '常時稼働の群',
       'device you already own': 'すでに持っている機器',
@@ -2573,8 +2573,8 @@
       'fail': '失敗'
     },
     ko: {
-      'AirWeb turns spare laptops, old phones, and idle home servers into tiny public endpoints. Demo an app, reach your home computer from anywhere, or lease a micro-server by the minute — and earn credits while your own devices help carry the load.':
-        'AirWeb는 안 쓰는 노트북, 오래된 휴대폰, 집에서 쉬고 있는 서버를 작은 공개 엔드포인트로 바꿉니다. 앱을 바로 보여주고, 어디서든 집 컴퓨터에 접속하고, 마이크로 서버를 분 단위로 빌릴 수 있습니다. 그동안 내 기기들이 트래픽을 함께 처리하면 크레딧도 벌 수 있습니다.',
+      'Airweb turns spare laptops, old phones, and idle home servers into tiny public endpoints. Demo an app, reach your home computer from anywhere, or lease a micro-server by the minute — and earn credits while your own devices help carry the load.':
+        'Airweb는 안 쓰는 노트북, 오래된 휴대폰, 집에서 쉬고 있는 서버를 작은 공개 엔드포인트로 바꿉니다. 앱을 바로 보여주고, 어디서든 집 컴퓨터에 접속하고, 마이크로 서버를 분 단위로 빌릴 수 있습니다. 그동안 내 기기들이 트래픽을 함께 처리하면 크레딧도 벌 수 있습니다.',
       'restore from existing key': '기존 키로 복원',
       'open source': '오픈 소스',
       'your devices': '내 기기',
@@ -2582,7 +2582,7 @@
       'Any local service becomes a public endpoint': '로컬 서비스라면 무엇이든 공개 엔드포인트가 됩니다',
       'supported protocols': '지원 프로토콜',
       'If it speaks TCP on ': '만약 ',
-      ', AirWeb can expose it. HTTP and HTTPS get a shareable subdomain; raw-TCP services get a public ': ' 에서 TCP로 통신한다면 AirWeb가 바깥으로 열어줄 수 있습니다. HTTP와 HTTPS는 공유 가능한 서브도메인을 받고, raw TCP 서비스는 공개 ',
+      ', Airweb can expose it. HTTP and HTTPS get a shareable subdomain; raw-TCP services get a public ': ' 에서 TCP로 통신한다면 Airweb가 바깥으로 열어줄 수 있습니다. HTTP와 HTTPS는 공유 가능한 서브도메인을 받고, raw TCP 서비스는 공개 ',
       ' assigned by the server.': ' 를 서버에서 할당받습니다.',
       'Get a local app online in three steps': '세 단계면 로컬 앱을 바로 공개할 수 있습니다',
       'Open the ': '먼저 ',
@@ -2592,7 +2592,7 @@
       ' your account — no password, no email.': ' 가 곧 계정입니다. 비밀번호도, 이메일도 필요 없습니다.',
       'Run one SSH command': 'SSH 명령 하나만 실행하세요',
       'Point an ': '이제 ',
-      ' at AirWeb. The local port is whatever your app already listens on; the public side is the AirWeb host.': ' 를 AirWeb로 연결하세요. 로컬 포트는 이미 앱이 듣고 있는 포트면 되고, 공개 쪽은 AirWeb 호스트가 맡습니다.',
+      ' at Airweb. The local port is whatever your app already listens on; the public side is the Airweb host.': ' 를 Airweb로 연결하세요. 로컬 포트는 이미 앱이 듣고 있는 포트면 되고, 공개 쪽은 Airweb 호스트가 맡습니다.',
       'For raw TCP (databases, SSH, game servers, RDP, …) use ': 'raw TCP(데이터베이스, SSH, 게임 서버, RDP 등)라면 ',
       ' — the server picks a free public port and prints it.': ' 를 쓰면 됩니다. 서버가 빈 공개 포트를 골라 바로 보여줍니다.',
       'Share the URL — and earn while it runs': 'URL을 공유하고, 돌아가는 동안 계속 적립받으세요',
@@ -2612,13 +2612,13 @@
       'Extra lease income when someone rents your tunnel': '누군가 내 터널을 빌릴 때 추가로 들어오는 임대 수익',
       'Charged for bytes that actually flow through': '실제로 흐른 바이트만 과금',
       'Only charged for bytes that really pass through': '실제로 지나간 바이트에 대해서만 과금',
-      'AWC welcome': '가입 AWC',
+      'AWB welcome': '가입 AWB',
       'Free credits the moment you create an account': '계정을 만들자마자 무료 크레딧 지급',
       'Idle tunnels cost nothing. The dashboard shows a live earn-vs-charge meter and a 24-hour ledger so the math is never a mystery.':
         '쉬고 있는 터널은 비용이 들지 않습니다. 대시보드에서 수익과 비용을 실시간으로 비교해 보여주고, 24시간 원장도 제공하므로 계산이 헷갈리지 않습니다.',
       'A marketplace, not a billing portal': '청구 포털이 아니라 마켓플레이스입니다',
-      'AirWeb is built around a simple loop: plug in a spare device, share its uptime, earn credits, spend them on capacity from other people. Every node is also a customer.':
-        'AirWeb는 단순한 순환 구조로 돌아갑니다. 남는 기기를 연결해 가동 시간을 나누고, 크레딧을 벌고, 그 크레딧으로 다른 사람의 용량을 씁니다. 모든 노드는 동시에 사용자이기도 합니다.',
+      'Airweb is built around a simple loop: plug in a spare device, share its uptime, earn credits, spend them on capacity from other people. Every node is also a customer.':
+        'Airweb는 단순한 순환 구조로 돌아갑니다. 남는 기기를 연결해 가동 시간을 나누고, 크레딧을 벌고, 그 크레딧으로 다른 사람의 용량을 씁니다. 모든 노드는 동시에 사용자이기도 합니다.',
       'marketplace': '마켓플레이스',
       'peers earn + spend credits': '참여자들이 크레딧을 벌고 쓰는 흐름',
       'credit flow': '크레딧 흐름',
@@ -2630,8 +2630,8 @@
       'Credits go both ways': '크레딧은 버는 데도, 쓰는 데도 같습니다',
       'Today\'s host is tomorrow\'s renter. The same wallet that earns your uptime rewards pays for the leases you take — no separate billing surface.':
         '오늘 호스트인 사람이 내일은 임차인이 될 수 있습니다. 가동 보상을 받는 같은 지갑으로 임대 비용을 내기 때문에 따로 결제 화면을 오갈 필요가 없습니다.',
-      'The world is full of perfectly good hardware sitting idle — a billion phones, a hundred million laptops, racks of "obsolete" servers. They have CPU, memory, and bandwidth that today goes to waste. AirWeb is the first step toward letting all of that quietly become useful, owned by the people who already paid for it.':
-        '세상에는 아직 충분히 쓸 수 있는데 놀고 있는 하드웨어가 많습니다. 수십억 대의 휴대폰, 수억 대의 노트북, 그리고 "구형"이라 불리는 서버 랙까지요. 거기에는 CPU도, 메모리도, 대역폭도 있지만 지금은 그냥 낭비되고 있습니다. AirWeb는 이미 비용을 지불한 사람들이 그 자원을 다시 조용히 활용할 수 있게 만드는 첫걸음입니다.',
+      'The world is full of perfectly good hardware sitting idle — a billion phones, a hundred million laptops, racks of "obsolete" servers. They have CPU, memory, and bandwidth that today goes to waste. Airweb is the first step toward letting all of that quietly become useful, owned by the people who already paid for it.':
+        '세상에는 아직 충분히 쓸 수 있는데 놀고 있는 하드웨어가 많습니다. 수십억 대의 휴대폰, 수억 대의 노트북, 그리고 "구형"이라 불리는 서버 랙까지요. 거기에는 CPU도, 메모리도, 대역폭도 있지만 지금은 그냥 낭비되고 있습니다. Airweb는 이미 비용을 지불한 사람들이 그 자원을 다시 조용히 활용할 수 있게 만드는 첫걸음입니다.',
       'today': '지금',
       'A handful of hyperscalers': '몇 안 되는 초대형 클라우드 사업자',
       'Three logos own most of the public internet. Capacity = a credit card, a console, and a single-vendor lock-in.':
@@ -2649,7 +2649,7 @@
       'No gatekeeper — anyone can host or rent': '문지기 없이 누구나 호스트도, 임차인도 될 수 있다',
       'millions of nodes': '수백만 개의 노드',
       'A real micro-server economy': '진짜 마이크로 서버 경제',
-      'The most sustainable server is one that already exists. By giving a second life to devices that would otherwise sit idle — or worse, in a landfill — AirWeb reduces the need to spin up new fleets of always-on hardware just to serve a few requests per minute.':
+      'The most sustainable server is one that already exists. By giving a second life to devices that would otherwise sit idle — or worse, in a landfill — Airweb reduces the need to spin up new fleets of always-on hardware just to serve a few requests per minute.':
         '가장 지속 가능한 서버는 이미 존재하는 서버입니다. 원래는 놀고 있거나, 더 나쁘면 버려질 기기에 다시 역할을 주면, 분당 몇 번 안 되는 요청을 처리하려고 새 상시 가동 장비군을 늘릴 필요가 줄어듭니다.',
       'always-on fleet': '상시 가동 장비군',
       'device you already own': '이미 갖고 있는 기기',
@@ -2693,7 +2693,7 @@
     { rx: /^(\d+)d ago$/, fmt: { es: 'hace {0} d', fr: 'il y a {0} j', de: 'vor {0} T', zh: '{0} 天前', ja: '{0}日前', ko: '{0}일 전' } },
     { rx: /^just now$/, fmt: { es: 'ahora mismo', fr: 'à l\'instant', de: 'gerade eben', zh: '刚刚', ja: 'たった今', ko: '방금' } },
     { rx: /^expires (.+)$/, fmt: { es: 'expira {0}', fr: 'expire {0}', de: 'läuft ab {0}', zh: '到期 {0}', ja: '失効 {0}', ko: '만료 {0}' } },
-    { rx: /^spent (.+) AWC$/, fmt: { es: 'gastado {0} AWC', fr: 'dépensé {0} AWC', de: 'ausgegeben {0} AWC', zh: '已花费 {0} AWC', ja: '使用 {0} AWC', ko: '사용 {0} AWC' } },
+    { rx: /^spent (.+) AWB$/, fmt: { es: 'gastado {0} AWB', fr: 'dépensé {0} AWB', de: 'ausgegeben {0} AWB', zh: '已花费 {0} AWB', ja: '使用 {0} AWB', ko: '사용 {0} AWB' } },
     { rx: /^avg (.+)$/, fmt: { es: 'prom. {0}', fr: 'moy. {0}', de: 'Ø {0}', zh: '平均 {0}', ja: '平均 {0}', ko: '평균 {0}' } },
     { rx: /^(\d+) active$/, fmt: { es: '{0} activo(s)', fr: '{0} actif(s)', de: '{0} aktiv', zh: '{0} 个活动中', ja: 'アクティブ {0}件', ko: '활성 {0}개' } },
     // ---- Landing-page dynamic phrases ----
@@ -2866,7 +2866,7 @@
 
   function detectInitial() {
     try {
-      const saved = (window.AirWebStore && window.AirWebStore.get(STORAGE_KEY)) || localStorage.getItem(STORAGE_KEY);
+      const saved = (window.AirwebStore && window.AirwebStore.get(STORAGE_KEY)) || localStorage.getItem(STORAGE_KEY);
       if (saved && LOCALES.indexOf(saved) >= 0) return saved;
     } catch (e) {}
     const nav = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
@@ -2881,7 +2881,7 @@
     if (LOCALES.indexOf(code) < 0) code = DEFAULT;
     locale = code;
     try {
-      if (window.AirWebStore) window.AirWebStore.set(STORAGE_KEY, code);
+      if (window.AirwebStore) window.AirwebStore.set(STORAGE_KEY, code);
       else localStorage.setItem(STORAGE_KEY, code);
     } catch (e) {}
     applyI18n();

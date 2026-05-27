@@ -1,5 +1,5 @@
 // Shared factory for "internal" servers — small HTTP services we ship inside
-// the AirWeb process (docs, forum, etc.) and expose to the outside world via
+// the Airweb process (docs, forum, etc.) and expose to the outside world via
 // the public HTTP router as fixed-subdomain tunnels.
 //
 // Each internal server lives in its own folder under server/internal/ and

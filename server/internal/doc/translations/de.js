@@ -1,4 +1,4 @@
-// German (de) translations for AirWeb docs.
+// German (de) translations for Airweb docs.
 module.exports = {
   'getting-started.label': 'Einstieg',
   'tunneling.label':       'Tunnel',
@@ -6,21 +6,21 @@ module.exports = {
   'reference.label':       'Referenz',
 
   // ---------- introduction ----------
-  'introduction.title': 'Einführung in AirWeb',
+  'introduction.title': 'Einführung in Airweb',
   'introduction.description':
-    'AirWeb verwandelt einen einzigen SSH-Befehl in eine öffentliche HTTPS-URL. ' +
-    'Erfahre, was AirWeb ist, wie reverse SSH-Tunnel funktionieren und ' +
+    'Airweb verwandelt einen einzigen SSH-Befehl in eine öffentliche HTTPS-URL. ' +
+    'Erfahre, was Airweb ist, wie reverse SSH-Tunnel funktionieren und ' +
     'warum es der schnellste Weg ist, einen lokalen Service mit der Welt zu teilen.',
   'introduction.html': `
-<h1>Was ist AirWeb?</h1>
-<p class="lead">AirWeb ist ein Reverse-Tunneling-Dienst, mit dem du jeden
+<h1>Was ist Airweb?</h1>
+<p class="lead">Airweb ist ein Reverse-Tunneling-Dienst, mit dem du jeden
 Dienst auf deinem Laptop oder in einem privaten Netzwerk allein mit dem
 <code>ssh</code>-Befehl ins öffentliche Internet stellst. Kein Agent zu
 installieren — wenn OpenSSH da ist (in modernem macOS, Linux und Windows
 standardmäßig dabei), hast du schon alles.</p>
 
 <h2>So funktioniert's</h2>
-<p>Wenn du <code>ssh&nbsp;-R</code> gegen AirWeb startest, akzeptiert unser
+<p>Wenn du <code>ssh&nbsp;-R</code> gegen Airweb startest, akzeptiert unser
 SSH-Server die <em>Reverse-Port-Forward</em>-Anfrage des Clients und
 öffnet einen öffentlichen Listener für dich. Traffic, der diesen Listener
 erreicht, wird über die bestehende SSH-Verbindung zurück an einen Port auf
@@ -33,7 +33,7 @@ deiner Maschine geschickt.</p>
       die Bytes werden unverändert weitergereicht.</li>
 </ul>
 
-<h2>Warum man AirWeb nutzt</h2>
+<h2>Warum man Airweb nutzt</h2>
 <ul>
   <li><strong>Null Installation.</strong> Keine Client-Binärdateien, keine
       Kernel-Module, keine Browser-Erweiterungen. Nur OpenSSH und eine
@@ -49,7 +49,7 @@ deiner Maschine geschickt.</p>
 </ul>
 
 <h2>Wie weiter</h2>
-<p>Am schnellsten kapierst du AirWeb, wenn du <em>jetzt</em> eine lokale
+<p>Am schnellsten kapierst du Airweb, wenn du <em>jetzt</em> eine lokale
 Web-App veröffentlichst. Weiter zur
 <a href="/quick-start">Schnellstart-Anleitung</a> — in unter zwei Minuten
 hast du eine Live-URL.</p>
@@ -106,14 +106,14 @@ Anfragen tauchen im Terminal deines lokalen Servers auf. Mit
 `,
 
   // ---------- installation ----------
-  'installation.title': 'AirWeb-Client installieren',
+  'installation.title': 'Airweb-Client installieren',
   'installation.description':
-    'AirWeb läuft mit dem System-OpenSSH unter macOS, Linux und Windows. ' +
+    'Airweb läuft mit dem System-OpenSSH unter macOS, Linux und Windows. ' +
     'Wer freundlichere Befehle möchte, kann zusätzlich den optionalen ' +
     '`airweb`-Node.js-Wrapper nutzen. Anleitung für beides unten.',
   'installation.html': `
 <h1>Installation</h1>
-<p class="lead">Der AirWeb-„Client" ist einfach die <code>ssh</code>-Binary,
+<p class="lead">Der Airweb-„Client" ist einfach die <code>ssh</code>-Binary,
 die schon auf deinem Rechner liegt. Wenn du es etwas freundlicher willst,
 gibt es einen optionalen Node.js-Wrapper.</p>
 
@@ -161,15 +161,15 @@ Global per npm installieren:</p>
   // ---------- http-tunnels ----------
   'http-tunnels.title': 'HTTP-Tunnel — eine Web-App teilen',
   'http-tunnels.description':
-    'Detaillierte Referenz zu AirWebs HTTP-Tunneln: Subdomain-Wahl, ' +
+    'Detaillierte Referenz zu Airwebs HTTP-Tunneln: Subdomain-Wahl, ' +
     'Request-Fluss, WebSockets, Host-Header, eigene Pfade und mehrere ' +
     'gleichzeitige Tunnel pro Account.',
   'http-tunnels.html': `
 <h1>HTTP-Tunnel</h1>
-<p class="lead">Wenn du AirWeb <code>-R 80:localhost:&lt;port&gt;</code>
+<p class="lead">Wenn du Airweb <code>-R 80:localhost:&lt;port&gt;</code>
 gibst, binden wir nicht wirklich Port 80 auf dem Server für dich — das
 würde dich auf einen Tunnel pro Maschine festnageln. Stattdessen behandelt
-AirWebs HTTP-Router deinen <em>SSH-Usernamen</em> als Subdomain und routet
+Airwebs HTTP-Router deinen <em>SSH-Usernamen</em> als Subdomain und routet
 über den Host-Header.</p>
 
 <h2>Der Weg eines Requests</h2>
@@ -221,10 +221,10 @@ dein Framework absolute URLs aus einem fest verdrahteten Host, setze sein
   'tcp-tunnels.title': 'TCP-Tunnel — DBs, Gameserver und mehr',
   'tcp-tunnels.description':
     'Beliebigen TCP-Verkehr — Postgres, Redis, Minecraft, Bastion-SSH — ' +
-    'durch einen AirWeb-Reverse-Tunnel weiterleiten.',
+    'durch einen Airweb-Reverse-Tunnel weiterleiten.',
   'tcp-tunnels.html': `
 <h1>TCP-Tunnel</h1>
-<p class="lead">HTTP ist der häufige Fall, aber AirWeb kann jedes
+<p class="lead">HTTP ist der häufige Fall, aber Airweb kann jedes
 TCP-Protokoll tragen. Frage im <code>-R</code> nach einem anderen Port als
 80, und der Server bindet einen dedizierten TCP-Listener für dich.</p>
 
@@ -261,7 +261,7 @@ einen Firewall davor.</p>
   'handles.title': 'Handles — dauerhafte Subdomains leasen',
   'handles.description':
     'Handles sind reservierte Subdomains, unter denen nur dein Account ' +
-    'veröffentlichen darf. Lerne, wie du im AirWeb-Marketplace bietest, ' +
+    'veröffentlichen darf. Lerne, wie du im Airweb-Marketplace bietest, ' +
     'leasest und verlängerst.',
   'handles.html': `
 <h1>Handles</h1>
@@ -294,21 +294,21 @@ veröffentlichen.</p>
 </ul>
 
 <h2>Credits aufladen</h2>
-<p>Leasings werden in Credits (AWC) abgerechnet. Mehr im
+<p>Leasings werden in Credits (AWB) abgerechnet. Mehr im
 <a href="{{APEX}}/dashboard">Dashboard</a> kaufen. Aktuelle Preise im
 <a href="/credits">Credits-Guide</a>.</p>
 `,
 
   // ---------- credits ----------
-  'credits.title': 'Credits, Abrechnung und die AWC-Ökonomie',
+  'credits.title': 'Credits, Abrechnung und die AWB-Ökonomie',
   'credits.description':
-    'Credits (AWC) sind die Werteinheit innerhalb von AirWeb — sie zahlen ' +
+    'Credits (AWB) sind die Werteinheit innerhalb von Airweb — sie zahlen ' +
     'Handle-Leasings, Premium-Subdomains und Trinkgelder an Creator. ' +
     'Lerne, wie die Ökonomie tickt und wie man auflädt.',
   'credits.html': `
 <h1>Credits & Abrechnung</h1>
-<p class="lead">Alles mit Preis in AirWeb wird in
-<strong>AirWeb-Credits (AWC)</strong> abgerechnet. Eine schlichte interne
+<p class="lead">Alles mit Preis in Airweb wird in
+<strong>Airweb-Credits (AWB)</strong> abgerechnet. Eine schlichte interne
 Recheneinheit — keine Blockchain.</p>
 
 <h2>Wie du Credits bekommst</h2>
@@ -345,10 +345,10 @@ festgehalten, das du einsehen kannst:</p>
 `,
 
   // ---------- dashboard ----------
-  'dashboard.title': 'Das Dashboard — deine AirWeb-Basis',
+  'dashboard.title': 'Das Dashboard — deine Airweb-Basis',
   'dashboard.description':
     'Verwalte Tunnel, Handles, Credits und Account-Einstellungen im ' +
-    'AirWeb-Dashboard. Ein Rundgang durch jedes Panel und alle Shortcuts.',
+    'Airweb-Dashboard. Ein Rundgang durch jedes Panel und alle Shortcuts.',
   'dashboard.html': `
 <h1>Das Dashboard</h1>
 <p class="lead">Melde dich bei <a href="{{APEX}}/dashboard">{{APEX}}/dashboard</a>
@@ -368,7 +368,7 @@ Bytes. Eine Zeile klicken kopiert die öffentliche URL.</p>
 Aktivität. <a href="/credits">Mehr zu Credits hier.</a></p>
 
 <h2>Die gemeinsame Kopfzeile</h2>
-<p>Die obere Kopfzeile sieht auf jeder AirWeb-Seite gleich aus (Dashboard,
+<p>Die obere Kopfzeile sieht auf jeder Airweb-Seite gleich aus (Dashboard,
 Marketplace, Connections, Doku und alle internen Services). Über das
 Zahnrad öffnest du Theme-, Sprach- und Währungseinstellungen — deine
 Präferenzen liegen in Cookies mit Scope
@@ -379,7 +379,7 @@ Subdomains hinweg.</p>
   // ---------- connections ----------
   'connections.title': 'Connections-Seite — Echtzeit-Tunnel-Telemetrie',
   'connections.description':
-    'Sieh jeden aktiven SSH-Tunnel zum AirWeb-Cluster — deine und ' +
+    'Sieh jeden aktiven SSH-Tunnel zum Airweb-Cluster — deine und ' +
     'öffentliche — mit Live-In/Out-Bytes und Quellinfos.',
   'connections.html': `
 <h1>Connections</h1>
@@ -411,7 +411,7 @@ wenn du eigene Dashboards oder Alarmregeln bauen willst.</p>
   // ---------- marketplace ----------
   'marketplace.title': 'Marketplace — Handles kaufen und verkaufen',
   'marketplace.description':
-    'Durchstöbere und biete auf AirWeb-Handles. Verkäufer listen, was sie ' +
+    'Durchstöbere und biete auf Airweb-Handles. Verkäufer listen, was sie ' +
     'nicht mehr brauchen; Käufer holen sich die perfekte Subdomain.',
   'marketplace.html': `
 <h1>Der Marketplace</h1>
@@ -422,7 +422,7 @@ gebaut — suchen, kaufen klicken, gehört dir.</p>
 <h2>Ein Handle anbieten</h2>
 <ol>
   <li>Öffne eines deiner geleasten Handles im Dashboard.</li>
-  <li>Klick <em>List for sale</em> und setze einen Preis in AWC.</li>
+  <li>Klick <em>List for sale</em> und setze einen Preis in AWB.</li>
   <li>Das Inserat erscheint sofort im Marketplace.</li>
   <li>Beim Kauf werden die Credits deinem Account gutgeschrieben und das
       Restleasing wandert zum Käufer.</li>
@@ -463,7 +463,7 @@ airweb tcp &lt;localPort&gt; [--remote &lt;port&gt;] \\
 <h2>Flags</h2>
 <dl>
   <dt><code>--server &lt;host[:port]&gt;</code> <em>(Pflicht)</em></dt>
-  <dd>Der AirWeb-SSH-Endpoint, z. B.
+  <dd>Der Airweb-SSH-Endpoint, z. B.
       <code>{{SSH_HOST}}:{{SSH_PORT}}</code>.</dd>
 
   <dt><code>--key &lt;path&gt;</code> <em>(Pflicht)</em></dt>
@@ -500,7 +500,7 @@ airweb tcp 5432 --remote 15432 \\
   // ---------- api ----------
   'api.title': 'HTTP-API-Referenz',
   'api.description':
-    'Jeder JSON-Endpoint, den AirWeb anbietet — Auth, Guthaben & Ledger, ' +
+    'Jeder JSON-Endpoint, den Airweb anbietet — Auth, Guthaben & Ledger, ' +
     'Handle-Marketplace und Admin-Telemetrie.',
   'api.html': `
 <h1>HTTP-API</h1>
@@ -559,11 +559,11 @@ Ressource fehlt, 429 = Rate-Limit.</p>
   // ---------- security ----------
   'security.title': 'Sicherheitsmodell und Best Practices',
   'security.description':
-    'Wie AirWeb Clients authentifiziert, Tunnel isoliert und Nutzerdaten ' +
+    'Wie Airweb Clients authentifiziert, Tunnel isoliert und Nutzerdaten ' +
     'schützt — plus Best Practices, um deine veröffentlichten Dienste zu härten.',
   'security.html': `
 <h1>Sicherheitsmodell</h1>
-<p class="lead">Ein kurzes, ehrliches Bedrohungsmodell: was AirWeb tut,
+<p class="lead">Ein kurzes, ehrliches Bedrohungsmodell: was Airweb tut,
 was nicht, und wie du es sicher nutzt.</p>
 
 <h2>Authentifizierung</h2>
@@ -577,7 +577,7 @@ können ihn nicht neu ausstellen (wir speichern ihn nie).</p>
 Andere Clients, die sich an einen geleasten Namen binden wollen, werden
 beim <code>tcpip-forward</code>-Handshake abgewiesen.</p>
 
-<h2>Was AirWeb sehen kann</h2>
+<h2>Was Airweb sehen kann</h2>
 <ul>
   <li>Bytes, die durch Tunnel laufen, gehen über unseren öffentlichen
       Router. Der Router loggt nie Request-Bodies, nur Zähler.</li>
@@ -610,19 +610,19 @@ Disclosure und danken Meldern öffentlich.</p>
   // ---------- faq ----------
   'faq.title': 'Häufige Fragen',
   'faq.description':
-    'Kurze Antworten auf die häufigsten Fragen zu AirWeb: Vergleich zu ' +
+    'Kurze Antworten auf die häufigsten Fragen zu Airweb: Vergleich zu ' +
     'ngrok, Selbst-Hosting, eigene Domains, Free-Tier und mehr.',
   'faq.html': `
 <h1>Häufige Fragen</h1>
 
-<h3>Wie verhält sich AirWeb zu ngrok oder Cloudflare Tunnel?</h3>
+<h3>Wie verhält sich Airweb zu ngrok oder Cloudflare Tunnel?</h3>
 <p>Unser Transport ist schlicht OpenSSH — kein proprietäres Protokoll,
 keine Client-Binary, kein Kernel-Modul. Im Gegenzug bekommst du keine
 ngrok-artige Inspektions-UI und kein Cloudflare-Edge-Netzwerk. Wenn dir
-„ssh kommt durch jede Firewall" reicht, ist AirWeb die einfachere
+„ssh kommt durch jede Firewall" reicht, ist Airweb die einfachere
 Antwort.</p>
 
-<h3>Kann ich meinen eigenen AirWeb-Server betreiben?</h3>
+<h3>Kann ich meinen eigenen Airweb-Server betreiben?</h3>
 <p>Ja — das Repo ist derselbe Code, der den gehosteten Dienst betreibt.
 Klonen, <code>config.default.json</code> nach <code>config.json</code>
 kopieren, <code>AIRWEB_PUBLIC_DOMAIN</code> setzen und
@@ -645,12 +645,12 @@ konfigurier den Wildcard, den du kontrollierst.</p>
 <code>-o&nbsp;ServerAliveInterval=30</code> dran oder wickle den Befehl
 mit <code>autossh</code> ein.</p>
 
-<h3>Unterstützt AirWeb HTTP/2 oder HTTP/3?</h3>
+<h3>Unterstützt Airweb HTTP/2 oder HTTP/3?</h3>
 <p>Das öffentliche Edge spricht HTTP/1.1 und HTTP/2. HTTP/3 (QUIC)
 braucht UDP und steht auf der Roadmap. Dein Origin darf sprechen, was er
 will — der Proxy normalisiert auf dem Tunnel-Hop auf HTTP/1.1.</p>
 
-<h3>Kann ich AirWeb für Produktions-Traffic nutzen?</h3>
+<h3>Kann ich Airweb für Produktions-Traffic nutzen?</h3>
 <p>Manche tun es, aber sei dir bewusst, was du kaufst. Eine einzelne
 SSH-Session ist ein Single Point of Failure. Für echte Produktion
 empfehlen wir Selbst-Hosting mit Multi-Region-Active/Active-Sessions
@@ -658,7 +658,7 @@ hinter einem Load Balancer.</p>
 `,
 
   // ---------- troubleshooting ----------
-  'troubleshooting.title': 'AirWeb — häufige Fehler beheben',
+  'troubleshooting.title': 'Airweb — häufige Fehler beheben',
   'troubleshooting.description':
     'Rezepte für die häufigsten Fehler: abgelehntes Forwarding, Port belegt, ' +
     'Schlüssel-Rechte, Firmenproxy und mehr.',
@@ -716,7 +716,7 @@ nicht"-Berichte lösen sich auf, wenn man diese Ausgabe teilt.</p>
   // ---------- changelog ----------
   'changelog.title': 'Changelog',
   'changelog.description':
-    'Die bemerkenswerten Änderungen zwischen AirWeb-Versionen — Features, ' +
+    'Die bemerkenswerten Änderungen zwischen Airweb-Versionen — Features, ' +
     'Breaking Changes, Security-Fixes.',
   'changelog.html': `
 <h1>Changelog</h1>

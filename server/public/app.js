@@ -109,7 +109,7 @@ function fmtUsdSmall(n) {
   if (Math.abs(v) >= 0.0001) return '$' + v.toFixed(4);
   return '<$0.0001';
 }
-function fmtBoth(n)    { return `${fmtCredits(n)} AWC (${fmtUsd(n)})`; }
+function fmtBoth(n)    { return `${fmtCredits(n)} AWB (${fmtUsd(n)})`; }
 
 async function api(path, opts = {}) {
   const r = await fetch(path, { credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, ...opts });
@@ -140,7 +140,7 @@ function refreshKeyFileNameLabels() {
   document.querySelectorAll('.key-file-name').forEach(el => { el.textContent = name; });
 }
 
-// If a URL targets the AirWeb public domain but lacks an explicit port,
+// If a URL targets the Airweb public domain but lacks an explicit port,
 // append the port the browser is currently using (skipping defaults 80/443).
 // This keeps subdomain links clickable in dev (e.g. http://mysub.lvh.me:8080)
 // or behind non-standard reverse proxies. Non-http(s) URLs (tcp://, etc.)
@@ -193,7 +193,7 @@ function renderGuestMarketplace() {
   $('userMenu').classList.add('hide');
   $('settingsMenu').classList.remove('hide');
   $('pageTitle').textContent = 'Marketplace';
-  document.title = 'Marketplace — AirWeb';
+  document.title = 'Marketplace — Airweb';
   $('tabBar').classList.add('hide');
   $('tabOverview').classList.add('hide');
   $('tabMap').classList.add('hide');
@@ -203,7 +203,7 @@ function renderGuestMarketplace() {
   refreshMarketplace().catch(e => console.error('market:', e));
 }
 
-// Public network-map preview — anyone can see where AirWeb listings are.
+// Public network-map preview — anyone can see where Airweb listings are.
 function renderGuestConnections() {
   $('guestState').classList.add('hide');
   $('authState').classList.remove('hide');
@@ -211,7 +211,7 @@ function renderGuestConnections() {
   $('userMenu').classList.add('hide');
   $('settingsMenu').classList.remove('hide');
   $('pageTitle').textContent = 'Connections';
-  document.title = 'Connections — AirWeb';
+  document.title = 'Connections — Airweb';
   $('tabBar').classList.add('hide');
   $('tabOverview').classList.add('hide');
   $('tabMarketplace').classList.add('hide');
@@ -224,7 +224,7 @@ function renderGuestConnections() {
 function renderAuthed() {
   // Delegate all header rendering (avatar, balance, short address, USD est.)
   // to header.js so every page shows the same chrome.
-  try { window.AirWebHeader && window.AirWebHeader.applyAuthState(ME); } catch (e) {}
+  try { window.AirwebHeader && window.AirwebHeader.applyAuthState(ME); } catch (e) {}
   $('guestState').classList.add('hide');
   $('authState').classList.remove('hide');
   // Marketplace-only mode when URL is /marketplace
@@ -233,11 +233,11 @@ function renderAuthed() {
   $('tabBar').classList.toggle('hide', _isMarket || _isConnections);
   if (_isMarket) {
     $('pageTitle').textContent = 'Marketplace';
-    document.title = 'Marketplace — AirWeb';
+    document.title = 'Marketplace — Airweb';
     switchTab('marketplace');
   } else if (_isConnections) {
     $('pageTitle').textContent = 'Connections';
-    document.title = 'Connections — AirWeb';
+    document.title = 'Connections — Airweb';
     switchTab('map');
   } else {
     $('pageTitle').textContent = 'Dashboard';
@@ -252,12 +252,12 @@ function renderAuthed() {
   // account, so a brand-new tunnel reads 0/min until its first ledger tick.
   const earnRate   = e.avgPerMinute || 0;
   const chargeRate = e.avgChargePerMinute || 0;
-  $('earnRateVal').innerHTML = fmtCredits(earnRate) + '<span class="cr">AWC</span>';
+  $('earnRateVal').innerHTML = fmtCredits(earnRate) + '<span class="cr">AWB</span>';
   $('earnRateUsd').textContent = fmtUsdSmall(earnRate);
-  $('earn24hVal').textContent = `+${fmtCredits(e.uptime24h || 0)} AWC (${fmtUsd(e.uptime24h || 0)}) in 24h`;
-  $('totalChargedVal').innerHTML = fmtCredits(chargeRate) + '<span class="cr">AWC</span>';
+  $('earn24hVal').textContent = `+${fmtCredits(e.uptime24h || 0)} AWB (${fmtUsd(e.uptime24h || 0)}) in 24h`;
+  $('totalChargedVal').innerHTML = fmtCredits(chargeRate) + '<span class="cr">AWB</span>';
   $('totalChargedUsd').textContent = fmtUsdSmall(chargeRate);
-  $('charged24hVal').textContent = `\u2212${fmtCredits(e.bandwidth24h || 0)} AWC (${fmtUsd(e.bandwidth24h || 0)}) in 24h`;
+  $('charged24hVal').textContent = `\u2212${fmtCredits(e.bandwidth24h || 0)} AWB (${fmtUsd(e.bandwidth24h || 0)}) in 24h`;
   const netRate = (typeof e.avgNetPerMinute === 'number') ? e.avgNetPerMinute : (earnRate - chargeRate);
   const net24h  = (e.uptime24h || 0) - (e.bandwidth24h || 0);
   const netEl   = $('netMetric');
@@ -266,10 +266,10 @@ function renderAuthed() {
   netEl.classList.add(netPositive ? 'metric-pos' : 'metric-neg');
   $('netLabel').textContent = netPositive ? 'Earning / min' : 'Consuming / min';
   const sign = netPositive ? '+' : '\u2212';
-  $('netRateVal').innerHTML = sign + fmtCredits(Math.abs(netRate)) + '<span class="cr">AWC</span>';
+  $('netRateVal').innerHTML = sign + fmtCredits(Math.abs(netRate)) + '<span class="cr">AWB</span>';
   $('netRateUsd').textContent = (netPositive ? '+' : '\u2212') + fmtUsdSmall(Math.abs(netRate)).replace(/^[-+]/, '');
   const sign24 = net24h >= 0 ? '+' : '\u2212';
-  $('net24hVal').textContent = `${sign24}${fmtCredits(Math.abs(net24h))} AWC (${fmtUsd(Math.abs(net24h))}) in 24h`;
+  $('net24hVal').textContent = `${sign24}${fmtCredits(Math.abs(net24h))} AWB (${fmtUsd(Math.abs(net24h))}) in 24h`;
   // The Connect-a-Tunnel modal owns its own command rendering (multi-protocol);
   // we just prime its default values from the loaded config.
   if (typeof renderConnectCmd === 'function') renderConnectCmd();
@@ -352,7 +352,7 @@ async function refreshAdmin() {
     aEl.innerHTML = '<table><thead><tr><th>Account ID</th><th class="right">Credits</th><th>Role</th><th class="right">Created</th><th></th></tr></thead><tbody>' +
       data.accounts.map(a => `<tr>
         <td class="mono" style="font-size:.75rem">${esc(a.address)}</td>
-        <td class="right mono"><span class="reason" style="font-size:.7rem; display:block; font-family:var(--sans); font-weight:400">est. ${fmtUsd(a.credits)}</span>${fmtCredits(a.credits)}<span class="unit">AWC</span></td>
+        <td class="right mono"><span class="reason" style="font-size:.7rem; display:block; font-family:var(--sans); font-weight:400">est. ${fmtUsd(a.credits)}</span>${fmtCredits(a.credits)}<span class="unit">AWB</span></td>
         <td>${a.is_admin ? '<span class="pill good">admin</span>' : '<span class="reason">user</span>'}</td>
         <td class="right reason">${timeAgo(a.created_at)}</td>
         <td class="right">
@@ -405,7 +405,7 @@ function renderActivity() {
     `${onlineCount} online tunnel${onlineCount===1?'':'s'}`,
     `${listingCount} listing${listingCount===1?'':'s'}`,
     `${leases.length} lease${leases.length===1?'':'s'}`,
-    onlineCount ? `earning ${fmtCredits(earnRate)} AWC/min (${fmtUsd(earnRate)}/min)` : null,
+    onlineCount ? `earning ${fmtCredits(earnRate)} AWB/min (${fmtUsd(earnRate)}/min)` : null,
   ].filter(Boolean).join(' \u00b7 ');
   $('activitySummary').textContent = summary;
 
@@ -528,7 +528,7 @@ function activityRow(r) {
     const tunnelProto = t.service || (listing && listing.protocol) || t.type;
     const typeHtml = typeCell(tunnelProto, statusText);
     const toggleBtn = t.internal
-      ? `<button class="ghost" disabled title="Internal server \u2014 managed by AirWeb">Pause</button>`
+      ? `<button class="ghost" disabled title="Internal server \u2014 managed by Airweb">Pause</button>`
       : (t.disabled
           ? `<button data-toggle-tunnel="${t.id}" data-toggle-action="enable" title="Resume public access">Resume</button>`
           : (listing
@@ -557,7 +557,7 @@ function activityRow(r) {
     const leasesCell  = listing ? listingLeasesCell(listing) : '<span class="reason">\u2014</span>';
     const rateCell    = listing
       ? `${fmtCredits(CONFIG.uptimePerMinute || 0)}<span class="sub">listed ${fmtCredits(listing.price_per_minute)}/min</span>`
-      : `${fmtCredits(CONFIG.uptimePerMinute || 0)}<span class="sub">AWC/min</span>`;
+      : `${fmtCredits(CONFIG.uptimePerMinute || 0)}<span class="sub">AWB/min</span>`;
 
     const rewardCell = t.internal
       ? '<span class="reason">internal</span>'
@@ -592,7 +592,7 @@ function activityRow(r) {
       <td>${listingStatusCell(l)}</td>
       <td class="right">${listingEarnedCell(l)}</td>
       <td class="right">${listingLeasesCell(l)}</td>
-      <td class="right reason">${fmtCredits(l.price_per_minute)}<span class="sub">AWC/min</span></td>
+      <td class="right reason">${fmtCredits(l.price_per_minute)}<span class="sub">AWB/min</span></td>
       <td class="right">${removeListingIcon(l)}</td>
     </tr>`;
   }
@@ -607,13 +607,13 @@ function activityRow(r) {
   return `<tr>
     <td>${typeCell(l.protocol, 'lease')}</td>
     <td class="wrap"><strong>${esc(l.title || ('lease ' + l.id))}</strong><span class="sub mono">${esc(l.owner_address || '')}</span>${accessSub ? '<span class="sub">' + accessSub + '</span>' : ''}</td>
-    <td class="reason">spent ${fmtCredits(l.total_credits)} AWC</td>
+    <td class="reason">spent ${fmtCredits(l.total_credits)} AWB</td>
     <td class="right reason">\u2014</td>
     <td class="right reason"><span style="color:var(--bad)">\u2212${leaseCharge.toFixed(4)}</span><span class="sub">${fmtUsdSmall(leaseCharge)}</span></td>
     <td class="reason">\u2014</td>
     <td class="right reason">\u2014</td>
     <td class="right reason">\u2014</td>
-    <td class="right reason">${fmtCredits(l.price_per_minute)}<span class="sub">AWC/min</span></td>
+    <td class="right reason">${fmtCredits(l.price_per_minute)}<span class="sub">AWB/min</span></td>
     <td class="right reason">\u2014</td>
   </tr>`;
 }
@@ -671,13 +671,13 @@ const PROTO_DEFS = {
   },
   https: {
     label: 'HTTPS',
-    desc:  'Expose a local web app over TLS. Requires the AirWeb server to be configured with HTTPS (public scheme = https).',
+    desc:  'Expose a local web app over TLS. Requires the Airweb server to be configured with HTTPS (public scheme = https).',
     defaultLocalPort: 3000,
     remoteForward: '80',
     needsLocalPort: true,
     endpoint: (sub, host, scheme, port) => buildHttpUrl(sub, host, scheme, port, true),
   },
-  // Raw-TCP protocols: request remote port 0 so the AirWeb server allocates a
+  // Raw-TCP protocols: request remote port 0 so the Airweb server allocates a
   // free public port from its configured tcpPortRange. Hardcoding well-known
   // ports (22, 3389, 3306, ...) is pointless — they sit outside the range and
   // the server silently reassigns them anyway, leaving the displayed endpoint
@@ -1149,7 +1149,7 @@ async function refreshMarketplace() {
         ${it.tunnelOnline ? '<span class="pill good">online</span>' : '<span class="pill off">offline</span>'}
         ${it.validated ? '<span class="validated-pill">SSH validated</span>' : ''}
         <span style="margin-left:auto; text-align:right">
-          <strong>${fmtCredits(it.pricePerMinute)}<span class="unit">AWC/min</span></strong>
+          <strong>${fmtCredits(it.pricePerMinute)}<span class="unit">AWB/min</span></strong>
           <br><span class="reason" style="font-size:.75rem">${fmtUsd(it.pricePerMinute)}/min${termLabel ? ' · ' + esc(termLabel) + ' term' : ''}</span>
         </span>
       </div>
@@ -1185,8 +1185,8 @@ async function refreshMarketplace() {
       const total = (it.pricePerMinute || 0) * term;
       const msg = `Confirm lease:\n\n` +
         `${it.title}\n` +
-        `${fmtCredits(it.pricePerMinute)} AWC/min × ${fmtTermMinutes(term)}\n` +
-        `Total (prepaid now): ${fmtCredits(total)} AWC (${fmtUsd(total)})\n\n` +
+        `${fmtCredits(it.pricePerMinute)} AWB/min × ${fmtTermMinutes(term)}\n` +
+        `Total (prepaid now): ${fmtCredits(total)} AWB (${fmtUsd(total)})\n\n` +
         `This amount will be charged immediately from your balance.`;
       if (!confirm(msg)) return;
     }
@@ -1257,7 +1257,7 @@ async function refreshLedger(reset) {
   tb.innerHTML = LEDGER_ROWS.map(l => `<tr>
     <td class="reason">${esc(l.reason.replace(/_/g, ' '))}</td>
     <td class="mono reason">${l.ref ? esc(l.ref) : ''}</td>
-    <td class="right ${l.delta >= 0 ? 'delta-pos' : 'delta-neg'}"><span class="reason" style="font-size:.7rem; display:block; font-weight:400; color:var(--mute)">est. ${fmtUsd(Math.abs(l.delta))}</span><span class="mono">${l.delta >= 0 ? '+' : '\u2212'}${fmtCredits(Math.abs(l.delta))}<span class="unit">AWC</span></span></td>
+    <td class="right ${l.delta >= 0 ? 'delta-pos' : 'delta-neg'}"><span class="reason" style="font-size:.7rem; display:block; font-weight:400; color:var(--mute)">est. ${fmtUsd(Math.abs(l.delta))}</span><span class="mono">${l.delta >= 0 ? '+' : '\u2212'}${fmtCredits(Math.abs(l.delta))}<span class="unit">AWB</span></span></td>
     <td class="right reason">${timeAgo(l.created_at)}</td>
   </tr>`).join('');
 }
@@ -1354,7 +1354,7 @@ function openHelpListModal() {
       ? 'Reconnect using the command below. Pick any free <code class="mono">mysub</code> name (or use one of your handles):'
       : 'Reconnect using the command below. The server will assign a random subdomain — the SSH username below is just a placeholder.';
   }
-  // Use remote port 0 so the AirWeb server allocates a free public port from
+  // Use remote port 0 so the Airweb server allocates a free public port from
   // its tcpPortRange. Hardcoding `22` would be rejected (it's in reservedPorts).
   const cmd = `ssh -i ./${keyFileName()} -p ${sshPort} -R 0:localhost:22 ${user}@${sshHost}`;
   const pre = $('helpListCmd');

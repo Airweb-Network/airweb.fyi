@@ -58,7 +58,7 @@ function start() {
 
   const server = new ssh2.Server({
     hostKeys: [hostKey],
-    banner: 'AirWeb — reverse SSH tunneling service\r\n',
+    banner: 'Airweb — reverse SSH tunneling service\r\n',
     // Keepalive: probe idle clients so dead tunnels are reaped quickly and
     // their channels/FDs released. 30s probe × 4 misses ≈ 2 minutes to detect.
     keepaliveInterval: 30_000,
@@ -110,7 +110,7 @@ function start() {
         session.on('shell', (a) => {
           const stream = a && a();
           if (!stream) return;
-          stream.write('AirWeb server — interactive shell is disabled.\r\n');
+          stream.write('Airweb server — interactive shell is disabled.\r\n');
           stream.write('Your tunnels are active as long as this SSH connection stays open.\r\n');
           stream.write('Press Ctrl+C to disconnect.\r\n');
           if (ownerAddress) stream.write(`Account: ${ownerAddress}\r\n`);

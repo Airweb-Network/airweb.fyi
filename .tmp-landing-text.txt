@@ -1,7 +1,7 @@
 A people-powered cloud, built from the
 devices you already own
 .
-AirWeb turns spare laptops, old phones, and idle home servers into tiny public endpoints. Demo an app, reach your home computer from anywhere, or lease a micro-server by the minute — and earn credits while your own devices help carry the load.
+Airweb turns spare laptops, old phones, and idle home servers into tiny public endpoints. Demo an app, reach your home computer from anywhere, or lease a micro-server by the minute — and earn credits while your own devices help carry the load.
 get your key &rarr;
 restore from existing key
 active tunnel right now
@@ -15,7 +15,7 @@ Any local service becomes a public endpoint
 supported protocols
 If it speaks TCP on
 localhost
-, AirWeb can expose it. HTTP and HTTPS get a shareable subdomain; raw-TCP services get a public
+, Airweb can expose it. HTTP and HTTPS get a shareable subdomain; raw-TCP services get a public
 host:port
 assigned by the server.
 HTTP(S)
@@ -46,7 +46,7 @@ is
 your account — no password, no email.
 Run one SSH command
 Point an
-at AirWeb. The local port is whatever your app already listens on; the public side is the AirWeb host.
+at Airweb. The local port is whatever your app already listens on; the public side is the Airweb host.
 ssh -i ./ -p  -R 80:localhost:3000 tunnel@
 For raw TCP (databases, SSH, game servers, RDP, …) use
 -R 0:localhost:&lt;port&gt;
@@ -76,34 +76,34 @@ Pay only for the traffic you use
 No subscriptions. No "free tier" cliffs. Opening a tunnel is free — you're billed in credits only for the bytes that actually flow through it, and you earn credits every minute your own devices are serving traffic.
 your device
 public traffic
-+ AWC / min
-\u2212 bytes \u00d7  AWC/MB
++ AWB / min
+\u2212 bytes \u00d7  AWB/MB
 net = earn \u2212 charge
 +
-AWC / min
+AWB / min
 Uptime reward while your tunnel is online
 Earned when someone leases your tunnel
 \u2212
-AWC / MB
+AWB / MB
 Charged for bytes that actually flow through
-AWC welcome
+AWB welcome
 Free credits the moment you create an account
 Idle tunnels cost nothing. The dashboard shows a live earn-vs-charge meter and a 24-hour ledger so the math is never a mystery.
 A marketplace, not a billing portal
-AirWeb is built around a simple loop: plug in a spare device, share its uptime, earn credits, spend them on capacity from other people. Every node is also a customer.
+Airweb is built around a simple loop: plug in a spare device, share its uptime, earn credits, spend them on capacity from other people. Every node is also a customer.
 marketplace
 peers earn + spend credits
 credit flow
 Open marketplace
 List your spare-device tunnel, set a price per minute, and watch the leases come in. Browse what others offer and rent the right region or hardware for the job.
 Learn by hosting
-Real reverse SSH, real TCP, real metering. The repo is open source — read it, fork it, and use AirWeb to teach yourself the bits of infrastructure that schools rarely cover.
+Real reverse SSH, real TCP, real metering. The repo is open source — read it, fork it, and use Airweb to teach yourself the bits of infrastructure that schools rarely cover.
 Reach any region
 Hosts on the marketplace are spread across home connections in many cities. Rent a node where your users actually are.
 Credits go both ways
 Today's host is tomorrow's renter. The same wallet that earns your uptime rewards pays for the leases you take \u2014 no separate billing surface.
 The long view: a micro-server socio-economy
-The world is full of perfectly good hardware sitting idle \u2014 a billion phones, a hundred million laptops, racks of "obsolete" servers. They have CPU, memory, and bandwidth that today goes to waste. AirWeb is the first step toward letting all of that quietly become useful, owned by the people who already paid for it.
+The world is full of perfectly good hardware sitting idle \u2014 a billion phones, a hundred million laptops, racks of "obsolete" servers. They have CPU, memory, and bandwidth that today goes to waste. Airweb is the first step toward letting all of that quietly become useful, owned by the people who already paid for it.
 today
 A handful of hyperscalers
 Three logos own most of the public internet. Capacity = a credit card, a console, and a single-vendor lock-in.
@@ -124,7 +124,7 @@ Hyperscaler-class capabilities don't have to live behind three logos and a credi
 A real micro-server economy
 Credits earned by contributing capacity buy capacity from others. Over time, that loop becomes a real economy \u2014 one where small operators, students, and hobbyists are first-class participants, not just customers.
 Greener by default
-The most sustainable server is one that already exists. By giving a second life to devices that would otherwise sit idle \u2014 or worse, in a landfill \u2014 AirWeb reduces the need to spin up new fleets of always-on hardware just to serve a few requests per minute.
+The most sustainable server is one that already exists. By giving a second life to devices that would otherwise sit idle \u2014 or worse, in a landfill \u2014 Airweb reduces the need to spin up new fleets of always-on hardware just to serve a few requests per minute.
 always-on fleet
 device you already own
 0
@@ -142,7 +142,7 @@ Smaller fleet \u2192 less embodied carbon, less e-waste, less drain on the grid.
 FAQ
 What kind of "spare device" actually works?
 Anything that can run an
-client and stay online: an old laptop, a desktop you barely use, a Raspberry Pi, a NAS, a mini-PC, even some routers. If it can hold an SSH session open, it can be an AirWeb node.
+client and stay online: an old laptop, a desktop you barely use, a Raspberry Pi, a NAS, a mini-PC, even some routers. If it can hold an SSH session open, it can be an Airweb node.
 Do I need to install anything?
 No. Any standard
 client works once you've downloaded
@@ -159,7 +159,7 @@ and paste your private key. We never store private keys server-side — your
 aw_…
 account id is derived deterministically from the public key.
 Is the traffic encrypted?
-The leg between your device and AirWeb is encrypted by SSH. The public leg uses whatever the front door speaks (HTTP on the bare port, HTTPS behind a TLS reverse proxy). For end-to-end TLS, terminate inside your local app and use a raw TCP tunnel.
+The leg between your device and Airweb is encrypted by SSH. The public leg uses whatever the front door speaks (HTTP on the bare port, HTTPS behind a TLS reverse proxy). For end-to-end TLS, terminate inside your local app and use a raw TCP tunnel.
 Can I pick my own subdomain?
 Yes — the SSH username you connect with becomes your subdomain (
 mysub@

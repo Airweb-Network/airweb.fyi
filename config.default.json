@@ -36,12 +36,12 @@
     "enabled": true,
     "port": 8090,
     "subdomain": "doc",
-    "title": "AirWeb Docs"
+    "title": "Airweb Docs"
   },
   "internalForum": {
     "enabled": true,
     "port": 8091,
     "subdomain": "forum",
-    "title": "AirWeb Forum"
+    "title": "Airweb Forum"
   }
 }

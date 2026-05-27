@@ -20,7 +20,7 @@ const ENABLED   = cfg.enabled !== false;
 const PORT      = Number(cfg.port || 8090);
 const HOST      = cfg.host || '127.0.0.1';
 const SUBDOMAIN = cfg.subdomain || 'doc';
-const TITLE     = cfg.title || 'AirWeb Docs';
+const TITLE     = cfg.title || 'Airweb Docs';
 
 let httpServer = null;
 let registeredTunnel = null;
@@ -46,7 +46,7 @@ function pageHtml(req) {
 </head><body>
   <span class="pill">internal · doc</span>
   <h1>${escapeHtml(TITLE)}</h1>
-  <p>This page is served by the AirWeb built-in documentation server and
+  <p>This page is served by the Airweb built-in documentation server and
      proxied through the public HTTP router as an internal tunnel.</p>
   <p>Request: <code>${escapeHtml(req.method)} ${escapeHtml(req.url)}</code></p>
 </body></html>`;

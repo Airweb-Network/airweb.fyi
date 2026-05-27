@@ -5,7 +5,7 @@ const ssh = require('./sshServer');
 const http = require('./httpRouter');
 const internal = require('./internal');
 
-console.log('Starting AirWeb server…');
+console.log('Starting Airweb server…');
 ssh.start();
 http.start();
 credits.start();

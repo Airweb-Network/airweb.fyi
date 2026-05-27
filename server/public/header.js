@@ -1,4 +1,4 @@
-// Shared header behavior for AirWeb — used by landing, login, and dashboard.
+// Shared header behavior for Airweb — used by landing, login, and dashboard.
 // Handles:
 //   • Theme bootstrap (sets data-theme on <html> from localStorage / system pref)
 //   • Settings gear (#settingsBtn) open/close popover
@@ -49,7 +49,7 @@
     } catch (e) {}
     try { localStorage.setItem(key, val); } catch (e) {}
   }
-  window.AirWebStore = { get: storeGet, set: storeSet };
+  window.AirwebStore = { get: storeGet, set: storeSet };
 
   // One-time migration: copy any pre-existing localStorage values for the
   // known setting keys into the shared cookie so they propagate to
@@ -72,7 +72,7 @@
   // dashboard, marketplace, connections and internal servers.
   var HEADER_HTML = [
     '<header class="site"><div class="inner">',
-      '<a href="', API_BASE, '/" class="brand" title="AirWeb home">',
+      '<a href="', API_BASE, '/" class="brand" title="Airweb home">',
         '<img class="logo" src="', API_BASE, '/logo.png" alt="" aria-hidden="true" decoding="async">',
         '<strong>Airweb</strong>',
       '</a>',
@@ -99,7 +99,7 @@
         '<span id="userMenu" class="user-menu hide">',
           '<a id="navBalance" class="nav-balance hide" href="', API_BASE, '/dashboard" title="Go to dashboard">',
             '<span class="usd" id="navCreditsUsd"></span>',
-            '<span class="amt"><span id="navCreditsVal">\u2026</span><span class="unit">AWC</span></span>',
+            '<span class="amt"><span id="navCreditsVal">\u2026</span><span class="unit">AWB</span></span>',
           '</a>',
           '<button id="avatarBtn" class="avatar-trigger" type="button" aria-haspopup="menu" aria-expanded="false" title="Account">',
             '<span class="avatar"><span id="avatarLetter" aria-hidden="true"></span></span>',
@@ -401,7 +401,7 @@
   }
 
   // Expose for pages that want to programmatically set theme or refresh auth.
-  window.AirWebHeader = {
+  window.AirwebHeader = {
     applyTheme: applyTheme,
     currentTheme: currentTheme,
     applyAuthState: applyAuthState,

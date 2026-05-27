@@ -36,7 +36,7 @@ function localizedPageField(page, field, locale) {
 // ---------------------------------------------------------------------------
 
 function apexBase() {
-  // Canonical apex URL for the AirWeb site, already correct for dev
+  // Canonical apex URL for the Airweb site, already correct for dev
   // (e.g. http://lvh.me:8080) and prod (e.g. https://airweb.fyi). Do NOT
   // re-append config.http.port here — in production the Node port (8080)
   // sits behind a reverse proxy and must not leak into client-facing
@@ -206,7 +206,7 @@ function renderJsonLd(page, base, locale) {
     keywords: page.keywords || '',
     inLanguage: locale || 'en',
     url: base + '/' + (page.slug === HOME_SLUG ? '' : page.slug),
-    isPartOf: { '@type': 'WebSite', name: 'AirWeb Docs', url: base + '/' },
+    isPartOf: { '@type': 'WebSite', name: 'Airweb Docs', url: base + '/' },
   };
   const safe = (obj) => JSON.stringify(obj).replace(/</g, '\\u003c');
   return [
@@ -967,7 +967,7 @@ function renderPage(req, page, locale) {
   const base = docsBase(req);
   const canonical = base + (page.slug === HOME_SLUG ? '/' : '/' + page.slug);
   const title = localizedPageField(page, 'title', locale);
-  const description = substituteTokens(localizedPageField(page, 'description', locale) || 'AirWeb documentation');
+  const description = substituteTokens(localizedPageField(page, 'description', locale) || 'Airweb documentation');
   const body = substituteTokens(localizedPageField(page, 'html', locale));
   const sidebar = renderSidebar(page.slug, locale);
   const jsonLd = renderJsonLd(page, base, locale);
@@ -987,7 +987,7 @@ function renderPage(req, page, locale) {
 <html lang="${locale || 'en'}">
 <head>
 <meta charset="utf-8">
-<title>${escapeHtml(title)} · AirWeb ${escapeHtml(docsLabel)}</title>
+<title>${escapeHtml(title)} · Airweb ${escapeHtml(docsLabel)}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="${escapeHtml(description)}">
 <meta name="keywords" content="${escapeHtml(page.keywords || '')}">
@@ -995,7 +995,7 @@ function renderPage(req, page, locale) {
 <link rel="canonical" href="${escapeHtml(canonical)}">
 ${hreflang}
 <meta property="og:type" content="article">
-<meta property="og:site_name" content="AirWeb ${escapeHtml(docsLabel)}">
+<meta property="og:site_name" content="Airweb ${escapeHtml(docsLabel)}">
 <meta property="og:title" content="${escapeHtml(title)}">
 <meta property="og:description" content="${escapeHtml(description)}">
 <meta property="og:url" content="${escapeHtml(canonical)}">
@@ -1143,6 +1143,6 @@ module.exports = createInternalServer({
   configKey: 'internalDoc',           // legacy config key kept for back-compat
   defaultPort: 8090,
   defaultSubdomain: 'doc',
-  defaultTitle: 'AirWeb Docs',
+  defaultTitle: 'Airweb Docs',
   handler: (req, res) => handle(req, res),
 });

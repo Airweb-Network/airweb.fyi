@@ -1,4 +1,4 @@
-# AirWeb
+# Airweb
 
 Expose `localhost` to the internet over a reverse SSH tunnel — and earn credits while you do.
 
@@ -97,7 +97,7 @@ Anything else (ports, credit rates, etc.) can still be overridden by creating
 `/etc/systemd/system/airweb.service`:
 ```ini
 [Unit]
-Description=AirWeb
+Description=Airweb
 After=network.target
 
 [Service]

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>AirWeb · Sign in</title>
+<title>Airweb · Sign in</title>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <meta name="robots" content="noindex" />
 <meta name="theme-color" content="#1c1c1e" />
@@ -92,7 +92,7 @@
 
 <main>
 <div class="card">
-  <h1>Sign in with your AirWeb key</h1>
+  <h1>Sign in with your Airweb key</h1>
   <p class="lead">Paste your <code>airweb_key</code> file (the OpenSSH private key you downloaded at registration). We re-derive your account ID from it locally on the server and start a session — the key is not stored.</p>
 
   <label for="keyText">Private key (OpenSSH format)</label>
@@ -147,7 +147,7 @@ $('loginBtn').onclick = async () => {
 
 function errorText(code, body) {
   if (code === 'invalid_private_key') return 'That doesn\u2019t look like a valid OpenSSH private key.';
-  if (code === 'account_not_found') return 'No AirWeb account exists for that key (account ID ' + (body.address || '?') + '). If this is a new key, register first.';
+  if (code === 'account_not_found') return 'No Airweb account exists for that key (account ID ' + (body.address || '?') + '). If this is a new key, register first.';
   return code || 'Sign in failed.';
 }
 </script>

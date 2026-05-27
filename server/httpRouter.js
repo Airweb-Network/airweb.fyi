@@ -62,14 +62,14 @@ function renderLandingHtml() {
   // user-facing connections people would brag about in the landing badge.
   const tunnels       = registry.list().filter(t => !t.internal);
   const tunnelCount   = tunnels.length;
-  const description   = `AirWeb on ${host}: a people-powered cloud built from spare devices. ` +
+  const description   = `Airweb on ${host}: a people-powered cloud built from spare devices. ` +
     `Demo apps in seconds, reach your home computer from anywhere, lease micro-servers by the minute, ` +
     `and earn credits by hosting on hardware you already own. Pay only for the traffic you use.`;
 
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
-    name: 'AirWeb',
+    name: 'Airweb',
     applicationCategory: 'DeveloperApplication',
     operatingSystem: 'Linux, macOS, Windows',
     description,
@@ -82,20 +82,20 @@ function renderLandingHtml() {
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>AirWeb — A people-powered cloud from the devices you already own</title>
+<title>Airweb — A people-powered cloud from the devices you already own</title>
 <meta name="description" content="${escapeHtml(description)}" />
 <meta name="robots" content="index, follow" />
 <meta name="theme-color" content="#1c1c1e" />
 <link rel="canonical" href="${escapeHtml(siteUrl)}" />
 
 <meta property="og:type" content="website" />
-<meta property="og:title" content="AirWeb — A people-powered cloud from spare devices" />
+<meta property="og:title" content="Airweb — A people-powered cloud from spare devices" />
 <meta property="og:description" content="${escapeHtml(description)}" />
 <meta property="og:url" content="${escapeHtml(siteUrl)}" />
-<meta property="og:site_name" content="AirWeb" />
+<meta property="og:site_name" content="Airweb" />
 
 <meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="AirWeb — A people-powered cloud from spare devices" />
+<meta name="twitter:title" content="Airweb — A people-powered cloud from spare devices" />
 <meta name="twitter:description" content="${escapeHtml(description)}" />
 
 <link rel="icon" type="image/png" href="/logo.png" />
@@ -545,6 +545,142 @@ function renderLandingHtml() {
     font-size: .9rem; margin-top: 1.4rem;
   }
 
+  /* Roadmap — progressive-decentralization timeline.
+     Layout: a single horizontal rail across the top, with phase cards
+     hanging beneath. Each phase has a status pill, a numbered node on
+     the rail, a title, a short blurb, and a "what changes" sub-list. */
+  .roadmap {
+    --rail: color-mix(in srgb, var(--accent) 28%, var(--line));
+    position: relative;
+    margin-top: 1rem;
+  }
+  .roadmap .rail {
+    position: relative;
+    height: 4px;
+    border-radius: 999px;
+    background: linear-gradient(
+      90deg,
+      var(--good)   0%,
+      var(--accent) 38%,
+      var(--accent) 70%,
+      color-mix(in srgb, var(--accent) 35%, var(--line)) 100%
+    );
+    margin: 0 1.2rem 0;
+  }
+  .roadmap-phases {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: -14px; /* let nodes sit on the rail */
+  }
+  @media (max-width: 900px) {
+    .roadmap-phases { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 520px) {
+    .roadmap-phases { grid-template-columns: 1fr; }
+    .roadmap .rail { display: none; }
+    .roadmap .phase { margin-top: 0; }
+    .roadmap .phase .node { display: none; }
+  }
+  .roadmap .phase {
+    position: relative;
+    padding: 1.8rem 1rem 1.1rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--hover);
+    display: flex; flex-direction: column;
+    gap: .55rem;
+    transition: transform .15s, border-color .15s, background .15s;
+  }
+  .roadmap .phase:hover {
+    transform: translateY(-2px);
+    border-color: var(--line2);
+    background: var(--hover2, var(--hover));
+  }
+  .roadmap .phase .node {
+    position: absolute;
+    top: -14px; left: 50%; transform: translateX(-50%);
+    width: 28px; height: 28px; border-radius: 50%;
+    display: grid; place-items: center;
+    font: 700 .82rem/1 var(--mono);
+    background: var(--panel);
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    box-shadow: 0 0 0 4px var(--bg, var(--panel));
+  }
+  .roadmap .phase.shipped .node { background: var(--good); border-color: var(--good); color: var(--accent-fg); }
+  .roadmap .phase.active  .node {
+    background: var(--accent); border-color: var(--accent); color: var(--accent-fg);
+    box-shadow: 0 0 0 4px var(--bg, var(--panel)), 0 0 0 8px color-mix(in srgb, var(--accent) 25%, transparent);
+  }
+  .roadmap .phase .pill {
+    align-self: flex-start;
+    font: 600 .68rem/1 var(--sans);
+    text-transform: uppercase; letter-spacing: .08em;
+    padding: 4px 8px; border-radius: 999px;
+    background: var(--panel); color: var(--mute);
+    border: 1px solid var(--line);
+  }
+  .roadmap .phase.shipped .pill { color: var(--good); border-color: color-mix(in srgb, var(--good) 40%, var(--line)); }
+  .roadmap .phase.active  .pill { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); }
+  .roadmap .phase h4 {
+    margin: 0; font: 600 1.02rem/1.3 var(--display); color: var(--fg);
+    display: flex; align-items: center; gap: .45rem;
+  }
+  .roadmap .phase h4 svg { width: 16px; height: 16px; flex: 0 0 16px; color: var(--accent); }
+  .roadmap .phase.shipped h4 svg { color: var(--good); }
+  .roadmap .phase > p {
+    margin: 0; color: var(--mute); font-size: .9rem; line-height: 1.55;
+  }
+  .roadmap .phase ul {
+    margin: .1rem 0 0; padding-left: 1rem;
+    color: var(--mute); font-size: .85rem; line-height: 1.55;
+    display: grid; gap: .25rem;
+  }
+  .roadmap .phase ul li::marker { color: var(--accent); }
+
+  /* Decentralization-meter strip beneath the timeline. Visually reinforces
+     that each phase shifts more responsibility off the central relay. */
+  .decent-meter {
+    margin-top: 1.4rem;
+    display: grid;
+    grid-template-columns: 110px 1fr 110px;
+    align-items: center;
+    gap: .8rem;
+    padding: .8rem 1rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+  }
+  .decent-meter .end {
+    font: 600 .72rem/1.1 var(--sans);
+    text-transform: uppercase; letter-spacing: .08em;
+    color: var(--mute);
+  }
+  .decent-meter .end.right { text-align: right; }
+  .decent-meter .bar {
+    position: relative;
+    height: 10px; border-radius: 999px;
+    background: linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--bad, #ff453a) 55%, var(--panel)) 0%,
+      color-mix(in srgb, var(--accent) 55%, var(--panel)) 50%,
+      color-mix(in srgb, var(--good) 70%, var(--panel)) 100%
+    );
+  }
+  .decent-meter .ticks {
+    position: absolute; inset: -4px 0; pointer-events: none;
+    display: flex; justify-content: space-between;
+  }
+  .decent-meter .ticks span {
+    width: 2px; height: 18px; background: var(--line2); border-radius: 1px;
+  }
+
+  @media (max-width: 560px) {
+    .decent-meter { grid-template-columns: 1fr; text-align: center; }
+    .decent-meter .end.right { text-align: center; }
+  }
+
   /* Readability floor */
   p, li, summary, dd, dt, td, th, .badge { font-size: max(.92rem, 14px); }
   .feature p { font-size: .92rem; }
@@ -587,7 +723,7 @@ function renderLandingHtml() {
     <div class="hero-grid">
       <div class="hero-copy">
         <h1>A people-powered cloud, built from the <span class="accent">devices you already own</span>.</h1>
-        <p class="lead">AirWeb turns spare laptops, old phones, and idle home servers into tiny public endpoints. Demo an app, reach your home computer from anywhere, or lease a micro-server by the minute — and earn credits while your own devices help carry the load.</p>
+        <p class="lead">Airweb turns spare laptops, old phones, and idle home servers into tiny public endpoints. Demo an app, reach your home computer from anywhere, or lease a micro-server by the minute — and earn credits while your own devices help carry the load.</p>
 
         <div class="cta-row">
           <a href="/dashboard" class="cta">get your key &rarr;</a>
@@ -696,7 +832,7 @@ function renderLandingHtml() {
       Any local service becomes a public endpoint
       <span class="eyebrow">supported protocols</span>
     </h2>
-    <p>If it speaks TCP on <code class="inline">localhost</code>, AirWeb can expose it. HTTP and HTTPS get a shareable subdomain; raw-TCP services get a public <code class="inline">host:port</code> assigned by the server.</p>
+    <p>If it speaks TCP on <code class="inline">localhost</code>, Airweb can expose it. HTTP and HTTPS get a shareable subdomain; raw-TCP services get a public <code class="inline">host:port</code> assigned by the server.</p>
     <div class="protocol-strip">
       <div class="protocol-tile"><div class="pico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="8" cy="8" r="6"/><path d="M2 8h12M8 2c2 1.8 2 10.2 0 12M8 2c-2 1.8-2 10.2 0 12"/></svg></div><span class="pname">HTTP(S)</span><span class="pport">80 / 443</span></div>
       <div class="protocol-tile"><div class="pico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="3" width="13" height="10" rx="1.4"/><path d="M4 6.5l2 1.5-2 1.5M7.5 10h4"/></svg></div><span class="pname">SSH</span><span class="pport">port 22</span></div>
@@ -718,7 +854,7 @@ function renderLandingHtml() {
       </li>
       <li>
         <h3>Run one SSH command</h3>
-        <p>Point an <code class="inline">ssh -R</code> at AirWeb. The local port is whatever your app already listens on; the public side is the AirWeb host.</p>
+        <p>Point an <code class="inline">ssh -R</code> at Airweb. The local port is whatever your app already listens on; the public side is the Airweb host.</p>
         <pre class="cmd" id="cmd-http">ssh -i ./${keyFile} -p ${sshPort} -R 80:localhost:3000 tunnel@${host}</pre>
         <p style="color:var(--mute); font-size:.88rem; margin:.4rem 0 0">For raw TCP (databases, SSH, game servers, RDP, …) use <code class="inline">-R 0:localhost:&lt;port&gt;</code> — the server picks a free public port and prints it.</p>
       </li>
@@ -800,7 +936,7 @@ function renderLandingHtml() {
             <circle cx="200" cy="100" r="3"/>
             <circle cx="230" cy="100" r="3"/>
           </g>
-          <text x="180" y="84" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="11" font-weight="600" fill="var(--good)">+${config.credits.uptimePerMinute} AWC / min</text>
+          <text x="180" y="84" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="11" font-weight="600" fill="var(--good)">+${config.credits.uptimePerMinute} AWB / min</text>
 
           <!-- bottom channel: bandwidth charges (red, only when bytes flow) -->
           <path d="M238 132 L 122 132" stroke="url(#awCharge)" stroke-width="14" fill="none" stroke-linecap="round"/>
@@ -809,7 +945,7 @@ function renderLandingHtml() {
             <rect x="180" y="129" width="4" height="6" rx="1"/>
             <rect x="214" y="129" width="4" height="6" rx="1"/>
           </g>
-          <text x="180" y="156" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="11" font-weight="600" fill="var(--bad, #ff453a)">\u2212 bytes \u00d7 ${config.credits.bandwidthChargePerMb} AWC/MB</text>
+          <text x="180" y="156" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="11" font-weight="600" fill="var(--bad, #ff453a)">\u2212 bytes \u00d7 ${config.credits.bandwidthChargePerMb} AWB/MB</text>
 
           <!-- net summary chip -->
           <g transform="translate(110 200)">
@@ -822,19 +958,19 @@ function renderLandingHtml() {
       <div class="visual-copy-stack">
         <div class="stat-row">
           <div class="stat-tile good">
-            <div class="stat-val">+${config.credits.uptimePerMinute} <small>AWC / min</small></div>
+            <div class="stat-val">+${config.credits.uptimePerMinute} <small>AWB / min</small></div>
             <div class="stat-label">Earned automatically while your tunnel stays online</div>
           </div>
           <div class="stat-tile good">
-            <div class="stat-val">${config.credits.defaultLeasePricePerMinute}+ <small>AWC / min</small></div>
+            <div class="stat-val">${config.credits.defaultLeasePricePerMinute}+ <small>AWB / min</small></div>
             <div class="stat-label">Extra lease income when someone rents your tunnel</div>
           </div>
           <div class="stat-tile neg">
-            <div class="stat-val">\u2212${config.credits.bandwidthChargePerMb} <small>AWC / MB</small></div>
+            <div class="stat-val">\u2212${config.credits.bandwidthChargePerMb} <small>AWB / MB</small></div>
             <div class="stat-label">Only charged for bytes that really pass through</div>
           </div>
           <div class="stat-tile">
-            <div class="stat-val">${config.credits.signupBonus} <small>AWC welcome</small></div>
+            <div class="stat-val">${config.credits.signupBonus} <small>AWB welcome</small></div>
             <div class="stat-label">Free credits the moment you create an account</div>
           </div>
         </div>
@@ -845,7 +981,7 @@ function renderLandingHtml() {
 
   <section class="block" id="community">
     <h2><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>A marketplace, not a billing portal</h2>
-    <p>AirWeb is built around a simple loop: plug in a spare device, share its uptime, earn credits, spend them on capacity from other people. Every node is also a customer.</p>
+    <p>Airweb is built around a simple loop: plug in a spare device, share its uptime, earn credits, spend them on capacity from other people. Every node is also a customer.</p>
 
     <div class="visual-grid flip">
       <!-- Mesh of peer nodes trading credits over a central marketplace hub -->
@@ -908,7 +1044,7 @@ function renderLandingHtml() {
           <div class="feature">
             <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 1-2-2z"/><path d="M8 7h8M8 11h8M8 15h5"/></svg></div>
             <h4>Learn by hosting</h4>
-            <p>Real reverse SSH, real TCP, real metering. The repo is open source — read it, fork it, and use AirWeb to teach yourself the bits of infrastructure that schools rarely cover.</p>
+            <p>Real reverse SSH, real TCP, real metering. The repo is open source — read it, fork it, and use Airweb to teach yourself the bits of infrastructure that schools rarely cover.</p>
           </div>
           <div class="feature">
             <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a13 13 0 0 1 0 18M12 3a13 13 0 0 0 0 18"/></svg></div>
@@ -927,7 +1063,7 @@ function renderLandingHtml() {
 
   <section class="block" id="vision">
     <h2><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/></svg></span>The long view: a micro-server socio-economy</h2>
-    <p>The world is full of perfectly good hardware sitting idle \u2014 a billion phones, a hundred million laptops, racks of "obsolete" servers. They have CPU, memory, and bandwidth that today goes to waste. AirWeb is the first step toward letting all of that quietly become useful, owned by the people who already paid for it.</p>
+    <p>The world is full of perfectly good hardware sitting idle \u2014 a billion phones, a hundred million laptops, racks of "obsolete" servers. They have CPU, memory, and bandwidth that today goes to waste. Airweb is the first step toward letting all of that quietly become useful, owned by the people who already paid for it.</p>
 
     <div class="compare-grid">
       <div class="compare-card bad">
@@ -971,9 +1107,87 @@ function renderLandingHtml() {
     </div>
   </section>
 
+  <section class="block" id="roadmap">
+    <h2><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/></svg></span>Roadmap \u2014 the long road to a relay-less network</h2>
+    <p>Airweb today still runs a central relay so the SSH front door has an address to point at. The whole point of the project is to shrink that center until it disappears. Here's the path \u2014 each phase moves more of the work off the relay and onto the network itself.</p>
+
+    <div class="roadmap">
+      <div class="rail" aria-hidden="true"></div>
+      <div class="roadmap-phases">
+
+        <div class="phase shipped">
+          <span class="node">1</span>
+          <span class="pill">shipped</span>
+          <h4>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+            Self-hostable relay
+          </h4>
+          <p>Anyone can clone the repo and run their own Airweb. The protocol is just OpenSSH \u2014 no proprietary client, no managed dependency.</p>
+          <ul>
+            <li>One-file config, SQLite state</li>
+            <li>Federated marketplace per host</li>
+            <li>Built-in docs &amp; forum subdomains</li>
+          </ul>
+        </div>
+
+        <div class="phase active">
+          <span class="node">2</span>
+          <span class="pill">in progress</span>
+          <h4>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg>
+            Multi-relay federation
+          </h4>
+          <p>Relays discover each other and exchange handle ownership, account ids, and credit balances. Your account works on any cooperating relay \u2014 not just the one you signed up with.</p>
+          <ul>
+            <li>Signed cross-relay handle registry</li>
+            <li>Credit settlement between operators</li>
+            <li>Pick any relay; the network knows you</li>
+          </ul>
+        </div>
+
+        <div class="phase">
+          <span class="node">3</span>
+          <span class="pill">next</span>
+          <h4>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><path d="M12 3v6M12 15v6M3 12h6M15 12h6"/></svg>
+            Decentralized discovery
+          </h4>
+          <p>Replace the relay-owned directory with a DHT-style peer network. No single operator decides which handles, hosts, or listings exist \u2014 the network does, by consensus.</p>
+          <ul>
+            <li>Peer-to-peer handle &amp; marketplace index</li>
+            <li>Gossip-based reputation and uptime proofs</li>
+            <li>Relays become equal peers, not gatekeepers</li>
+          </ul>
+        </div>
+
+        <div class="phase">
+          <span class="node">4</span>
+          <span class="pill">eventually</span>
+          <h4>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l9 4.5v9L12 22 3 15.5v-9z"/><path d="M12 2v20M3 6.5l18 9M21 6.5l-18 9"/></svg>
+            Relay-less tunnels
+          </h4>
+          <p>The relay itself becomes optional. Devices punch through NATs, negotiate routes over the peer network, and carry public traffic directly \u2014 no Airweb-operated server in the path. The "data center" is just the network.</p>
+          <ul>
+            <li>NAT traversal + peer routing for public ingress</li>
+            <li>End-to-end encrypted, relay-optional fallback</li>
+            <li>Fully owned, fully federated, fully decentralized</li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="decent-meter" aria-hidden="true">
+        <div class="end">Central relay</div>
+        <div class="bar"><div class="ticks"><span></span><span></span><span></span><span></span><span></span></div></div>
+        <div class="end right">Fully decentralized</div>
+      </div>
+    </div>
+  </section>
+
   <section class="block" id="esg">
     <h2><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3c0 9-7 16-16 16C5 10 12 3 21 3z"/><path d="M5 19c5-3 9-7 11-12"/></svg></span>Greener by default</h2>
-    <p>The most sustainable server is one that already exists. By giving a second life to devices that would otherwise sit idle \u2014 or worse, in a landfill \u2014 AirWeb reduces the need to spin up new fleets of always-on hardware just to serve a few requests per minute.</p>
+    <p>The most sustainable server is one that already exists. By giving a second life to devices that would otherwise sit idle \u2014 or worse, in a landfill \u2014 Airweb reduces the need to spin up new fleets of always-on hardware just to serve a few requests per minute.</p>
 
     <div class="visual-grid">
       <!-- Comparison: tall stacked server rack with smoke vs a single small
@@ -1056,7 +1270,7 @@ function renderLandingHtml() {
     <h2><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.5-2.5 2-2.5 3.5"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg></span>FAQ</h2>
     <details>
       <summary>What kind of "spare device" actually works?</summary>
-      <p>Anything that can run an <code class="inline">ssh</code> client and stay online: an old laptop, a desktop you barely use, a Raspberry Pi, a NAS, a mini-PC, even some routers. If it can hold an SSH session open, it can be an AirWeb node.</p>
+      <p>Anything that can run an <code class="inline">ssh</code> client and stay online: an old laptop, a desktop you barely use, a Raspberry Pi, a NAS, a mini-PC, even some routers. If it can hold an SSH session open, it can be an Airweb node.</p>
     </details>
     <details>
       <summary>Do I need to install anything?</summary>
@@ -1072,7 +1286,7 @@ function renderLandingHtml() {
     </details>
     <details>
       <summary>Is the traffic encrypted?</summary>
-      <p>The leg between your device and AirWeb is encrypted by SSH. The public leg uses whatever the front door speaks (HTTP on the bare port, HTTPS behind a TLS reverse proxy). For end-to-end TLS, terminate inside your local app and use a raw TCP tunnel.</p>
+      <p>The leg between your device and Airweb is encrypted by SSH. The public leg uses whatever the front door speaks (HTTP on the bare port, HTTPS behind a TLS reverse proxy). For end-to-end TLS, terminate inside your local app and use a raw TCP tunnel.</p>
     </details>
     <details>
       <summary>Can I pick my own subdomain?</summary>
@@ -1128,11 +1342,11 @@ function renderLandingHtml() {
 function notFound(res, msg) {
   res.statusCode = 404;
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
-  res.end(`<!doctype html><meta charset="utf-8"><title>AirWeb</title>
+  res.end(`<!doctype html><meta charset="utf-8"><title>Airweb</title>
 <body style="font-family:system-ui;max-width:640px;margin:4rem auto;padding:0 1rem;color:#222">
 <h1>Tunnel not found</h1>
 <p>${escapeHtml(msg)}</p>
-<p style="color:#888">AirWeb · reverse SSH tunneling</p>`);
+<p style="color:#888">Airweb · reverse SSH tunneling</p>`);
 }
 
 // ---------------------------------------------------------------------------
@@ -1165,7 +1379,7 @@ function placeholderHtml(tunnel, err) {
   return `<!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8" />
-<title>AirWeb · upstream unavailable</title>
+<title>Airweb · upstream unavailable</title>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <style>
   :root { color-scheme: light dark; }
@@ -1193,7 +1407,7 @@ function placeholderHtml(tunnel, err) {
   <main class="card">
     <span class="badge">502 · upstream unavailable</span>
     <h1>Nothing is answering on the other end of the tunnel.</h1>
-    <p>The tunnel is registered, but AirWeb couldn't reach the local service it points to.</p>
+    <p>The tunnel is registered, but Airweb couldn't reach the local service it points to.</p>
     <dl>
       <dt>tunnel</dt><dd>${url}</dd>
       <dt>upstream</dt><dd>${upstream}</dd>
@@ -1204,7 +1418,7 @@ function placeholderHtml(tunnel, err) {
       If you're the owner: make sure your local server is running and listening on
       <code>${upstream}</code>, then refresh this page.
     </div>
-    <footer>AirWeb · reverse SSH tunneling</footer>
+    <footer>Airweb · reverse SSH tunneling</footer>
   </main>
 </body></html>`;
 }
@@ -1221,7 +1435,7 @@ function serveDisabled(socket, tunnel) {
   const body = `<!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8" />
-<title>AirWeb \u00b7 tunnel paused</title>
+<title>Airweb \u00b7 tunnel paused</title>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <style>
   body { margin:0; min-height:100vh; display:grid; place-items:center;
@@ -1242,7 +1456,7 @@ function serveDisabled(socket, tunnel) {
     <span class="badge">503 \u00b7 paused by owner</span>
     <h1>This tunnel is temporarily not accepting public traffic.</h1>
     <p>The owner has paused public access to <code>${url}</code>. It will resume once they re-enable it from their dashboard.</p>
-    <footer>AirWeb \u00b7 reverse SSH tunneling</footer>
+    <footer>Airweb \u00b7 reverse SSH tunneling</footer>
   </main>
 </body></html>`;
   try {
@@ -1361,7 +1575,7 @@ function passcodeFormHtml({ cleanPath, error, expiresAt }) {
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>Private — AirWeb</title>
+<title>Private — Airweb</title>
 <style>
   :root { color-scheme: dark light; }
   html,body { height:100%; margin:0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }

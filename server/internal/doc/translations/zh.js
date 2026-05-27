@@ -1,4 +1,4 @@
-// Simplified Chinese (zh) translations for AirWeb docs.
+// Simplified Chinese (zh) translations for Airweb docs.
 module.exports = {
   'getting-started.label': '入门',
   'tunneling.label':       '隧道',
@@ -6,20 +6,20 @@ module.exports = {
   'reference.label':       '参考',
 
   // ---------- introduction ----------
-  'introduction.title': 'AirWeb 简介',
+  'introduction.title': 'Airweb 简介',
   'introduction.description':
-    'AirWeb 让一条 SSH 命令变成一个公开的 HTTPS URL。' +
-    '了解 AirWeb 是什么、反向 SSH 隧道如何工作,' +
+    'Airweb 让一条 SSH 命令变成一个公开的 HTTPS URL。' +
+    '了解 Airweb 是什么、反向 SSH 隧道如何工作,' +
     '以及为什么它是将本地服务分享到全世界最快的方式。',
   'introduction.html': `
-<h1>什么是 AirWeb?</h1>
-<p class="lead">AirWeb 是一个反向隧道服务,只需 <code>ssh</code> 命令就可以
+<h1>什么是 Airweb?</h1>
+<p class="lead">Airweb 是一个反向隧道服务,只需 <code>ssh</code> 命令就可以
 将笔记本或私有网络中运行的任何服务暴露到公开互联网。无需安装代理 ——
 如果你装了 OpenSSH(现代 macOS、Linux 和 Windows 都自带),那你已经具备了
 全部所需。</p>
 
 <h2>工作原理</h2>
-<p>当你对 AirWeb 运行 <code>ssh&nbsp;-R</code> 时,SSH 服务器会接受客户端的
+<p>当你对 Airweb 运行 <code>ssh&nbsp;-R</code> 时,SSH 服务器会接受客户端的
 <em>反向端口转发</em>请求,并为你绑定一个公开监听端口。到达该监听器的
 流量会通过已有的 SSH 连接送回你机器上的端口。</p>
 <ul>
@@ -28,7 +28,7 @@ module.exports = {
   <li>对于原生 TCP,服务器(或你)选择一个专用端口,字节原样转发。</li>
 </ul>
 
-<h2>人们为什么使用 AirWeb</h2>
+<h2>人们为什么使用 Airweb</h2>
 <ul>
   <li><strong>零安装。</strong>不需要客户端二进制、内核模块或浏览器扩展。
       只要 OpenSSH 和一个密钥文件就够了。</li>
@@ -42,7 +42,7 @@ module.exports = {
 </ul>
 
 <h2>下一步</h2>
-<p>最快体会 AirWeb 工作方式的办法是立即发布一个本地 Web 应用。前往
+<p>最快体会 Airweb 工作方式的办法是立即发布一个本地 Web 应用。前往
 <a href="/quick-start">快速开始</a>指南 —— 你将在两分钟内拥有一个
 线上 URL。</p>
 `,
@@ -81,7 +81,7 @@ chmod 600 ./{{PUBLIC_DOMAIN_BASE}}_&lt;your account id&gt;_key.txt</code></pre>
   <dt><code>-i &lt;file&gt;</code></dt>
   <dd>你下载的私钥文件。</dd>
   <dt><code>-p {{SSH_PORT}}</code></dt>
-  <dd>AirWeb 的 SSH 服务监听 {{SSH_PORT}} 端口(不是 22)。</dd>
+  <dd>Airweb 的 SSH 服务监听 {{SSH_PORT}} 端口(不是 22)。</dd>
   <dt><code>-R 80:localhost:3000</code></dt>
   <dd>将公网 HTTP 端口反向转发到本机 3000。</dd>
   <dt><code>myapp@…</code></dt>
@@ -97,14 +97,14 @@ chmod 600 ./{{PUBLIC_DOMAIN_BASE}}_&lt;your account id&gt;_key.txt</code></pre>
 `,
 
   // ---------- installation ----------
-  'installation.title': '安装 AirWeb 客户端',
+  'installation.title': '安装 Airweb 客户端',
   'installation.description':
-    'AirWeb 在 macOS、Linux 和 Windows 上都依赖系统自带的 OpenSSH。' +
+    'Airweb 在 macOS、Linux 和 Windows 上都依赖系统自带的 OpenSSH。' +
     '你也可以使用可选的 `airweb` Node.js 包装器以获得更友好的命令。' +
     '下面介绍两种安装方法。',
   'installation.html': `
 <h1>安装</h1>
-<p class="lead">AirWeb 的"客户端"就是你电脑上已有的 <code>ssh</code> 二进制。
+<p class="lead">Airweb 的"客户端"就是你电脑上已有的 <code>ssh</code> 二进制。
 如果你想要稍微更友好的命令行,我们还提供一个可选的 Node.js 包装器。</p>
 
 <h2>第 1 步 —— 确认装有 OpenSSH</h2>
@@ -146,12 +146,12 @@ chmod 600 ./{{PUBLIC_DOMAIN_BASE}}_&lt;your account id&gt;_key.txt</code></pre>
   // ---------- http-tunnels ----------
   'http-tunnels.title': 'HTTP 隧道 —— 分享 Web 应用',
   'http-tunnels.description':
-    '关于 AirWeb HTTP 隧道的详细参考: 子域名选择、请求流程、WebSocket、' +
+    '关于 Airweb HTTP 隧道的详细参考: 子域名选择、请求流程、WebSocket、' +
     '主机头、自定义路径以及在同一账号下并发多条隧道。',
   'http-tunnels.html': `
 <h1>HTTP 隧道</h1>
-<p class="lead">向 AirWeb 请求 <code>-R 80:localhost:&lt;port&gt;</code> 时,
-服务器并不会真的为你绑定 80 端口 —— 那样每台机器只能有一条隧道。AirWeb 的
+<p class="lead">向 Airweb 请求 <code>-R 80:localhost:&lt;port&gt;</code> 时,
+服务器并不会真的为你绑定 80 端口 —— 那样每台机器只能有一条隧道。Airweb 的
 HTTP 路由器会把 <em>SSH 用户名</em>当作子域名,并按 Host 头路由。</p>
 
 <h2>请求流程</h2>
@@ -194,10 +194,10 @@ ssh ... -R 80:localhost:3000 web@{{SSH_HOST}}</code></pre>
   // ---------- tcp-tunnels ----------
   'tcp-tunnels.title': 'TCP 隧道 —— 数据库、游戏服务器等',
   'tcp-tunnels.description':
-    '通过 AirWeb 反向隧道转发任意 TCP 流量 —— Postgres、Redis、Minecraft、跳板 SSH 等。',
+    '通过 Airweb 反向隧道转发任意 TCP 流量 —— Postgres、Redis、Minecraft、跳板 SSH 等。',
   'tcp-tunnels.html': `
 <h1>TCP 隧道</h1>
-<p class="lead">HTTP 是常见情况,但 AirWeb 可以承载任意 TCP 协议。
+<p class="lead">HTTP 是常见情况,但 Airweb 可以承载任意 TCP 协议。
 在 <code>-R</code> 中请求 80 之外的端口,服务器就会为你绑定一个专用 TCP
 监听器。</p>
 
@@ -230,7 +230,7 @@ mc-client --server={{PUBLIC_DOMAIN_BASE}}:25565</code></pre>
   // ---------- handles ----------
   'handles.title': '句柄 —— 租用永久子域名',
   'handles.description':
-    '句柄是一种只有你的账户可以发布到的预留子域名。了解如何在 AirWeb' +
+    '句柄是一种只有你的账户可以发布到的预留子域名。了解如何在 Airweb' +
     '市场上对句柄出价、租用和续约。',
   'handles.html': `
 <h1>句柄</h1>
@@ -255,19 +255,19 @@ mc-client --server={{PUBLIC_DOMAIN_BASE}}:25565</code></pre>
 </ul>
 
 <h2>充值信用点</h2>
-<p>租金以信用点(AWC)计价。可在 <a href="{{APEX}}/dashboard">仪表板</a>上
+<p>租金以信用点(AWB)计价。可在 <a href="{{APEX}}/dashboard">仪表板</a>上
 购买更多。当前价格请见 <a href="/credits">信用点指南</a>。</p>
 `,
 
   // ---------- credits ----------
-  'credits.title': '信用点、计费与 AWC 经济',
+  'credits.title': '信用点、计费与 AWB 经济',
   'credits.description':
-    '信用点(AWC)是 AirWeb 内部的价值单位 —— 用于句柄租约、高级子域名' +
+    '信用点(AWB)是 Airweb 内部的价值单位 —— 用于句柄租约、高级子域名' +
     '与给创作者打赏。了解经济运行方式及如何充值。',
   'credits.html': `
 <h1>信用点与计费</h1>
-<p class="lead">AirWeb 内部任何带价的东西都以
-<strong>AirWeb 信用点(AWC)</strong>计价。这只是简单的内部记账单位 ——
+<p class="lead">Airweb 内部任何带价的东西都以
+<strong>Airweb 信用点(AWB)</strong>计价。这只是简单的内部记账单位 ——
 不涉及任何区块链。</p>
 
 <h2>如何获得信用点</h2>
@@ -299,9 +299,9 @@ mc-client --server={{PUBLIC_DOMAIN_BASE}}:25565</code></pre>
 `,
 
   // ---------- dashboard ----------
-  'dashboard.title': '仪表板 —— 你的 AirWeb 主基地',
+  'dashboard.title': '仪表板 —— 你的 Airweb 主基地',
   'dashboard.description':
-    '在 AirWeb 仪表板内管理隧道、句柄、信用点与账户设置。逐面板巡视、' +
+    '在 Airweb 仪表板内管理隧道、句柄、信用点与账户设置。逐面板巡视、' +
     '掌握每个快捷键。',
   'dashboard.html': `
 <h1>仪表板</h1>
@@ -320,7 +320,7 @@ mc-client --server={{PUBLIC_DOMAIN_BASE}}:25565</code></pre>
 <a href="/credits">了解更多关于信用点的内容。</a></p>
 
 <h2>顶部样式</h2>
-<p>顶部头部在所有 AirWeb 页面(仪表板、市场、连接、文档以及任何内部
+<p>顶部头部在所有 Airweb 页面(仪表板、市场、连接、文档以及任何内部
 服务)上保持一致。齿轮图标可打开主题、语言、货币设置 —— 你的偏好保存
 在范围为 <code>.{{PUBLIC_DOMAIN_BASE}}</code> 的 Cookie 中,因此会跟随你
 横跨所有子域名。</p>
@@ -329,7 +329,7 @@ mc-client --server={{PUBLIC_DOMAIN_BASE}}:25565</code></pre>
   // ---------- connections ----------
   'connections.title': '连接页 —— 实时隧道遥测',
   'connections.description':
-    '查看进入 AirWeb 集群的每一条活动 SSH 隧道 —— 你的与公开的 ——' +
+    '查看进入 Airweb 集群的每一条活动 SSH 隧道 —— 你的与公开的 ——' +
     '附带实时入站/出站字节数和来源信息。',
   'connections.html': `
 <h1>连接</h1>
@@ -356,7 +356,7 @@ mc-client --server={{PUBLIC_DOMAIN_BASE}}:25565</code></pre>
   // ---------- marketplace ----------
   'marketplace.title': '市场 —— 句柄买卖',
   'marketplace.description':
-    '浏览并出价 AirWeb 句柄。卖家挂出不再需要的名字;买家拿到完美子域名。',
+    '浏览并出价 Airweb 句柄。卖家挂出不再需要的名字;买家拿到完美子域名。',
   'marketplace.html': `
 <h1>市场</h1>
 <p class="lead"><a href="{{APEX}}/marketplace">市场</a>是句柄易手之处。
@@ -365,7 +365,7 @@ mc-client --server={{PUBLIC_DOMAIN_BASE}}:25565</code></pre>
 <h2>挂出句柄</h2>
 <ol>
   <li>在仪表板里打开你租用的一个句柄。</li>
-  <li>点击 <em>List for sale</em> 并以 AWC 设价。</li>
+  <li>点击 <em>List for sale</em> 并以 AWB 设价。</li>
   <li>挂牌会立即出现在市场上。</li>
   <li>有人购买时,信用点划入你的账户,剩余租约转移给对方。</li>
 </ol>
@@ -402,7 +402,7 @@ airweb tcp &lt;localPort&gt; [--remote &lt;port&gt;] \\
 <h2>参数</h2>
 <dl>
   <dt><code>--server &lt;host[:port]&gt;</code> <em>(必填)</em></dt>
-  <dd>AirWeb 的 SSH 接入点,例如
+  <dd>Airweb 的 SSH 接入点,例如
       <code>{{SSH_HOST}}:{{SSH_PORT}}</code>。</dd>
 
   <dt><code>--key &lt;path&gt;</code> <em>(必填)</em></dt>
@@ -436,7 +436,7 @@ airweb tcp 5432 --remote 15432 \\
   // ---------- api ----------
   'api.title': 'HTTP API 参考',
   'api.description':
-    'AirWeb 暴露的每个 JSON 端点 —— 包括认证、余额与账本、句柄市场及' +
+    'Airweb 暴露的每个 JSON 端点 —— 包括认证、余额与账本、句柄市场及' +
     '管理员遥测。',
   'api.html': `
 <h1>HTTP API</h1>
@@ -492,11 +492,11 @@ airweb tcp 5432 --remote 15432 \\
   // ---------- security ----------
   'security.title': '安全模型与最佳实践',
   'security.description':
-    'AirWeb 如何认证客户端、隔离隧道并保护用户数据 —— 以及加固你所' +
+    'Airweb 如何认证客户端、隔离隧道并保护用户数据 —— 以及加固你所' +
     '暴露服务的最佳实践。',
   'security.html': `
 <h1>安全模型</h1>
-<p class="lead">一份简短诚实的威胁模型: AirWeb 做什么、不做什么,
+<p class="lead">一份简短诚实的威胁模型: Airweb 做什么、不做什么,
 以及如何安全使用。</p>
 
 <h2>认证</h2>
@@ -507,7 +507,7 @@ airweb tcp 5432 --remote 15432 \\
 <p>子域名与 TCP 端口归注册账户所有。其他客户端尝试绑定已租用的名字时,
 会在 <code>tcpip-forward</code> 握手阶段被拒绝。</p>
 
-<h2>AirWeb 能看到什么</h2>
+<h2>Airweb 能看到什么</h2>
 <ul>
   <li>流经隧道的字节会经过公共路由器。路由器从不记录请求体,只记计数器。</li>
   <li>若你在自己端未终止 TLS 而走 HTTP,路由器在路由期间会在内存中看到
@@ -534,18 +534,18 @@ airweb tcp 5432 --remote 15432 \\
   // ---------- faq ----------
   'faq.title': '常见问题',
   'faq.description':
-    '关于 AirWeb 最常被问到的快速解答: 与 ngrok 的对比、能否自托管、' +
+    '关于 Airweb 最常被问到的快速解答: 与 ngrok 的对比、能否自托管、' +
     '自定义域名、免费额度等等。',
   'faq.html': `
 <h1>常见问题</h1>
 
-<h3>AirWeb 与 ngrok 或 Cloudflare Tunnel 相比如何?</h3>
-<p>AirWeb 的传输层就是普通 OpenSSH —— 没有专有协议、没有客户端二进制、
+<h3>Airweb 与 ngrok 或 Cloudflare Tunnel 相比如何?</h3>
+<p>Airweb 的传输层就是普通 OpenSSH —— 没有专有协议、没有客户端二进制、
 没有内核模块。代价是不提供 ngrok 风格的检查 UI 与 Cloudflare 的边缘
-网络。如果"ssh 在所有防火墙后都能跑通"对你来说已经够用,AirWeb 就是
+网络。如果"ssh 在所有防火墙后都能跑通"对你来说已经够用,Airweb 就是
 更简单的答案。</p>
 
-<h3>能跑自己的 AirWeb 服务器吗?</h3>
+<h3>能跑自己的 Airweb 服务器吗?</h3>
 <p>可以 —— 仓库就是托管服务运行的同一份代码。克隆它,把
 <code>config.default.json</code> 复制为 <code>config.json</code>,设置
 <code>AIRWEB_PUBLIC_DOMAIN</code>,然后 <code>npm start</code>。DNS 上你
@@ -565,17 +565,17 @@ airweb tcp 5432 --remote 15432 \\
 <code>-o&nbsp;ServerAliveInterval=30</code> 得到同样行为,或用
 <code>autossh</code> 包装命令。</p>
 
-<h3>AirWeb 支持 HTTP/2 或 HTTP/3 吗?</h3>
+<h3>Airweb 支持 HTTP/2 或 HTTP/3 吗?</h3>
 <p>公开边缘讲 HTTP/1.1 与 HTTP/2。HTTP/3 (QUIC) 需要 UDP,在路线图上。
 你的源站讲什么协议都可以 —— 代理会在隧道这一跳归一化为 HTTP/1.1。</p>
 
-<h3>能把 AirWeb 用于生产流量吗?</h3>
+<h3>能把 Airweb 用于生产流量吗?</h3>
 <p>有人这么用,但请理解你在买什么。单一 SSH 会话即是单点。真正的生产
 我们建议自托管,多区域、负载均衡后的 active/active 会话。</p>
 `,
 
   // ---------- troubleshooting ----------
-  'troubleshooting.title': '排查 AirWeb 常见错误',
+  'troubleshooting.title': '排查 Airweb 常见错误',
   'troubleshooting.description':
     '修复最常遇到错误的方法: 转发失败、端口已被占、密钥权限、企业代理等。',
   'troubleshooting.html': `
@@ -624,7 +624,7 @@ airweb tcp 5432 --remote 15432 \\
   // ---------- changelog ----------
   'changelog.title': '更新日志',
   'changelog.description':
-    'AirWeb 跨版本的重要变更 —— 新功能、不兼容变更与安全修复。',
+    'Airweb 跨版本的重要变更 —— 新功能、不兼容变更与安全修复。',
   'changelog.html': `
 <h1>更新日志</h1>
 <p class="lead">破坏性变更以 <strong>BREAKING</strong> 标记。日期为发布到
