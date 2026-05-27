@@ -1003,6 +1003,7 @@ ${hreflang}
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="${escapeHtml(title)}">
 <meta name="twitter:description" content="${escapeHtml(description)}">
+<link rel="icon" type="image/png" href="${apex}/logo.png">
 <link rel="stylesheet" href="${apex}/header.css">
 <link rel="stylesheet" href="${apex}/app.css">
 <script>window.__awApiBase = ${JSON.stringify(apex)};</script>

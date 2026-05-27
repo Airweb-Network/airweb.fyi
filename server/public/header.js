@@ -73,7 +73,8 @@
   var HEADER_HTML = [
     '<header class="site"><div class="inner">',
       '<a href="', API_BASE, '/" class="brand" title="AirWeb home">',
-        '<span class="logo">A</span><strong>AirWeb</strong>',
+        '<img class="logo" src="', API_BASE, '/logo.png" alt="" aria-hidden="true" decoding="async">',
+        '<strong>Airweb</strong>',
       '</a>',
       '<a href="', API_BASE, '/marketplace" id="navMarketplace" class="navlink" style="margin-left:.5rem">Marketplace</a>',
       '<a href="', API_BASE, '/connections" id="navConnections" class="navlink" style="margin-left:.5rem">Connections</a>',

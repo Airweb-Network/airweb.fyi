@@ -1562,8 +1562,8 @@ if (window.currency && typeof window.currency.onChange === 'function') {
 
 $('adminRefreshBtn').onclick = () => refreshAdmin().catch(e => alert('Refresh failed: ' + e.message));
 
-// Auto-refresh every 15s when authed
-setInterval(() => { if (ME) refresh().catch(() => {}); }, 15000);
+// (Auto-refresh removed: text selection takes priority. Use the explicit
+// refresh buttons or trigger a refresh() after a user action instead.)
 
 // ---- Collapsible cards (state persisted in localStorage) ---------------
 // Any non-stat .card with an <h2> (direct child, or inside its first child

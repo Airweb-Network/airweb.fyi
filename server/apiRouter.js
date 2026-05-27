@@ -42,6 +42,14 @@ function parseCookies(req) {
   return out;
 }
 
+function sharedCookieDomain() {
+  const host = String((config.http && config.http.publicDomain) || '').split(':')[0].toLowerCase();
+  if (!host || host === 'localhost' || host === '::1' || /^\d+\.\d+\.\d+\.\d+$/.test(host)) return null;
+  const parts = host.split('.');
+  if (parts.length < 2) return null;
+  return '.' + parts.slice(-2).join('.');
+}
+
 function setSessionCookie(req, res, token) {
   const fwd = (req.headers['x-forwarded-proto'] || '').split(',')[0].trim().toLowerCase();
   const isHttps = fwd === 'https' || !!(req.socket && req.socket.encrypted);
@@ -52,12 +60,20 @@ function setSessionCookie(req, res, token) {
     'SameSite=Lax',
     `Max-Age=${COOKIE_MAX_AGE}`,
   ];
+  const domain = sharedCookieDomain();
+  if (domain) parts.push(`Domain=${domain}`);
   if (isHttps) parts.push('Secure');
   res.setHeader('Set-Cookie', parts.join('; '));
 }
 
-function clearSessionCookie(res) {
-  res.setHeader('Set-Cookie', `${COOKIE_NAME}=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0`);
+function clearSessionCookie(req, res) {
+  const fwd = (req.headers['x-forwarded-proto'] || '').split(',')[0].trim().toLowerCase();
+  const isHttps = fwd === 'https' || !!(req.socket && req.socket.encrypted);
+  const parts = [`${COOKIE_NAME}=`, 'Path=/', 'HttpOnly', 'SameSite=Lax', 'Max-Age=0'];
+  const domain = sharedCookieDomain();
+  if (domain) parts.push(`Domain=${domain}`);
+  if (isHttps) parts.push('Secure');
+  res.setHeader('Set-Cookie', parts.join('; '));
 }
 
 // Build the set of origins that are allowed to call the apex API with
@@ -280,12 +296,13 @@ async function postLogin(req, res) {
 function postLogout(req, res) {
   const c = parseCookies(req);
   accounts.destroySession(c[COOKIE_NAME]);
-  clearSessionCookie(res);
+  clearSessionCookie(req, res);
   return json(res, 200, { ok: true });
 }
 
 function getMe(req, res) {
   const s = requireAuth(req, res); if (!s) return;
+  setSessionCookie(req, res, s.session.token);
   return json(res, 200, accountSummary(s.account));
 }
 
@@ -674,6 +691,9 @@ async function handle(req, res) {
   if (url === '/app.js' && method === 'GET')
     return serveStatic(res, 'app.js');
   if (url.startsWith('/assets/') && method === 'GET')
+    return serveStatic(res, url.replace(/^\/+/, ''));
+  // Top-level static images (logo, favicon, etc.) from server/public/.
+  if (method === 'GET' && /^\/[\w.-]+\.(png|svg|ico|jpg|jpeg|webp|gif)$/i.test(url))
     return serveStatic(res, url.replace(/^\/+/, ''));
 
   return null; // signal: caller should handle (landing page / 404)

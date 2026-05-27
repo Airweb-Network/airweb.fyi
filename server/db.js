@@ -86,6 +86,48 @@ db.exec(`
     created_at  INTEGER NOT NULL
   );
   CREATE INDEX IF NOT EXISTS idx_ledger_address ON ledger(address, created_at DESC);
+
+  CREATE TABLE IF NOT EXISTS forum_questions (
+    id                INTEGER PRIMARY KEY AUTOINCREMENT,
+    author_address    TEXT NOT NULL REFERENCES accounts(address) ON DELETE CASCADE,
+    title             TEXT NOT NULL,
+    body              TEXT NOT NULL,
+    tags_json         TEXT NOT NULL DEFAULT '[]',
+    status            TEXT NOT NULL DEFAULT 'open',
+    created_at        INTEGER NOT NULL,
+    updated_at        INTEGER NOT NULL,
+    bumped_at         INTEGER NOT NULL,
+    bump_count        INTEGER NOT NULL DEFAULT 0,
+    answer_count      INTEGER NOT NULL DEFAULT 0,
+    last_answered_at  INTEGER,
+    last_answered_by  TEXT REFERENCES accounts(address) ON DELETE SET NULL
+  );
+  CREATE INDEX IF NOT EXISTS idx_forum_questions_bumped ON forum_questions(bumped_at DESC, created_at DESC);
+  CREATE INDEX IF NOT EXISTS idx_forum_questions_author ON forum_questions(author_address, created_at DESC);
+  CREATE INDEX IF NOT EXISTS idx_forum_questions_status ON forum_questions(status, bumped_at DESC);
+
+  CREATE TABLE IF NOT EXISTS forum_answers (
+    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    question_id     INTEGER NOT NULL REFERENCES forum_questions(id) ON DELETE CASCADE,
+    author_address  TEXT NOT NULL REFERENCES accounts(address) ON DELETE CASCADE,
+    body            TEXT NOT NULL,
+    created_at      INTEGER NOT NULL
+  );
+  CREATE INDEX IF NOT EXISTS idx_forum_answers_question ON forum_answers(question_id, created_at ASC);
+  CREATE INDEX IF NOT EXISTS idx_forum_answers_author ON forum_answers(author_address, created_at DESC);
+
+  CREATE TABLE IF NOT EXISTS forum_saved_posts (
+    address      TEXT NOT NULL REFERENCES accounts(address) ON DELETE CASCADE,
+    question_id  INTEGER NOT NULL REFERENCES forum_questions(id) ON DELETE CASCADE,
+    saved_at     INTEGER NOT NULL,
+    PRIMARY KEY (address, question_id)
+  );
+  CREATE INDEX IF NOT EXISTS idx_forum_saved_posts_address ON forum_saved_posts(address, saved_at DESC);
+
+  CREATE TABLE IF NOT EXISTS forum_user_state (
+    address            TEXT PRIMARY KEY REFERENCES accounts(address) ON DELETE CASCADE,
+    notifications_seen_at INTEGER NOT NULL DEFAULT 0
+  );
 `);
 
 // --- Lightweight migrations (additive only) -------------------------------

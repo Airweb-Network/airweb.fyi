@@ -42,6 +42,7 @@
       'Marketplace': 'Mercado',
       'Connections': 'Conexiones',
       'Docs': 'Documentación',
+      'Forum': 'Foro',
       // Docs sidebar — sections
       'Getting started': 'Primeros pasos',
       'Tunneling': 'Túneles',
@@ -416,6 +417,7 @@
       'Dashboard': 'Tableau de bord',
       'Marketplace': 'Marché',
       'Docs': 'Documentation',
+      'Forum': 'Forum',
       // Docs sidebar — sections
       'Getting started': 'Premiers pas',
       'Tunneling': 'Tunneling',
@@ -752,6 +754,7 @@
       'Dashboard': 'Übersicht',
       'Marketplace': 'Marktplatz',
       'Docs': 'Doku',
+      'Forum': 'Forum',
       // Docs sidebar — sections
       'Getting started': 'Erste Schritte',
       'Tunneling': 'Tunneling',
@@ -1088,6 +1091,7 @@
       'Dashboard': '仪表盘',
       'Marketplace': '市场',
       'Docs': '文档',
+      'Forum': '论坛',
       // Docs sidebar — sections
       'Getting started': '入门',
       'Tunneling': '隧道',
@@ -1424,6 +1428,7 @@
       'Dashboard': 'ダッシュボード',
       'Marketplace': 'マーケット',
       'Docs': 'ドキュメント',
+      'Forum': 'フォーラム',
       // Docs sidebar — sections
       'Getting started': 'はじめに',
       'Tunneling': 'トンネリング',
@@ -1759,6 +1764,7 @@
       'Dashboard': '대시보드',
       'Marketplace': '마켓플레이스',
       'Docs': '문서',
+      'Forum': '포럼',
       // Docs sidebar — sections
       'Getting started': '시작하기',
       'Tunneling': '터널링',
@@ -2801,10 +2807,13 @@
     // remember original to allow re-translation when locale changes
     if (!node.__i18nOrig) node.__i18nOrig = orig;
     const src = node.__i18nOrig;
-    if (locale === 'en') { node.nodeValue = src; return; }
-    const tr = lookup(src);
-    if (tr) node.nodeValue = tr;
-    else node.nodeValue = src;
+    const next = (locale === 'en') ? src : (lookup(src) || src);
+    // CRITICAL: never assign nodeValue when the value is unchanged.
+    // Writing nodeValue collapses any text selection that contains this
+    // node, even when the new value is identical. The MutationObserver
+    // below re-walks the document on every DOM change, so an unconditional
+    // write would wipe selections on every mouse move / hover / refresh.
+    if (node.nodeValue !== next) node.nodeValue = next;
   }
 
   function translateAttr(el, attr) {
@@ -2812,9 +2821,8 @@
     const cacheKey = '__i18n_' + attr;
     if (el[cacheKey] == null) el[cacheKey] = el.getAttribute(attr);
     const src = el[cacheKey];
-    if (locale === 'en') { el.setAttribute(attr, src); return; }
-    const tr = lookup(src);
-    el.setAttribute(attr, tr || src);
+    const next = (locale === 'en') ? src : (lookup(src) || src);
+    if (el.getAttribute(attr) !== next) el.setAttribute(attr, next);
   }
 
   function walk(root) {

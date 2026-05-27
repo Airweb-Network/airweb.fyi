@@ -6,10 +6,10 @@
      ===================================================================== */
   :root {
     color-scheme: dark;
-    --bg:        #1c1c1e;
-    --panel:     #2c2c2e;
-    --panel2:    #3a3a3c;
-    --code:      #161618;
+    --bg:        #121214;
+    --panel:     #1b1b1f;
+    --panel2:    #24242a;
+    --code:      #0d0d10;
     --line:      rgba(255,255,255,.09);
     --line2:     rgba(255,255,255,.16);
     --fg:        #f5f5f7;
@@ -25,8 +25,8 @@
     --bad2:      #d70015;
     --hover:     rgba(255,255,255,.05);
     --hover2:    rgba(255,255,255,.09);
-    --header-bg: rgba(28,28,30,.78);
-    --modal-bg:  rgba(36,36,38,.92);
+    --header-bg: rgba(18,18,20,.82);
+    --modal-bg:  rgba(24,24,28,.94);
     --btn-disabled-bg: rgba(255,255,255,.08);
     --selection-bg: rgba(10,132,255,.35);
     --map-bg:    #0f1417;
@@ -129,14 +129,17 @@
     text-decoration: none; color: inherit;
   }
   header.site .logo {
-    width: 28px; height: 28px; border-radius: var(--radius-sm);
-    background: var(--accent); color: var(--accent-fg);
-    display: grid; place-items: center;
-    font-family: var(--display); font-weight: 700; font-size: .95rem;
+    width: 28px; height: 28px;
+    display: block; object-fit: contain;
+    -webkit-user-select: none; user-select: none;
+    -webkit-user-drag: none;
   }
   header.site strong {
-    font-family: var(--display); font-weight: 600;
-    letter-spacing: 0; color: var(--fg); font-size: 1rem;
+    font-family: var(--mono);
+    font-weight: 600;
+    letter-spacing: -.01em;
+    color: var(--fg);
+    font-size: 1rem;
   }
   header.site nav {
     margin-left: auto; display: flex; gap: .25rem;

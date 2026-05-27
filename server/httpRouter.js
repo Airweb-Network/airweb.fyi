@@ -98,7 +98,7 @@ function renderLandingHtml() {
 <meta name="twitter:title" content="AirWeb — A people-powered cloud from spare devices" />
 <meta name="twitter:description" content="${escapeHtml(description)}" />
 
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231c1c1e'/%3E%3Crect x='8' y='8' width='22' height='22' rx='5' fill='%230a84ff'/%3E%3Crect x='34' y='8' width='22' height='22' rx='5' fill='%230a84ff'/%3E%3Crect x='8' y='34' width='22' height='22' rx='5' fill='%230a84ff'/%3E%3Crect x='34' y='34' width='22' height='22' rx='5' fill='%230a84ff'/%3E%3C/svg%3E" />
+<link rel="icon" type="image/png" href="/logo.png" />
 
 <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
 
