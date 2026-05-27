@@ -175,6 +175,13 @@ const stmts = {
     ORDER BY fa.created_at DESC
     LIMIT ?
   `),
+  countReceivedComments: db.prepare(`
+    SELECT COUNT(*) AS n
+    FROM forum_answers fa
+    JOIN forum_questions fq ON fq.id = fa.question_id
+    WHERE fq.author_address = ?
+      AND fa.author_address <> ?
+  `),
 };
 
 function normalizeWhitespace(text) {
@@ -427,6 +434,7 @@ function profileSummary(address) {
     postCount: (stmts.countPostsByAuthor.get(address) || { n: 0 }).n || 0,
     commentCount: (stmts.countAnswersByAuthor.get(address) || { n: 0 }).n || 0,
     savedCount: (stmts.countSavedByAddress.get(address) || { n: 0 }).n || 0,
+    receivedCount: (stmts.countReceivedComments.get(address, address) || { n: 0 }).n || 0,
     unreadCount: unreadNotificationCount(address),
   };
 }

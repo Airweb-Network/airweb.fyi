@@ -469,19 +469,38 @@ function renderTrendingComments(state) {
 
 function renderForumStatusCard(state) {
   const locale = state.locale || 'en';
-  const profile = state.profile || { postCount: 0, commentCount: 0, savedCount: 0 };
+  const profile = state.profile || { postCount: 0, commentCount: 0, savedCount: 0, receivedCount: 0, unreadCount: 0 };
   const signedIn = !!(state.session && state.session.account);
+  const postCount     = signedIn ? (profile.postCount     || 0) : 0;
+  const commentCount  = signedIn ? (profile.commentCount  || 0) : 0;
+  const savedCount    = signedIn ? (profile.savedCount    || 0) : 0;
+  // Comments received on the user's own posts. Backwards-compat: fall back to
+  // commentCount when the dedicated field isn't populated yet.
+  const receivedCount = signedIn ? (profile.receivedCount != null ? profile.receivedCount : (profile.commentCount || 0)) : 0;
+  const unread        = signedIn ? (profile.unreadCount   || 0) : 0;
+
+  const composeAction = signedIn
+    ? `<button type="button" class="stat-tile stat-action" data-open-compose aria-label="${escapeHtml(t(locale, 'newPost'))}">
+         <span class="stat-action-icon" aria-hidden="true">+</span>
+         <span class="stat-action-label">${escapeHtml(t(locale, 'newPost'))}</span>
+       </button>`
+    : `<a class="stat-tile stat-action" href="${escapeHtml(state.apex)}/login" aria-label="${escapeHtml(t(locale, 'logInToPost'))}">
+         <span class="stat-action-icon" aria-hidden="true">→</span>
+         <span class="stat-action-label">${escapeHtml(t(locale, 'logInToPost'))}</span>
+       </a>`;
+
   return `
     <section class="forum-card forum-status-card">
       <div class="profile-stat-grid">
-        <div class="stat-tile"><strong>${signedIn ? profile.postCount : 0}</strong><span>${escapeHtml(t(locale, 'postsLabel'))}</span></div>
-        <div class="stat-tile"><strong>${signedIn ? profile.commentCount : 0}</strong><span>${escapeHtml(t(locale, 'commentsLabel'))}</span></div>
-        <div class="stat-tile"><strong>${signedIn ? profile.savedCount : 0}</strong><span>${escapeHtml(t(locale, 'savedLabel'))}</span></div>
-      </div>
-      <div class="profile-actions">
-        ${signedIn
-          ? `<button type="button" class="primary compose-launch" data-open-compose>${escapeHtml(t(locale, 'newPost'))}</button>`
-          : `<a class="primary button-link" href="${escapeHtml(state.apex)}/login">${escapeHtml(t(locale, 'logInToPost'))}</a>`}
+        <div class="stat-tile"><strong>${postCount}</strong><span>${escapeHtml(t(locale, 'postsLabel'))}</span></div>
+        <div class="stat-tile"><strong>${commentCount}</strong><span>${escapeHtml(t(locale, 'commentsLabel'))}</span></div>
+        <div class="stat-tile"><strong>${savedCount}</strong><span>${escapeHtml(t(locale, 'savedLabel'))}</span></div>
+        <a class="stat-tile stat-tile-link" href="/notifications" aria-label="${escapeHtml(t(locale, 'commentsReceived'))}">
+          <strong>${receivedCount}</strong>
+          <span>${escapeHtml(t(locale, 'receivedLabel'))}</span>
+          ${unread > 0 ? `<span class="stat-tile-pill">${unread}</span>` : ''}
+        </a>
+        ${composeAction}
       </div>
     </section>
   `;
@@ -512,7 +531,6 @@ function renderSidebar(state) {
   const hotTags = stats.hotTags.map((tag) => renderTag(tag, state.activeTag === tag, locale)).join('');
   return `
     <aside class="forum-sidebar">
-      ${renderCommentsReceivedCard(state)}
       <section class="forum-card stat-card">
         <div class="section-head">
           <div>
@@ -558,7 +576,7 @@ function renderComposeModal(state) {
 function renderFeed(req, state) {
   const locale = state.locale || 'en';
   const searchValue = escapeHtml(state.search || '');
-  const filters = ['bug-report', 'feature-request', 'jobs', 'hiring', 'event', 'launch', 'services', 'buy-sell', 'showcase', 'marketplace', 'troubleshooting']
+  const filters = ['bug-report', 'jobs', 'event', 'launch', 'services', 'buy-sell', 'showcase', 'marketplace', 'troubleshooting']
     .map((slug) => renderTag(slug, state.activeTag === slug, locale)).join('');
   const cards = state.questions.length
     ? state.questions.map((item, index) => renderQuestionCard(item, {
@@ -772,9 +790,101 @@ function renderPage(req, state) {
   }
   .profile-copy { margin-top: 0; }
   .profile-stat-grid {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: .5rem;
+  }
+  .profile-stat-grid > .stat-tile {
+    flex: 0 0 84px;
+    width: 84px;
+    height: 84px;
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: .65rem;
+    grid-template-rows: auto 1fr;
+    padding: .4rem .55rem;
+    gap: 0;
+    position: relative;
+    text-align: left;
+  }
+  .profile-stat-grid > .stat-tile span {
+    font-size: .68rem;
+    color: var(--mute);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    line-height: 1;
+    justify-self: start;
+    align-self: start;
+  }
+  .profile-stat-grid > .stat-tile strong {
+    grid-row: 2;
+    font-size: 1.55rem;
+    line-height: 1;
+    place-self: center;
+    text-align: center;
+  }
+  /* Make the "comments received" tile clickable like a link. */
+  .stat-tile-link {
+    text-decoration: none;
+    color: inherit;
+    transition: border-color .15s ease, transform .15s ease, background .15s ease;
+  }
+  .stat-tile-link:hover {
+    text-decoration: none;
+    transform: translateY(-1px);
+    border-color: color-mix(in srgb, var(--accent) 28%, var(--line));
+    background: color-mix(in srgb, var(--accent) 6%, var(--hover));
+  }
+  .stat-tile-pill {
+    position: absolute;
+    top: .35rem; right: .35rem;
+    min-width: 1.05rem; height: 1.05rem;
+    padding: 0 .3rem;
+    border-radius: 999px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font: 700 .62rem/1 var(--display);
+    color: var(--accent-fg);
+    background: linear-gradient(135deg, var(--accent), var(--accent2, var(--accent)));
+    box-shadow: 0 3px 8px color-mix(in srgb, var(--accent) 35%, transparent);
+  }
+  /* "New post" action tile — right-aligned, accent-coloured, bright white label. */
+  .stat-tile.stat-action {
+    margin-left: auto;
+    cursor: pointer;
+    appearance: none;
+    border: 1px solid transparent;
+    color: #fff;
+    background: linear-gradient(135deg, var(--accent), var(--accent2, var(--accent)));
+    box-shadow: 0 8px 18px color-mix(in srgb, var(--accent) 28%, transparent);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: .35rem;
+    padding: .4rem .6rem;
+    transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+    text-decoration: none;
+    font: inherit;
+  }
+  .stat-tile.stat-action:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.06);
+    box-shadow: 0 12px 24px color-mix(in srgb, var(--accent) 36%, transparent);
+  }
+  .stat-tile.stat-action:active { transform: translateY(0); }
+  .stat-tile.stat-action .stat-action-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font: 700 1.15rem/1 var(--display);
+    line-height: 1;
+  }
+  .stat-tile.stat-action .stat-action-label {
+    font: 700 .9rem/1 var(--display);
+    letter-spacing: .02em;
+    color: #fff;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, .15);
   }
   .profile-actions {
     display: flex;
@@ -1787,7 +1897,9 @@ function renderPage(req, state) {
       align-items: center;
     }
     .stat-grid { grid-template-columns: 1fr 1fr 1fr; }
-    .profile-stat-grid { grid-template-columns: 1fr 1fr 1fr; }
+  }
+  @media (max-width: 720px) {
+    .profile-stat-grid > .stat-tile { flex: 0 0 72px; width: 72px; height: 72px; }
   }
 </style>
 </head>
