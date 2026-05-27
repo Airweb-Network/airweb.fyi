@@ -57,10 +57,11 @@ function renderLandingHtml() {
   const host          = publicHost();
   const sshPort       = config.ssh.port;
   const keyFile       = `${host.replace(/[^a-z0-9.-]+/gi, '_')}_<your account id>_key.txt`;
-  // Count every public tunnel — HTTP and raw TCP both — but skip internal
-  // tunnels (docs, forum, etc.) since those are server-owned plumbing, not
-  // user-facing connections people would brag about in the landing badge.
-  const tunnels       = registry.list().filter(t => !t.internal);
+  // Count every tunnel in the registry — public HTTP, raw TCP, and internal
+  // servers (docs, forum, ...) all count as live connections people can hit.
+  // This must match the admin overview list, which also includes internal
+  // tunnels.
+  const tunnels       = registry.list();
   const tunnelCount   = tunnels.length;
   const description   = `Airweb on ${host}: a people-powered cloud built from spare devices. ` +
     `Demo apps in seconds, reach your home computer from anywhere, lease micro-servers by the minute, ` +
